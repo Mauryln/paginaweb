@@ -3,12 +3,13 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, MessageCircle, ArrowRight, GraduationCap, Home as HomeIcon, Sun, Briefcase, Laptop, BookOpen, Cpu, Users, Mic, Monitor, Paintbrush, Compass, Printer, Laptop2, UserCheck, GraduationCap as GradCap, Facebook, Instagram, Linkedin } from "lucide-react";
+import { useState } from "react";
 
 const NAV_LINKS = [
   { label: 'Inicio', href: '#' },
   { label: 'Cursos', href: '#cursos' },
-  { label: 'Beneficios', href: '#beneficios' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: 'Beneficios', href: '/beneficios' },
+  { label: 'Contacto', href: '/contacto' },
 ];
 
 // Card de servicio
@@ -75,10 +76,122 @@ function CursoCard({ img, title, desc, lessons, duration, level, teacher, price,
   );
 }
 
+// Componente Modal de Detalle de Curso
+function CursoDetalleModal({ open, onClose, curso }: { open: boolean; onClose: () => void; curso: any }) {
+  if (!open || !curso) return null;
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 relative text-[#1a1144] animate-fade-in">
+        <button onClick={onClose} className="absolute top-4 right-4 text-[#00b97c] text-2xl font-bold">×</button>
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex-shrink-0 w-full md:w-56 h-40 md:h-56 relative rounded-xl overflow-hidden border-2 border-[#00ffae]">
+            <Image src={curso.img} alt={curso.title} fill className="object-cover" />
+          </div>
+          <div className="flex-1 flex flex-col">
+            <h2 className="text-2xl font-extrabold mb-2">{curso.title}</h2>
+            <div className="flex flex-wrap gap-2 text-xs text-[#1a1144]/80 mb-2">
+              <span>📚 {curso.lessons}</span>
+              <span>⏱ {curso.duration}</span>
+              <span>🎯 {curso.level}</span>
+            </div>
+            <div className="mb-3 text-[#1a1144]/70">{curso.descLong || curso.desc}</div>
+            <div className="flex items-center gap-4 mt-auto">
+              <span className="font-semibold text-[#00b97c] text-xl">{curso.price}</span>
+              <Button size="sm" className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]" onClick={curso.onWhatsApp}>
+                WhatsApp
+              </Button>
+            </div>
+            <div className="mt-2 text-xs text-[#1a1144]/60">👤 {curso.teacher}</div>
+          </div>
+        </div>
+        {/* Simulación de tabs y contenido adicional */}
+        <div className="mt-6">
+          <div className="flex gap-6 border-b mb-4">
+            <button className="pb-2 border-b-2 border-[#00ffae] font-semibold">Descripción</button>
+            <button className="pb-2 text-[#1a1144]/50">Contenido</button>
+            <button className="pb-2 text-[#1a1144]/50">Instructor</button>
+            <button className="pb-2 text-[#1a1144]/50">Opiniones</button>
+          </div>
+          <div className="text-sm text-[#1a1144]/80">
+            {curso.descLong || 'Este curso te permitirá dominar las habilidades clave para avanzar en tu carrera profesional.'}
+          </div>
+          <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+            {curso.benefits?.map((b: string, i: number) => (
+              <li key={i} className="flex items-center gap-2"><span className="text-[#00b97c]">✔</span> {b}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const handleWhatsAppClick = () => {
     window.open("https://wa.me/61863578", "_blank");
   };
+
+  // Estado para el modal y el curso seleccionado
+  const [modalOpen, setModalOpen] = useState(false);
+  const [cursoSeleccionado, setCursoSeleccionado] = useState<any>(null);
+
+  // Datos de cursos (puedes expandirlos con más detalles si lo deseas)
+  const cursos = [
+    {
+      img: "/curso1.jpg",
+      title: "Curso BIM Avanzado",
+      desc: "Aprende técnicas avanzadas de modelado y gestión BIM.",
+      descLong: "Este curso avanzado de BIM te permitirá dominar técnicas de modelado, gestión de información y flujos de trabajo colaborativos. Ideal para profesionales que buscan llevar sus habilidades al siguiente nivel.",
+      lessons: "8 lecciones",
+      duration: "12h 30m",
+      level: "Experto",
+      teacher: "Ing. Laura Pérez",
+      price: "$120",
+      onWhatsApp: handleWhatsAppClick,
+      benefits: [
+        "Domina modelado avanzado en BIM",
+        "Gestiona proyectos colaborativos",
+        "Certificado profesional",
+        "Acceso a recursos exclusivos",
+      ],
+    },
+    {
+      img: "/curso2.jpg",
+      title: "Revit para Arquitectos",
+      desc: "Domina Revit para el diseño arquitectónico profesional.",
+      descLong: "Aprende a utilizar Revit desde cero para crear proyectos arquitectónicos completos, desde el modelado hasta la documentación y presentación.",
+      lessons: "6 lecciones",
+      duration: "9h 10m",
+      level: "Intermedio",
+      teacher: "Arq. Juan Gómez",
+      price: "Gratis",
+      onWhatsApp: handleWhatsAppClick,
+      benefits: [
+        "Aprende Revit desde cero",
+        "Crea proyectos arquitectónicos reales",
+        "Descarga archivos de práctica",
+        "Certificado de finalización",
+      ],
+    },
+    {
+      img: "/curso3.jpg",
+      title: "BIM para Ingenieros",
+      desc: "Especialízate en BIM para ingeniería estructural y MEP.",
+      descLong: "Conviértete en un experto en la aplicación de BIM en proyectos de ingeniería estructural y MEP, optimizando procesos y resultados.",
+      lessons: "10 lecciones",
+      duration: "15h 00m",
+      level: "Avanzado",
+      teacher: "Ing. Sofía Ruiz",
+      price: "$150",
+      onWhatsApp: handleWhatsAppClick,
+      benefits: [
+        "Especialización en BIM para ingeniería",
+        "Optimiza procesos de diseño y construcción",
+        "Acceso a casos prácticos",
+        "Certificado profesional",
+      ],
+    },
+  ];
 
   return (
     <main className="min-h-screen bg-[#1a1144] text-white">
@@ -121,12 +234,19 @@ export default function Home() {
               </Button>
             </div>
           </div>
-          {/* Imagen destacada */}
-          <div className="flex-1 flex justify-center md:justify-end w-full max-w-lg relative">
-            <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10">
-              <Image src="/banner.jpg" alt="Hero" width={420} height={420} className="object-cover w-full h-[320px] md:h-[420px]" />
-            </div>
-          </div>
+{/* Imagen destacada */}
+<div className="flex-1 flex justify-center md:justify-end w-full max-w-lg relative">
+  <div className="w-[420px] h-[420px] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10">
+    <Image
+      src="/banner.jpg"
+      alt="Hero"
+      width={320}
+      height={320}
+      className="w-full h-full flex items-center justify-center"
+    />
+  </div>
+</div>
+
         </div>
         {/* Efecto decorativo */}
         <div className="absolute left-0 top-0 w-[600px] h-[600px] bg-[#00ffae]/10 rounded-full blur-3xl -z-10" />
@@ -147,41 +267,25 @@ export default function Home() {
           </div>
           {/* Grid de cursos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            <CursoCard
-              img="/curso1.jpg"
-              title="Curso BIM Avanzado"
-              desc="Aprende técnicas avanzadas de modelado y gestión BIM."
-              lessons="8 lecciones"
-              duration="12h 30m"
-              level="Experto"
-              teacher="Ing. Laura Pérez"
-              price="$120"
-              onWhatsApp={handleWhatsAppClick}
-            />
-            <CursoCard
-              img="/curso2.jpg"
-              title="Revit para Arquitectos"
-              desc="Domina Revit para el diseño arquitectónico profesional."
-              lessons="6 lecciones"
-              duration="9h 10m"
-              level="Intermedio"
-              teacher="Arq. Juan Gómez"
-              price="Gratis"
-              onWhatsApp={handleWhatsAppClick}
-            />
-            <CursoCard
-              img="/curso3.jpg"
-              title="BIM para Ingenieros"
-              desc="Especialízate en BIM para ingeniería estructural y MEP."
-              lessons="10 lecciones"
-              duration="15h 00m"
-              level="Avanzado"
-              teacher="Ing. Sofía Ruiz"
-              price="$150"
-              onWhatsApp={handleWhatsAppClick}
-            />
+            {cursos.map((curso, idx) => (
+              <div key={curso.title} className="cursor-pointer" onClick={() => { setCursoSeleccionado(curso); setModalOpen(true); }}>
+                <CursoCard
+                  img={curso.img}
+                  title={curso.title}
+                  desc={curso.desc}
+                  lessons={curso.lessons}
+                  duration={curso.duration}
+                  level={curso.level}
+                  teacher={curso.teacher}
+                  price={curso.price}
+                  onWhatsApp={curso.onWhatsApp}
+                />
+              </div>
+            ))}
           </div>
         </div>
+        {/* Modal de detalles del curso */}
+        <CursoDetalleModal open={modalOpen} onClose={() => setModalOpen(false)} curso={cursoSeleccionado} />
       </section>
 
       {/* Sección: ¿Por qué aprender con nuestros cursos? */}
@@ -293,15 +397,6 @@ export default function Home() {
                   <li>Bolivia</li>
                 </ul>
               </div>
-            </div>
-            {/* Newsletter */}
-            <div className="flex-1 flex flex-col items-center md:items-end gap-4">
-              <h4 className="font-semibold mb-3">Suscríbete</h4>
-              <form className="flex w-full max-w-xs">
-                <input type="email" placeholder="Tu email..." className="rounded-l-full px-4 py-2 bg-white text-[#1a1144] focus:outline-none w-full" />
-                <button type="submit" className="rounded-r-full px-4 py-2 bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]">Enviar</button>
-              </form>
-              <span className="text-xs text-white/60">No enviamos spam.</span>
             </div>
           </div>
           <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/60 text-xs">
