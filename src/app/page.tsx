@@ -134,8 +134,14 @@ export default function Home() {
   // Estado para el modal y el curso seleccionado
   const [modalOpen, setModalOpen] = useState(false);
   const [cursoSeleccionado, setCursoSeleccionado] = useState<any>(null);
+  
+  // Nuevo estado para el filtro actual
+  const [filtroActual, setFiltroActual] = useState("Todos");
 
-  // Datos de cursos (puedes expandirlos con más detalles si lo deseas)
+  // Categorías de filtro disponibles
+  const categoriasFiltro = ["Todos", "BIM", "Arquitectura", "Ingeniería", "Tecnología"];
+
+  // Datos de cursos con categoría añadida
   const cursos = [
     {
       img: "/curso1.jpg",
@@ -154,6 +160,7 @@ export default function Home() {
         "Certificado profesional",
         "Acceso a recursos exclusivos",
       ],
+      categoria: "BIM",
     },
     {
       img: "/curso2.jpg",
@@ -172,6 +179,7 @@ export default function Home() {
         "Descarga archivos de práctica",
         "Certificado de finalización",
       ],
+      categoria: "Arquitectura",
     },
     {
       img: "/curso3.jpg",
@@ -190,14 +198,39 @@ export default function Home() {
         "Acceso a casos prácticos",
         "Certificado profesional",
       ],
+      categoria: "Ingeniería",
+    },
+    // Agregamos un curso adicional de la categoría Tecnología
+    {
+      img: "/curso4.jpg",
+      title: "Introducción a la Programación BIM",
+      desc: "Aprende a crear scripts y automatizaciones para flujos de trabajo BIM.",
+      descLong: "Este curso te introduce al mundo de la programación aplicada a BIM, permitiéndote crear scripts y automatizaciones que optimizarán tu flujo de trabajo. Ideal para profesionales que quieren aumentar su productividad.",
+      lessons: "12 lecciones",
+      duration: "18h 45m",
+      level: "Intermedio",
+      teacher: "Ing. Carlos Martínez",
+      price: "$180",
+      onWhatsApp: handleWhatsAppClick,
+      benefits: [
+        "Domina los fundamentos de programación para BIM",
+        "Crea automatizaciones personalizadas",
+        "Optimiza flujos de trabajo",
+        "Proyectos prácticos reales",
+      ],
+      categoria: "Tecnología",
     },
   ];
+
+  // Filtrar cursos según la categoría seleccionada
+  const cursosFiltrados = filtroActual === "Todos" 
+    ? cursos 
+    : cursos.filter(curso => curso.categoria === filtroActual);
 
   return (
     <main className="min-h-screen bg-[#1a1144] text-white">
       {/* Header */}
       <header className="w-full border-b border-white/10 bg-[#1a1144] sticky top-0 z-50">
-
         <div className="container mx-auto flex items-center justify-between py-4 px-4">
           <div className="flex items-center gap-2">
             <Image src="/logo.jpg" alt="BIMCAT Logo" width={40} height={40} className="rounded-full bg-white p-1" />
@@ -234,19 +267,18 @@ export default function Home() {
               </Button>
             </div>
           </div>
-{/* Imagen destacada */}
-<div className="flex-1 flex justify-center md:justify-end w-full max-w-lg relative">
-  <div className="w-[420px] h-[420px] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10">
-    <Image
-      src="/banner.jpg"
-      alt="Hero"
-      width={320}
-      height={320}
-      className="w-full h-full flex items-center justify-center"
-    />
-  </div>
-</div>
-
+          {/* Imagen destacada */}
+          <div className="flex-1 flex justify-center md:justify-end w-full max-w-lg relative">
+            <div className="w-[420px] h-[420px] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10">
+              <Image
+                src="/banner.jpg"
+                alt="Hero"
+                width={320}
+                height={320}
+                className="w-full h-full flex items-center justify-center"
+              />
+            </div>
+          </div>
         </div>
         {/* Efecto decorativo */}
         <div className="absolute left-0 top-0 w-[600px] h-[600px] bg-[#00ffae]/10 rounded-full blur-3xl -z-10" />
@@ -257,31 +289,47 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-2 text-[#1a1144]">Cursos Populares</h2>
           <p className="text-center text-lg text-[#1a1144]/70 mb-8">¡Explora nuestros cursos más demandados y potencia tu perfil profesional!</p>
-          {/* Filtros de categoría */}
+          
+          {/* Filtros de categoría con funcionalidad */}
           <div className="flex flex-wrap justify-center gap-3 mb-10">
-            <button className="px-4 py-2 rounded-full bg-[#00ffae] text-[#1a1144] font-semibold shadow hover:bg-[#00e6a0] transition">Todos</button>
-            <button className="px-4 py-2 rounded-full bg-white text-[#1a1144] font-semibold border border-[#00ffae] hover:bg-[#00ffae]/10 transition">BIM</button>
-            <button className="px-4 py-2 rounded-full bg-white text-[#1a1144] font-semibold border border-[#00ffae] hover:bg-[#00ffae]/10 transition">Arquitectura</button>
-            <button className="px-4 py-2 rounded-full bg-white text-[#1a1144] font-semibold border border-[#00ffae] hover:bg-[#00ffae]/10 transition">Ingeniería</button>
-            <button className="px-4 py-2 rounded-full bg-white text-[#1a1144] font-semibold border border-[#00ffae] hover:bg-[#00ffae]/10 transition">Tecnología</button>
-          </div>
-          {/* Grid de cursos */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {cursos.map((curso, idx) => (
-              <div key={curso.title} className="cursor-pointer" onClick={() => { setCursoSeleccionado(curso); setModalOpen(true); }}>
-                <CursoCard
-                  img={curso.img}
-                  title={curso.title}
-                  desc={curso.desc}
-                  lessons={curso.lessons}
-                  duration={curso.duration}
-                  level={curso.level}
-                  teacher={curso.teacher}
-                  price={curso.price}
-                  onWhatsApp={curso.onWhatsApp}
-                />
-              </div>
+            {categoriasFiltro.map((categoria) => (
+              <button 
+                key={categoria}
+                className={`px-4 py-2 rounded-full ${
+                  filtroActual === categoria 
+                    ? 'bg-[#00ffae] text-[#1a1144]' 
+                    : 'bg-white text-[#1a1144] border border-[#00ffae]'
+                } font-semibold shadow hover:bg-[#00e6a0] transition`}
+                onClick={() => setFiltroActual(categoria)}
+              >
+                {categoria}
+              </button>
             ))}
+          </div>
+          
+          {/* Grid de cursos filtrados */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            {cursosFiltrados.length > 0 ? (
+              cursosFiltrados.map((curso, idx) => (
+                <div key={curso.title} className="cursor-pointer" onClick={() => { setCursoSeleccionado(curso); setModalOpen(true); }}>
+                  <CursoCard
+                    img={curso.img}
+                    title={curso.title}
+                    desc={curso.desc}
+                    lessons={curso.lessons}
+                    duration={curso.duration}
+                    level={curso.level}
+                    teacher={curso.teacher}
+                    price={curso.price}
+                    onWhatsApp={curso.onWhatsApp}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-10">
+                <p className="text-[#1a1144] text-lg">No se encontraron cursos en esta categoría.</p>
+              </div>
+            )}
           </div>
         </div>
         {/* Modal de detalles del curso */}
@@ -313,7 +361,6 @@ export default function Home() {
         </div>
       </section>
 
-
       {/* Servicios Section */}
       <section id="servicios" className="bg-[#221a4d] text-white py-20">
         <div className="container mx-auto px-4">
@@ -335,7 +382,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
 
       {/* Footer */}
       <footer className="bg-[#1a1144] border-t border-[#00ffae]/10 pt-16 pb-8 text-white mt-12">
