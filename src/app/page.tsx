@@ -197,7 +197,6 @@ export default function Home() {
     <main className="min-h-screen bg-[#1a1144] text-white">
       {/* Header */}
       <header className="w-full border-b border-white/10 bg-[#1a1144] sticky top-0 z-50">
-
         <div className="container mx-auto flex items-center justify-between py-4 px-4">
           <div className="flex items-center gap-2">
             <Image src="/logo.jpg" alt="BIMCAT Logo" width={40} height={40} className="rounded-full bg-white p-1" />
@@ -234,19 +233,18 @@ export default function Home() {
               </Button>
             </div>
           </div>
-{/* Imagen destacada */}
-<div className="flex-1 flex justify-center md:justify-end w-full max-w-lg relative">
-  <div className="w-[420px] h-[420px] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10">
-    <Image
-      src="/banner.jpg"
-      alt="Hero"
-      width={320}
-      height={320}
-      className="w-full h-full flex items-center justify-center"
-    />
-  </div>
-</div>
-
+          {/* Imagen destacada */}
+          <div className="flex-1 flex justify-center md:justify-end w-full max-w-lg relative">
+            <div className="w-[420px] h-[420px] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10">
+              <Image
+                src="/banner.jpg"
+                alt="Hero"
+                width={320}
+                height={320}
+                className="w-full h-full flex items-center justify-center"
+              />
+            </div>
+          </div>
         </div>
         {/* Efecto decorativo */}
         <div className="absolute left-0 top-0 w-[600px] h-[600px] bg-[#00ffae]/10 rounded-full blur-3xl -z-10" />
@@ -313,7 +311,6 @@ export default function Home() {
         </div>
       </section>
 
-
       {/* Servicios Section */}
       <section id="servicios" className="bg-[#221a4d] text-white py-20">
         <div className="container mx-auto px-4">
@@ -335,7 +332,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
 
       {/* Footer */}
       <footer className="bg-[#1a1144] border-t border-[#00ffae]/10 pt-16 pb-8 text-white mt-12">
