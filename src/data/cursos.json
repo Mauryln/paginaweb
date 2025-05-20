@@ -1,0 +1,64 @@
+{
+  "cursos": [
+    {
+      "id": "1",
+      "slug": "curso-bim-avanzado",
+      "img": "/curso1.jpg",
+      "title": "Curso BIM Avanzado",
+      "desc": "Aprende técnicas avanzadas de modelado y gestión BIM.",
+      "descLong": "Este curso avanzado de BIM te permitirá dominar técnicas de modelado, gestión de información y flujos de trabajo colaborativos. Ideal para profesionales que buscan llevar sus habilidades al siguiente nivel.",
+      "lessons": "8 lecciones",
+      "duration": "12h 30m",
+      "level": "Experto",
+      "teacher": "Ing. Laura Pérez",
+      "price": "$120",
+      "benefits": [
+        "Domina modelado avanzado en BIM",
+        "Gestiona proyectos colaborativos",
+        "Certificado profesional",
+        "Acceso a recursos exclusivos"
+      ],
+      "categoria": "BIM",
+      "visible": true
+    },
+    {
+      "id": "2",
+      "slug": "prueba-xd",
+      "img": "/curso2.jpg",
+      "title": "Prueba Xd",
+      "desc": "Domina Revit para el diseño arquitectónico profesional.",
+      "descLong": "Aprende a utilizar Revit desde cero para crear proyectos arquitectónicos completos, desde el modelado hasta la documentación y presentación.",
+      "lessons": "6 lecciones",
+      "duration": "9h 10m",
+      "level": "Intermedio",
+      "teacher": "Arq. Juan Gómez",
+      "price": "Gratis",
+      "benefits": [
+        "Aprende Revit desde cero",
+        "Crea proyectos arquitectónicos reales",
+        "Descarga archivos de práctica",
+        "Certificado de finalización"
+      ],
+      "categoria": "Arquitectura",
+      "visible": true
+    },
+    {
+      "slug": "prueba-2",
+      "img": "/uploads/1747764819455.jpg",
+      "title": "Prueba 2",
+      "desc": "Domina Revit para el diseño arquitectónico profesional.",
+      "descLong": "Exasdasdasd",
+      "lessons": "3 Lecciones",
+      "duration": "9h ",
+      "level": "Intermedio",
+      "teacher": "Arq. Juan Gómez",
+      "price": "120 Bs",
+      "benefits": [
+        "Facil"
+      ],
+      "categoria": "BIM",
+      "visible": true,
+      "id": "3"
+    }
+  ]
+}

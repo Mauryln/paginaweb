@@ -12,14 +12,25 @@ export default function AdminLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // En un caso real, esto debería ser una llamada a una API segura
-    // Por ahora, usamos una contraseña hardcodeada (¡no hagas esto en producción!)
-    if (password === 'bimcat2024admin') {
-      // Establecer una cookie o token de sesión
-      document.cookie = 'adminAuth=true; path=/';
-      router.push('/admin/dashboard');
-    } else {
-      setError('Contraseña incorrecta');
+    try {
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        document.cookie = 'adminAuth=true; path=/';
+        router.push('/admin/dashboard');
+      } else {
+        setError(data.message || 'Contraseña incorrecta');
+      }
+    } catch (error) {
+      setError('Error al intentar iniciar sesión');
     }
   };
 

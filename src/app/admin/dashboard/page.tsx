@@ -1,38 +1,30 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { cursos } from "@/data/cursos";
 import type { Curso } from "@/data/cursos";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Edit, Plus, Eye, EyeOff, Trash, LogOut, X } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { ImageUpload } from '@/components/ImageUpload';
+import { cursosService } from '@/services/cursosService';
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [cursosState, setCursosState] = useState<Curso[]>([]);
+  const [cursos, setCursos] = useState<Curso[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
-  const [formData, setFormData] = useState<Partial<Curso>>({});
+  const [formData, setFormData] = useState<Partial<Curso> & { durationHours?: string; durationMinutes?: string }>({});
+  const [loading, setLoading] = useState(true);
 
-  // Cargar cursos al iniciar
   useEffect(() => {
-    const savedCursos = localStorage.getItem('cursos');
-    if (savedCursos) {
-      setCursosState(JSON.parse(savedCursos));
-    } else {
-      setCursosState(cursos);
-      localStorage.setItem('cursos', JSON.stringify(cursos));
-    }
+    const unsubscribe = cursosService.subscribe((updatedCursos) => {
+      setCursos(updatedCursos);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
-
-  // Guardar cursos cuando cambien
-  useEffect(() => {
-    if (cursosState.length > 0) {
-      localStorage.setItem('cursos', JSON.stringify(cursosState));
-    }
-  }, [cursosState]);
 
   const handleLogout = () => {
     document.cookie = 'adminAuth=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -40,14 +32,22 @@ export default function AdminDashboard() {
   };
 
   const handleEdit = (curso: Curso) => {
+    let durationHours = '';
+    let durationMinutes = '';
+    if (curso.duration) {
+      const match = curso.duration.match(/(\d+)h\s*(\d+)?m?/);
+      if (match) {
+        durationHours = match[1] || '';
+        durationMinutes = match[2] || '';
+      }
+    }
     setSelectedCurso(curso);
-    setFormData(curso);
+    setFormData({ ...curso, durationHours, durationMinutes });
     setEditMode(true);
   };
 
   const handleCreate = () => {
-    const newCurso: Partial<Curso> = {
-      id: String(cursosState.length + 1),
+    const newCurso: Partial<Curso> & { durationHours?: string; durationMinutes?: string } = {
       slug: '',
       img: '',
       title: '',
@@ -55,6 +55,8 @@ export default function AdminDashboard() {
       descLong: '',
       lessons: '',
       duration: '',
+      durationHours: '',
+      durationMinutes: '',
       level: '',
       teacher: '',
       price: '',
@@ -67,17 +69,23 @@ export default function AdminDashboard() {
     setEditMode(true);
   };
 
-  const handleToggleVisibility = (id: string) => {
-    setCursosState(prevCursos =>
-      prevCursos.map(curso =>
-        curso.id === id ? { ...curso, visible: !curso.visible } : curso
-      )
-    );
+  const handleToggleVisibility = async (id: string) => {
+    try {
+      await cursosService.toggleVisibility(id);
+    } catch (error) {
+      console.error('Error al cambiar visibilidad:', error);
+      alert('Error al cambiar la visibilidad del curso');
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este curso?')) {
-      setCursosState(prevCursos => prevCursos.filter(curso => curso.id !== id));
+      try {
+        await cursosService.deleteCurso(id);
+      } catch (error) {
+        console.error('Error al eliminar curso:', error);
+        alert('Error al eliminar el curso');
+      }
     }
   };
 
@@ -112,38 +120,51 @@ export default function AdminDashboard() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.title || !formData.desc) {
       alert('Por favor completa los campos requeridos');
       return;
     }
 
-    // Generar slug a partir del título
-    const slug = formData.title
-      .toLowerCase()
-      .replace(/[áéíóú]/g, (match) => 'aeiou'['áéíóú'.indexOf(match)])
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
+    try {
+      // Generar slug a partir del título
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/[áéíóú]/g, (match) => 'aeiou'['áéíóú'.indexOf(match)])
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
 
-    const updatedCurso = {
-      ...formData,
-      slug,
-      visible: formData.visible ?? true,
-    } as Curso;
+      // Formatear precio
+      let price = formData.price ? `${formData.price} Bs` : '';
+      // Formatear lecciones
+      let lessons = formData.lessons ? `${formData.lessons} lecciones` : '';
+      // Formatear duración
+      let duration = '';
+      if (formData.durationHours || formData.durationMinutes) {
+        duration = `${formData.durationHours || 0}h ${formData.durationMinutes || 0}m`;
+      }
 
-    if (selectedCurso) {
-      // Actualizar curso existente
-      setCursosState(prevCursos =>
-        prevCursos.map(curso =>
-          curso.id === selectedCurso.id ? updatedCurso : curso
-        )
-      );
-    } else {
-      // Crear nuevo curso
-      setCursosState(prevCursos => [...prevCursos, updatedCurso]);
+      const cursoData = {
+        ...formData,
+        slug,
+        price,
+        lessons,
+        duration,
+        level: formData.level || '',
+        visible: formData.visible ?? true,
+      };
+
+      if (selectedCurso) {
+        await cursosService.updateCurso(selectedCurso.id, cursoData);
+      } else {
+        await cursosService.createCurso(cursoData as Omit<Curso, 'id'>);
+      }
+
+      setEditMode(false);
+    } catch (error) {
+      console.error('Error al guardar curso:', error);
+      alert('Error al guardar el curso');
     }
-
-    setEditMode(false);
   };
 
   const handleImageChange = async (file: File | null) => {
@@ -178,6 +199,14 @@ export default function AdminDashboard() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f6f8fa] flex items-center justify-center">
+        <div className="text-[#1a1144]">Cargando...</div>
+      </div>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#f6f8fa]">
       <div className="bg-[#1a1144] text-white py-6">
@@ -206,8 +235,8 @@ export default function AdminDashboard() {
           </Button>
         </div>
 
-        <div className="grid gap-6">
-          {cursosState.map((curso) => (
+        <div className="space-y-4">
+          {cursos.map((curso) => (
             <div
               key={curso.id}
               className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between"
@@ -260,8 +289,8 @@ export default function AdminDashboard() {
 
       {/* Modal de edición/creación */}
       {editMode && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl my-8">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 md:p-4 overflow-y-auto z-50">
+          <div className="bg-white rounded-lg p-4 md:p-6 w-full max-w-lg my-8 shadow-lg overflow-y-auto max-h-[95vh]">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-[#1a1144]">
                 {selectedCurso ? 'Editar Curso' : 'Nuevo Curso'}
@@ -275,8 +304,8 @@ export default function AdminDashboard() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Título *
                 </label>
@@ -290,7 +319,7 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              <div className="col-span-2">
+              <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Descripción Corta *
                 </label>
@@ -304,7 +333,7 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              <div className="col-span-2">
+              <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Descripción Larga
                 </label>
@@ -317,7 +346,7 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              <div className="col-span-2">
+              <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Imagen del Curso
                 </label>
@@ -327,46 +356,83 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              <div>
+              {/* Precio y Lecciones */}
+              <div className="flex flex-col gap-1">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Precio
                 </label>
-                <input
-                  type="text"
-                  name="price"
-                  value={formData.price || ''}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    name="price"
+                    min="0"
+                    value={formData.price || ''}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '');
+                      setFormData(prev => ({ ...prev, price: value }));
+                    }}
+                    className="w-full px-4 py-2 border rounded-lg"
+                  />
+                  <span className="text-[#1a1144] font-semibold">Bs</span>
+                </div>
+                {formData.price && (
+                  <div className="text-xs text-[#1a1144]/70 mt-1">
+                    ≈ ${(Number(formData.price) / 7).toFixed(2)} USD
+                  </div>
+                )}
               </div>
-
-              <div>
+              <div className="flex flex-col gap-1">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Lecciones
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   name="lessons"
+                  min="1"
                   value={formData.lessons || ''}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    setFormData(prev => ({ ...prev, lessons: value }));
+                  }}
                   className="w-full px-4 py-2 border rounded-lg"
                 />
               </div>
 
-              <div>
+              {/* Duración y Nivel */}
+              <div className="flex flex-col gap-1">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Duración
                 </label>
-                <input
-                  type="text"
-                  name="duration"
-                  value={formData.duration || ''}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    name="durationHours"
+                    min="0"
+                    placeholder="Horas"
+                    value={formData.durationHours || ''}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '');
+                      setFormData(prev => ({ ...prev, durationHours: value }));
+                    }}
+                    className="w-1/2 px-4 py-2 border rounded-lg"
+                  />
+                  <input
+                    type="number"
+                    name="durationMinutes"
+                    min="0"
+                    max="59"
+                    placeholder="Minutos"
+                    value={formData.durationMinutes || ''}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/[^0-9]/g, '');
+                      if (Number(value) > 59) value = '59';
+                      setFormData(prev => ({ ...prev, durationMinutes: value }));
+                    }}
+                    className="w-1/2 px-4 py-2 border rounded-lg"
+                  />
+                </div>
               </div>
-
-              <div>
+              <div className="flex flex-col gap-1">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Nivel
                 </label>
@@ -377,14 +443,26 @@ export default function AdminDashboard() {
                   className="w-full px-4 py-2 border rounded-lg"
                 >
                   <option value="">Seleccionar nivel</option>
-                  <option value="Principiante">Principiante</option>
+                  <option value="Básico">Básico</option>
                   <option value="Intermedio">Intermedio</option>
                   <option value="Avanzado">Avanzado</option>
-                  <option value="Experto">Experto</option>
                 </select>
               </div>
 
-              <div>
+              {/* Instructor y Categoría */}
+              <div className="flex flex-col gap-1">
+                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                  Instructor
+                </label>
+                <input
+                  type="text"
+                  name="teacher"
+                  value={formData.teacher || ''}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border rounded-lg"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Categoría
                 </label>
@@ -402,20 +480,7 @@ export default function AdminDashboard() {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
-                  Instructor
-                </label>
-                <input
-                  type="text"
-                  name="teacher"
-                  value={formData.teacher || ''}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
-                />
-              </div>
-
-              <div className="col-span-2">
+              <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Beneficios
                 </label>
@@ -427,11 +492,11 @@ export default function AdminDashboard() {
                         value={benefit}
                         onChange={(e) => handleBenefitsChange(index, e.target.value)}
                         className="flex-1 px-4 py-2 border rounded-lg"
-                        placeholder="Agregar beneficio"
                       />
                       <Button
+                        type="button"
                         variant="ghost"
-                        className="text-red-500 hover:text-red-700"
+                        className="text-red-500"
                         onClick={() => removeBenefit(index)}
                       >
                         <X className="w-5 h-5" />
@@ -439,8 +504,9 @@ export default function AdminDashboard() {
                     </div>
                   ))}
                   <Button
+                    type="button"
                     variant="outline"
-                    className="w-full mt-2"
+                    className="w-full border-[#00ffae] text-[#00ffae] hover:bg-[#00ffae]/10"
                     onClick={addBenefit}
                   >
                     Agregar Beneficio
@@ -452,6 +518,7 @@ export default function AdminDashboard() {
             <div className="flex justify-end gap-4 mt-6">
               <Button
                 variant="outline"
+                className="border-[#1a1144] text-[#1a1144]"
                 onClick={() => setEditMode(false)}
               >
                 Cancelar
@@ -460,7 +527,7 @@ export default function AdminDashboard() {
                 className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]"
                 onClick={handleSubmit}
               >
-                Guardar
+                {selectedCurso ? 'Guardar Cambios' : 'Crear Curso'}
               </Button>
             </div>
           </div>

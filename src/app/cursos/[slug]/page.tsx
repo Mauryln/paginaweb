@@ -1,14 +1,43 @@
 'use client';
 
-import { cursos } from "@/data/cursos";
+import { useState, useEffect } from 'react';
+import type { Curso } from "@/data/cursos";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useParams, notFound } from "next/navigation";
 import { MessageCircle } from "lucide-react";
+import { cursosService } from '@/services/cursosService';
 
 export default function CursoPage() {
   const params = useParams();
-  const curso = cursos.find((c) => c.slug === params.slug);
+  const [curso, setCurso] = useState<Curso | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCurso = async () => {
+      try {
+        const cursos = await cursosService.getCursos();
+        const cursoEncontrado = cursos.find((c) => c.slug === params.slug);
+        if (cursoEncontrado) {
+          setCurso(cursoEncontrado);
+        }
+      } catch (error) {
+        console.error('Error al cargar el curso:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCurso();
+  }, [params.slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f6f8fa] flex items-center justify-center">
+        <div className="text-[#1a1144]">Cargando...</div>
+      </div>
+    );
+  }
 
   if (!curso) {
     notFound();

@@ -8,10 +8,11 @@ import { useState, useEffect } from "react";
 import { cursos as defaultCursos } from "@/data/cursos";
 import type { Curso } from "@/data/cursos";
 import Link from "next/link";
+import { cursosService } from "@/services/cursosService";
 
 const NAV_LINKS = [
-  { label: 'Inicio', href: '#' },
-  { label: 'Cursos', href: '#cursos' },
+  { label: 'Inicio', href: '/' },
+  { label: 'Cursos', href: '/cursos' },
   { label: 'Beneficios', href: '/beneficios' },
   { label: 'Contacto', href: '/contacto' },
 ];
@@ -125,15 +126,15 @@ function CursoDetalleModal({ open, onClose, curso }: { open: boolean; onClose: (
 export default function Home() {
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [filtroActual, setFiltroActual] = useState("Todos");
+  const [loading, setLoading] = useState(true);
 
-  // Cargar cursos del localStorage o usar los predeterminados
   useEffect(() => {
-    const savedCursos = localStorage.getItem('cursos');
-    if (savedCursos) {
-      setCursos(JSON.parse(savedCursos));
-    } else {
-      setCursos(defaultCursos);
-    }
+    const unsubscribe = cursosService.subscribe((updatedCursos) => {
+      setCursos(updatedCursos);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleWhatsAppClick = () => {
@@ -151,6 +152,14 @@ export default function Home() {
   const cursosFiltrados = filtroActual === "Todos" 
     ? cursos.filter(curso => curso.visible !== false)
     : cursos.filter(curso => curso.categoria === filtroActual && curso.visible !== false);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f6f8fa] flex items-center justify-center">
+        <div className="text-[#1a1144]">Cargando...</div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#1a1144] text-white">
@@ -187,19 +196,19 @@ export default function Home() {
               <Button size="lg" className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]" onClick={() => window.location.hash = 'cursos'}>
                 Ver Cursos <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline" className="border-[#00ffae] text-[#00ffae] hover:bg-[#00ffae]/10" onClick={handleWhatsAppClick}>
+              <Button size="lg" variant="outline" className="border-[#00ffae] text-[#00ffae] bg-black hover:bg-black/80" onClick={handleWhatsAppClick}>
                 Consultar por WhatsApp
               </Button>
             </div>
           </div>
           {/* Imagen destacada */}
           <div className="flex-1 flex justify-center md:justify-end w-full max-w-lg relative">
-            <div className="w-[420px] h-[420px] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10">
+            <div className="w-[840px] h-[420px] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10">
               <Image
-                src="/banner.jpg"
+                src="/banner1.jpg"
                 alt="Hero"
-                width={320}
-                height={320}
+                width={420}
+                height={420}
                 className="w-full h-full flex items-center justify-center"
               />
             </div>

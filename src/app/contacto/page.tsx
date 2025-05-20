@@ -5,7 +5,7 @@ import { MessageCircle, Facebook, Instagram, Linkedin, Mail, Phone, MapPin } fro
 
 const NAV_LINKS = [
   { label: 'Inicio', href: '/' },
-  { label: 'Cursos', href: '/#cursos' },
+  { label: 'Cursos', href: '/cursos' },
   { label: 'Beneficios', href: '/beneficios' },
   { label: 'Contacto', href: '/contacto' },
 ];
