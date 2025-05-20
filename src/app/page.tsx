@@ -1,9 +1,13 @@
 'use client';
 
+import { JSX } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, MessageCircle, ArrowRight, GraduationCap, Home as HomeIcon, Sun, Briefcase, Laptop, BookOpen, Cpu, Users, Mic, Monitor, Paintbrush, Compass, Printer, Laptop2, UserCheck, GraduationCap as GradCap, Facebook, Instagram, Linkedin } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { cursos as defaultCursos } from "@/data/cursos";
+import type { Curso } from "@/data/cursos";
+import Link from "next/link";
 
 const NAV_LINKS = [
   { label: 'Inicio', href: '#' },
@@ -40,39 +44,31 @@ function ServicioCard({ icon, title }: { icon: string; title: string }) {
 }
 
 // Componente de Card de Curso
-function CursoCard({ img, title, desc, lessons, duration, level, teacher, price, onWhatsApp }: {
-  img: string;
-  title: string;
-  desc: string;
-  lessons: string;
-  duration: string;
-  level: string;
-  teacher: string;
-  price: string;
-  onWhatsApp: () => void;
-}) {
+function CursoCard({ curso }: { curso: any }) {
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full">
-      <div className="relative h-48 w-full">
-        <Image src={img} alt={title} fill className="object-cover" />
-      </div>
-      <div className="p-6 flex flex-col flex-1">
-        <h3 className="font-bold text-lg text-[#1a1144] mb-1">{title}</h3>
-        <p className="text-[#1a1144]/70 mb-3 text-sm flex-1">{desc}</p>
-        <div className="flex flex-wrap gap-2 text-xs text-[#1a1144]/80 mb-3">
-          <span>📚 {lessons}</span>
-          <span>⏱ {duration}</span>
-          <span>🎯 {level}</span>
+    <Link href={`/cursos/${curso.slug}`}>
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all">
+        <div className="relative h-48 w-full">
+          <Image src={curso.img} alt={curso.title} fill className="object-cover" />
         </div>
-        <div className="flex items-center justify-between mt-auto">
-          <span className="font-semibold text-[#00b97c] text-base">{price}</span>
-          <Button size="sm" className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]" onClick={onWhatsApp}>
-            WhatsApp
-          </Button>
+        <div className="p-6 flex flex-col flex-1">
+          <h3 className="font-bold text-lg text-[#1a1144] mb-1">{curso.title}</h3>
+          <p className="text-[#1a1144]/70 mb-3 text-sm flex-1">{curso.desc}</p>
+          <div className="flex flex-wrap gap-2 text-xs text-[#1a1144]/80 mb-3">
+            <span>📚 {curso.lessons}</span>
+            <span>⏱ {curso.duration}</span>
+            <span>🎯 {curso.level}</span>
+          </div>
+          <div className="flex items-center justify-between mt-auto">
+            <span className="font-semibold text-[#00b97c] text-base">{curso.price}</span>
+            <Button size="sm" className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]">
+              Ver Detalles
+            </Button>
+          </div>
+          <div className="mt-3 text-xs text-[#1a1144]/60">👤 {curso.teacher}</div>
         </div>
-        <div className="mt-3 text-xs text-[#1a1144]/60">👤 {teacher}</div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -127,6 +123,19 @@ function CursoDetalleModal({ open, onClose, curso }: { open: boolean; onClose: (
 }
 
 export default function Home() {
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [filtroActual, setFiltroActual] = useState("Todos");
+
+  // Cargar cursos del localStorage o usar los predeterminados
+  useEffect(() => {
+    const savedCursos = localStorage.getItem('cursos');
+    if (savedCursos) {
+      setCursos(JSON.parse(savedCursos));
+    } else {
+      setCursos(defaultCursos);
+    }
+  }, []);
+
   const handleWhatsAppClick = () => {
     window.open("https://wa.me/61863578", "_blank");
   };
@@ -135,97 +144,13 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [cursoSeleccionado, setCursoSeleccionado] = useState<any>(null);
   
-  // Nuevo estado para el filtro actual
-  const [filtroActual, setFiltroActual] = useState("Todos");
-
   // Categorías de filtro disponibles
   const categoriasFiltro = ["Todos", "BIM", "Arquitectura", "Ingeniería", "Tecnología"];
 
-  // Datos de cursos con categoría añadida
-  const cursos = [
-    {
-      img: "/curso1.jpg",
-      title: "Curso BIM Avanzado",
-      desc: "Aprende técnicas avanzadas de modelado y gestión BIM.",
-      descLong: "Este curso avanzado de BIM te permitirá dominar técnicas de modelado, gestión de información y flujos de trabajo colaborativos. Ideal para profesionales que buscan llevar sus habilidades al siguiente nivel.",
-      lessons: "8 lecciones",
-      duration: "12h 30m",
-      level: "Experto",
-      teacher: "Ing. Laura Pérez",
-      price: "$120",
-      onWhatsApp: handleWhatsAppClick,
-      benefits: [
-        "Domina modelado avanzado en BIM",
-        "Gestiona proyectos colaborativos",
-        "Certificado profesional",
-        "Acceso a recursos exclusivos",
-      ],
-      categoria: "BIM",
-    },
-    {
-      img: "/curso2.jpg",
-      title: "Revit para Arquitectos",
-      desc: "Domina Revit para el diseño arquitectónico profesional.",
-      descLong: "Aprende a utilizar Revit desde cero para crear proyectos arquitectónicos completos, desde el modelado hasta la documentación y presentación.",
-      lessons: "6 lecciones",
-      duration: "9h 10m",
-      level: "Intermedio",
-      teacher: "Arq. Juan Gómez",
-      price: "Gratis",
-      onWhatsApp: handleWhatsAppClick,
-      benefits: [
-        "Aprende Revit desde cero",
-        "Crea proyectos arquitectónicos reales",
-        "Descarga archivos de práctica",
-        "Certificado de finalización",
-      ],
-      categoria: "Arquitectura",
-    },
-    {
-      img: "/curso3.jpg",
-      title: "BIM para Ingenieros",
-      desc: "Especialízate en BIM para ingeniería estructural y MEP.",
-      descLong: "Conviértete en un experto en la aplicación de BIM en proyectos de ingeniería estructural y MEP, optimizando procesos y resultados.",
-      lessons: "10 lecciones",
-      duration: "15h 00m",
-      level: "Avanzado",
-      teacher: "Ing. Sofía Ruiz",
-      price: "$150",
-      onWhatsApp: handleWhatsAppClick,
-      benefits: [
-        "Especialización en BIM para ingeniería",
-        "Optimiza procesos de diseño y construcción",
-        "Acceso a casos prácticos",
-        "Certificado profesional",
-      ],
-      categoria: "Ingeniería",
-    },
-    // Agregamos un curso adicional de la categoría Tecnología
-    {
-      img: "/curso4.jpg",
-      title: "Introducción a la Programación BIM",
-      desc: "Aprende a crear scripts y automatizaciones para flujos de trabajo BIM.",
-      descLong: "Este curso te introduce al mundo de la programación aplicada a BIM, permitiéndote crear scripts y automatizaciones que optimizarán tu flujo de trabajo. Ideal para profesionales que quieren aumentar su productividad.",
-      lessons: "12 lecciones",
-      duration: "18h 45m",
-      level: "Intermedio",
-      teacher: "Ing. Carlos Martínez",
-      price: "$180",
-      onWhatsApp: handleWhatsAppClick,
-      benefits: [
-        "Domina los fundamentos de programación para BIM",
-        "Crea automatizaciones personalizadas",
-        "Optimiza flujos de trabajo",
-        "Proyectos prácticos reales",
-      ],
-      categoria: "Tecnología",
-    },
-  ];
-
-  // Filtrar cursos según la categoría seleccionada
+  // Filtrar cursos según la categoría seleccionada y visibilidad
   const cursosFiltrados = filtroActual === "Todos" 
-    ? cursos 
-    : cursos.filter(curso => curso.categoria === filtroActual);
+    ? cursos.filter(curso => curso.visible !== false)
+    : cursos.filter(curso => curso.categoria === filtroActual && curso.visible !== false);
 
   return (
     <main className="min-h-screen bg-[#1a1144] text-white">
@@ -309,31 +234,19 @@ export default function Home() {
           
           {/* Grid de cursos filtrados */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {cursosFiltrados.length > 0 ? (
-              cursosFiltrados.map((curso, idx) => (
-                <div key={curso.title} className="cursor-pointer" onClick={() => { setCursoSeleccionado(curso); setModalOpen(true); }}>
-                  <CursoCard
-                    img={curso.img}
-                    title={curso.title}
-                    desc={curso.desc}
-                    lessons={curso.lessons}
-                    duration={curso.duration}
-                    level={curso.level}
-                    teacher={curso.teacher}
-                    price={curso.price}
-                    onWhatsApp={curso.onWhatsApp}
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="col-span-3 text-center py-10">
-                <p className="text-[#1a1144] text-lg">No se encontraron cursos en esta categoría.</p>
-              </div>
-            )}
+            {cursosFiltrados.map((curso) => (
+              <CursoCard key={curso.id} curso={curso} />
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link href="/cursos">
+              <Button size="lg" className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]">
+                Ver Todos los Cursos <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         </div>
-        {/* Modal de detalles del curso */}
-        <CursoDetalleModal open={modalOpen} onClose={() => setModalOpen(false)} curso={cursoSeleccionado} />
       </section>
 
       {/* Sección: ¿Por qué aprender con nuestros cursos? */}
