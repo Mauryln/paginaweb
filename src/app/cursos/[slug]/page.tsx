@@ -7,6 +7,45 @@ import { Button } from "@/components/ui/button";
 import { useParams, notFound } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import { cursosService } from '@/services/cursosService';
+import Link from "next/link";
+
+const NAV_LINKS = [
+  { label: 'Inicio', href: '/' },
+  { label: 'Cursos', href: '/cursos' },
+  { label: 'Beneficios', href: '/beneficios' },
+  { label: 'Contacto', href: '/contacto' },
+];
+
+function Header() {
+  const handleWhatsAppClick = () => {
+    window.open("https://wa.me/61863578", "_blank");
+  };
+  return (
+    <header className="w-full border-b border-white/10 bg-[#1a1144] sticky top-0 z-50">
+      <div className="container mx-auto flex items-center justify-between py-4 px-4">
+        <div className="flex items-center gap-2">
+          <Image src="/logo.jpg" alt="BIMCAT Logo" width={40} height={40} className="rounded-full bg-white p-1" />
+          <span className="font-bold text-xl tracking-tight text-white">BIMCAT</span>
+        </div>
+        <nav className="hidden md:flex gap-8 text-base font-medium">
+          {NAV_LINKS.map(link => (
+            <Link 
+              key={link.label} 
+              href={link.href} 
+              className="text-white hover:text-[#00ffae] transition-colors"
+              prefetch={true}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+        <Button onClick={handleWhatsAppClick} className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]">
+          <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
+        </Button>
+      </div>
+    </header>
+  );
+}
 
 export default function CursoPage() {
   const params = useParams();
@@ -49,6 +88,7 @@ export default function CursoPage() {
 
   return (
     <main className="min-h-screen bg-[#f6f8fa]">
+      <Header />
       {/* Hero Section */}
       <div className="bg-[#1a1144] text-white py-20">
         <div className="container mx-auto px-4">
