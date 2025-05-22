@@ -29,12 +29,16 @@ function Header() {
         </div>
         <nav className="hidden md:flex gap-8 text-base font-medium">
           {NAV_LINKS.map(link => (
+<<<<<<< HEAD
             <Link 
               key={link.label} 
               href={link.href} 
               className="text-white hover:text-[#00ffae] transition-colors"
               prefetch={true}
             >
+=======
+            <Link key={link.label} href={link.href} className="text-white hover:text-[#00ffae] transition-colors">
+>>>>>>> 888ebe8dc234032dce8ef0bc5720974fbc1ad17e
               {link.label}
             </Link>
           ))}
@@ -86,6 +90,11 @@ export default function CursoPage() {
     window.open("https://wa.me/61863578", "_blank");
   };
 
+  const hasOffer = curso.offerPriceProfesional && curso.offerEndDate && new Date(curso.offerEndDate) > new Date();
+  const startDate = curso.startDate ? new Date(curso.startDate + 'T00:00:00').toLocaleDateString() : 'Por definir';
+  const endDate = curso.endDate ? new Date(curso.endDate + 'T00:00:00').toLocaleDateString() : 'Por definir';
+  const offerEndDate = curso.offerEndDate ? new Date(curso.offerEndDate + 'T00:00:00').toLocaleDateString() : '';
+
   return (
     <main className="min-h-screen bg-[#f6f8fa]">
       <Header />
@@ -109,18 +118,44 @@ export default function CursoPage() {
                   <span className="block text-sm text-white/60">Nivel</span>
                   <span className="font-semibold">{curso.level}</span>
                 </div>
+                <div className="bg-white/10 px-4 py-2 rounded-lg">
+                  <span className="block text-sm text-white/60">Fecha de Inicio</span>
+                  <span className="font-semibold">{startDate}</span>
+                </div>
+                <div className="bg-white/10 px-4 py-2 rounded-lg">
+                  <span className="block text-sm text-white/60">Fecha de Fin</span>
+                  <span className="font-semibold">{endDate}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-2xl font-bold text-[#00ffae]">{curso.price}</span>
-                <Button 
-                  size="lg"
-                  className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]"
-                  onClick={handleWhatsAppClick}
-                >
-                  <MessageCircle className="mr-2 h-5 w-5" />
-                  Consultar por WhatsApp
-                </Button>
+              <div className="flex flex-col gap-2 mb-4">
+                {hasOffer ? (
+                  <>
+                    <span className="text-lg font-bold text-[#00ffae]">OFERTA ESPECIAL POR INSCRIPCIÓN TEMPRANA</span>
+                    <span className="text-base text-white">Profesional: <span className="text-[#00ffae] font-bold">{curso.offerPriceProfesional} Bs</span> <span className="line-through text-white/60 ml-2">{curso.priceProfesional} Bs</span></span>
+                    <span className="text-base text-white">Estudiante: <span className="text-[#00ffae] font-bold">{curso.offerPriceEstudiante} Bs</span> <span className="line-through text-white/60 ml-2">{curso.priceEstudiante} Bs</span></span>
+                    <span className="text-xs text-white/60">Oferta válida hasta {offerEndDate}</span>
+                  </>
+                ) : (
+                  <>
+                    {curso.priceEstudiante && String(curso.priceEstudiante).trim() !== '' ? (
+                      <>
+                        <span className="text-base text-white">Profesional: <span className="text-[#00ffae] font-bold">{curso.priceProfesional} Bs</span> <span className="text-xs">({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span></span>
+                        <span className="text-base text-white">Estudiante: <span className="text-[#00ffae] font-bold">{curso.priceEstudiante} Bs</span> <span className="text-xs">({(Number(curso.priceEstudiante)/7).toFixed(2)} USD)</span></span>
+                      </>
+                    ) : (
+                      <span className="text-base text-white">{curso.priceProfesional} Bs <span className="text-xs">({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span></span>
+                    )}
+                  </>
+                )}
               </div>
+              <Button 
+                size="lg"
+                className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]"
+                onClick={handleWhatsAppClick}
+              >
+                <MessageCircle className="mr-2 h-5 w-5" />
+                Consultar por WhatsApp
+              </Button>
             </div>
             <div className="flex-1 max-w-lg">
               <div className="relative aspect-video rounded-2xl overflow-hidden border-4 border-[#00ffae]">
@@ -142,14 +177,22 @@ export default function CursoPage() {
           <div className="md:col-span-2">
             <h2 className="text-2xl font-bold text-[#1a1144] mb-6">¿Qué aprenderás?</h2>
             <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {curso.benefits.map((benefit, index) => (
-                  <li key={index} className="flex items-center gap-3 text-[#1a1144]">
-                    <span className="text-[#00b97c] flex-shrink-0">✔</span>
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
+              {curso.temas && curso.temas.length > 0 ? (
+                <ul className="space-y-4">
+                  {curso.temas.map((tema, idx) => (
+                    <li key={idx}>
+                      <div className="font-bold text-[#00b97c] mb-1">{tema.titulo}</div>
+                      <ul className="list-disc ml-6 text-[#1a1144]">
+                        {tema.contenidos.map((contenido, i) => (
+                          <li key={i}>{contenido}</li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="text-[#1a1144]/70">No hay temario definido.</div>
+              )}
             </div>
 
             <h2 className="text-2xl font-bold text-[#1a1144] mt-12 mb-6">Descripción del Curso</h2>
@@ -183,6 +226,16 @@ export default function CursoPage() {
                   <span className="text-[#1a1144]/70">Categoría</span>
                   <span className="font-medium text-[#1a1144]">{curso.categoria}</span>
                 </div>
+                <div className="flex items-center justify-between pb-2 border-b">
+                  <span className="text-[#1a1144]/70">Fecha de Inicio</span>
+                  <span className="font-medium text-[#1a1144]">{startDate}</span>
+                </div>
+                {hasOffer && (
+                  <div className="flex items-center justify-between pb-2 border-b">
+                    <span className="text-[#1a1144]/70">Oferta válida hasta</span>
+                    <span className="font-medium text-[#1a1144]">{offerEndDate}</span>
+                  </div>
+                )}
               </div>
               <Button 
                 className="w-full mt-6 bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]"

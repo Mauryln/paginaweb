@@ -2,6 +2,7 @@ export interface Curso {
   id: string;
   slug: string;
   img: string;
+  images?: string[];
   title: string;
   desc: string;
   descLong: string;
@@ -9,8 +10,14 @@ export interface Curso {
   duration: string;
   level: string;
   teacher: string;
-  price: string;
-  benefits: string[];
+  priceProfesional: string;
+  priceEstudiante: string;
+  offerPriceProfesional?: string;
+  offerPriceEstudiante?: string;
+  offerEndDate?: string;
+  startDate: string;
+  endDate: string;
+  temas: { titulo: string; contenidos: string[] }[];
   categoria: string;
   visible?: boolean;
 }
@@ -27,12 +34,16 @@ export const cursos: Curso[] = [
     duration: "12h 30m",
     level: "Experto",
     teacher: "Ing. Laura Pérez",
-    price: "$120",
-    benefits: [
-      "Domina modelado avanzado en BIM",
-      "Gestiona proyectos colaborativos",
-      "Certificado profesional",
-      "Acceso a recursos exclusivos",
+    priceProfesional: "$120",
+    priceEstudiante: "$100",
+    offerPriceProfesional: "$100",
+    offerPriceEstudiante: "$100",
+    offerEndDate: "2024-03-31",
+    startDate: "2024-03-01",
+    endDate: "2024-03-31",
+    temas: [
+      { titulo: "Modelado avanzado en BIM", contenidos: ["Domina modelado avanzado en BIM", "Gestiona proyectos colaborativos"] },
+      { titulo: "Certificación y recursos", contenidos: ["Certificado profesional", "Acceso a recursos exclusivos"] }
     ],
     categoria: "BIM",
   },
@@ -47,12 +58,16 @@ export const cursos: Curso[] = [
     duration: "9h 10m",
     level: "Intermedio",
     teacher: "Arq. Juan Gómez",
-    price: "Gratis",
-    benefits: [
-      "Aprende Revit desde cero",
-      "Crea proyectos arquitectónicos reales",
-      "Descarga archivos de práctica",
-      "Certificado de finalización",
+    priceProfesional: "Gratis",
+    priceEstudiante: "Gratis",
+    offerPriceProfesional: "$50",
+    offerPriceEstudiante: "$50",
+    offerEndDate: "2024-04-15",
+    startDate: "2024-03-01",
+    endDate: "2024-04-15",
+    temas: [
+      { titulo: "Aprende Revit desde cero", contenidos: ["Aprende Revit desde cero", "Crea proyectos arquitectónicos reales"] },
+      { titulo: "Descarga archivos de práctica", contenidos: ["Descarga archivos de práctica", "Certificado de finalización"] }
     ],
     categoria: "Arquitectura",
   },
@@ -67,12 +82,16 @@ export const cursos: Curso[] = [
     duration: "15h 00m",
     level: "Avanzado",
     teacher: "Ing. Sofía Ruiz",
-    price: "$150",
-    benefits: [
-      "Especialización en BIM para ingeniería",
-      "Optimiza procesos de diseño y construcción",
-      "Acceso a casos prácticos",
-      "Certificado profesional",
+    priceProfesional: "$150",
+    priceEstudiante: "$120",
+    offerPriceProfesional: "$120",
+    offerPriceEstudiante: "$120",
+    offerEndDate: "2024-05-31",
+    startDate: "2024-04-01",
+    endDate: "2024-05-31",
+    temas: [
+      { titulo: "Especialización en BIM para ingeniería", contenidos: ["Especialización en BIM para ingeniería", "Optimiza procesos de diseño y construcción"] },
+      { titulo: "Acceso a casos prácticos", contenidos: ["Acceso a casos prácticos", "Certificado profesional"] }
     ],
     categoria: "Ingeniería",
   },
@@ -87,12 +106,16 @@ export const cursos: Curso[] = [
     duration: "18h 45m",
     level: "Intermedio",
     teacher: "Ing. Carlos Martínez",
-    price: "$180",
-    benefits: [
-      "Domina los fundamentos de programación para BIM",
-      "Crea automatizaciones personalizadas",
-      "Optimiza flujos de trabajo",
-      "Proyectos prácticos reales",
+    priceProfesional: "$180",
+    priceEstudiante: "$150",
+    offerPriceProfesional: "$150",
+    offerPriceEstudiante: "$150",
+    offerEndDate: "2024-06-30",
+    startDate: "2024-05-01",
+    endDate: "2024-06-30",
+    temas: [
+      { titulo: "Domina los fundamentos de programación para BIM", contenidos: ["Domina los fundamentos de programación para BIM", "Crea automatizaciones personalizadas"] },
+      { titulo: "Optimiza flujos de trabajo", contenidos: ["Optimiza flujos de trabajo", "Proyectos prácticos reales"] }
     ],
     categoria: "Tecnología",
   },

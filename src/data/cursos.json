@@ -7,7 +7,7 @@
       "title": "Curso BIM Avanzado",
       "desc": "Aprende técnicas avanzadas de modelado y gestión BIM.",
       "descLong": "Este curso avanzado de BIM te permitirá dominar técnicas de modelado, gestión de información y flujos de trabajo colaborativos. Ideal para profesionales que buscan llevar sus habilidades al siguiente nivel.",
-      "lessons": "8 lecciones",
+      "lessons": "8 lecciones lecciones lecciones",
       "duration": "12h 30m",
       "level": "Experto",
       "teacher": "Ing. Laura Pérez",
@@ -19,16 +19,22 @@
         "Acceso a recursos exclusivos"
       ],
       "categoria": "BIM",
-      "visible": true
+      "visible": true,
+      "durationHours": "12",
+      "durationMinutes": "30",
+      "priceProfesional": "140",
+      "startDate": "",
+      "endDate": "",
+      "offerEndDate": ""
     },
     {
       "id": "2",
-      "slug": "prueba-xd",
+      "slug": "bitcoin",
       "img": "/curso2.jpg",
-      "title": "Prueba Xd",
+      "title": "Bitcoin",
       "desc": "Domina Revit para el diseño arquitectónico profesional.",
       "descLong": "Aprende a utilizar Revit desde cero para crear proyectos arquitectónicos completos, desde el modelado hasta la documentación y presentación.",
-      "lessons": "6 lecciones",
+      "lessons": "6 lecciones lecciones",
       "duration": "9h 10m",
       "level": "Intermedio",
       "teacher": "Arq. Juan Gómez",
@@ -40,16 +46,20 @@
         "Certificado de finalización"
       ],
       "categoria": "Arquitectura",
-      "visible": true
+      "visible": true,
+      "durationHours": "9",
+      "durationMinutes": "10",
+      "startDate": "",
+      "offerEndDate": ""
     },
     {
       "slug": "prueba-2",
-      "img": "/uploads/1747764819455.jpg",
+      "img": "/uploads/1747927152353.jpeg",
       "title": "Prueba 2",
       "desc": "Domina Revit para el diseño arquitectónico profesional.",
       "descLong": "Exasdasdasd",
-      "lessons": "3 Lecciones",
-      "duration": "9h ",
+      "lessons": "3 Lecciones lecciones lecciones",
+      "duration": "9h 0m",
       "level": "Intermedio",
       "teacher": "Arq. Juan Gómez",
       "price": "120 Bs",
@@ -58,7 +68,240 @@
       ],
       "categoria": "BIM",
       "visible": true,
-      "id": "3"
+      "id": "3",
+      "durationHours": "9",
+      "durationMinutes": "0",
+      "priceProfesional": "120",
+      "startDate": "",
+      "offerEndDate": "",
+      "images": [
+        "/uploads/1747927152353.jpeg"
+      ]
+    },
+    {
+      "slug": "el-delito-el-procedimiento-penal-y-la-correcta-valoracion-de-la-prueba",
+      "img": "/uploads/1747923232335.jpg",
+      "title": "EL DELITO, el procedimiento penal y la correcta valoración de la prueba",
+      "desc": "Aprende sobre el procedimiento penal y la valoración correcta de la prueba",
+      "descLong": "Ideal para abogados, fiscales, estudiantes de Derecho, y todos quienes buscan fortalecer su criterio jurídico y práctico frente a casos reales.\n",
+      "lessons": "4 lecciones lecciones",
+      "duration": "8h 00m",
+      "durationHours": "8",
+      "durationMinutes": "00",
+      "level": "Básico",
+      "teacher": "Abg. Eliana Tejerina Rocha",
+      "price": "140 Bs",
+      "offerPrice": "100 Bs",
+      "offerEndDate": "2025-06-01",
+      "startDate": "2025-06-03",
+      "benefits": [
+        "Te brinda herramientas aplicables desde el primer día.",
+        "Te permite entender el proceso penal, paso a paso.",
+        "Aprendes a interpretar y valorar pruebas con enfoque profesional.",
+        "Accedes a un certificado con valor curricular y respaldo digital."
+      ],
+      "categoria": "Ciencias Juridicas Y Politicas",
+      "visible": true,
+      "images": [
+        "/uploads/1747923232335.jpg"
+      ],
+      "id": "4",
+      "priceProfesional": "200",
+      "priceEstudiante": "140",
+      "offerPriceProfesional": "140",
+      "offerPriceEstudiante": "100",
+      "endDate": "2025-06-06",
+      "temas": [
+        {
+          "titulo": "TEORIA GENERAL DEL DELITO",
+          "contenidos": [
+            "Concepto de delito, tipos de delitos, elementos constitutivos ",
+            "Causas de justificación, excusas absolutorias, causas de inculpabilidad "
+          ]
+        },
+        {
+          "titulo": "ETAPAS DEL PROCESO PENAL",
+          "contenidos": [
+            "Etapa de investigación (inicio, desarrollo, conclusiones). ",
+            "Etapa intermedia (preparación del juicio). ",
+            "Etapa de juicio oral (desarrollo, alegatos, sentencia) "
+          ]
+        },
+        {
+          "titulo": "PROCEDIMIENTOS ESPECÍFICOS",
+          "contenidos": [
+            "Proceso abreviado, juicios sumarios, salidas alternativas ",
+            "El papel de la policía y el Ministerio Público "
+          ]
+        },
+        {
+          "titulo": "PRUEBA Y SU VALORACIÓN",
+          "contenidos": [
+            "Tipos de pruebas, medios de prueba. ",
+            "Sana critica y valoración de la prueba. "
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "laboratorio-de-mecanicas-de-suelos-aplicando-a-obras-civiles",
+      "img": "/uploads/1747927948277.png",
+      "title": "Laboratorio de mecánicas de suelos aplicando a obras civiles ",
+      "desc": "Un curso via oline y zoom ",
+      "descLong": "Se recordara los conceptos básicos de mecánica de suelos como tambien los ensayos que se hacen en campo. S e preguntara constantemente a los participantes y que se trata de hacer didácticas.",
+      "lessons": "5 lecciones lecciones",
+      "duration": "3h 00m",
+      "durationHours": "3",
+      "durationMinutes": "00",
+      "level": "Intermedio",
+      "teacher": "Ing. Rene Alfredo Garcia Valda",
+      "priceProfesional": "360",
+      "priceEstudiante": "290",
+      "offerPriceProfesional": "",
+      "offerPriceEstudiante": "",
+      "offerEndDate": "",
+      "startDate": "2025-06-02",
+      "endDate": "2025-06-06",
+      "benefits": [
+        "Introduccion A la Mecanica de Suelos Clasica ",
+        "Ensayos de clasificacion de suelos",
+        "Ensayos de caracterización Mecánica ",
+        "Ensayos In Situ",
+        "Apuntes acerca de software geotécnico "
+      ],
+      "categoria": "Civil",
+      "visible": true,
+      "images": [
+        "/uploads/1747927948277.png"
+      ],
+      "id": "5",
+      "temas": [
+        {
+          "titulo": "Introducción a la Mecánica de Suelos Clásica ",
+          "contenidos": [
+            "Se recordará los conceptos básicos de mecánica de suelos como también los ensayos que se hacen en campo. ",
+            "Se preguntará constantemente a los participantes y se tratara de hacer didácticas. (3 Horas) "
+          ]
+        },
+        {
+          "titulo": "Ensayos de clasificación de suelos. ",
+          "contenidos": [
+            "Contenido de Humedad. ",
+            "Limites de Atterberg ",
+            "Granulometría. ",
+            "Gravedad Especifica. ",
+            "Hidrometría. ",
+            "Planillas personalizadas de los participantes. (3 Horas) "
+          ]
+        },
+        {
+          "titulo": "Ensayos de caracterización mecánica. ",
+          "contenidos": [
+            "Esfuerzo Efectivo. ",
+            "Permeabilidad. ",
+            "Consolidación. ",
+            "Corte directo. ",
+            "Triaxial. ",
+            "Control verbal y dinámicas internas. (6 Horas) "
+          ]
+        },
+        {
+          "titulo": "Ensayos In Situ. ",
+          "contenidos": [
+            "SPT (STANDAR PENETRATION TEST) ",
+            "Cono de arena. ",
+            "Plamilias de control personalizadas. (3 Horas) "
+          ]
+        },
+        {
+          "titulo": "Apuntes acerca del software geotécnico. ",
+          "contenidos": [
+            "Experiencias. ",
+            "Alcance. ",
+            "Modelos constitutivos. ",
+            "Estado del conocimiento de los estudiantes. (3 Horas) "
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "curso-online-die-o-integral-de-restaurantes",
+      "img": "/uploads/1747928721178.png",
+      "title": "CURSO ONLINE DIEÑO INTEGRAL DE RESTAURANTES ",
+      "desc": "COCINA EFICIENTE, SALON EMOCIONAL, MARCA COHERENTE",
+      "descLong": "Ideal para ampliar los diseños actuales y integrales de restaurantes, con un docente capacitado ",
+      "lessons": "5 lecciones lecciones",
+      "duration": "8h 0m",
+      "durationHours": "8",
+      "durationMinutes": "0",
+      "level": "Básico",
+      "teacher": "Arq. Anca Gela Nita",
+      "priceProfesional": "200",
+      "priceEstudiante": "",
+      "offerPriceProfesional": "",
+      "offerPriceEstudiante": "",
+      "offerEndDate": "",
+      "startDate": "2025-06-02",
+      "endDate": "2025-06-06",
+      "benefits": [
+        "CALIDAD, CLIENTE Y CONCEPTO ",
+        "DISEÑO DE COCINA EFICIENTE Y ERGONOMICO",
+        "DISEÑO DEL SALON Y EXPERIENCIA DEL CLIENTE",
+        "ILUMINACION, AMBIENTACION Y POSICLOGIA DEL COLOR",
+        "COHERENCIA TOTAL: IDENTIDAD, MARCA, CIERRE"
+      ],
+      "categoria": "Diseño ",
+      "visible": true,
+      "images": [
+        "/uploads/1747928721178.png"
+      ],
+      "id": "6",
+      "temas": [
+        {
+          "titulo": "Calidad, Cliente y concepto",
+          "contenidos": [
+            "¿Que busca hoy el cliente en un restaurante? ",
+            "Diseño conceptual: como definir el ADN del restaurante ",
+            "Identidad, marca y branding en espacios gastronómicos ",
+            "Introducción a los 5 sentidos: diseño de experiencias multisensoriales (vista, oído, olfato, gusto, tacto) "
+          ]
+        },
+        {
+          "titulo": "DISEÑO DE COCINA EFICIENTE Y ERGONÓMICO ",
+          "contenidos": [
+            "¿Qué es una \"zona\" en cocina? ",
+            "Zonas clave: almacenamiento, preparación, elaboración, servicio,  zona sucia ",
+            "Principios de triangulación y \"marcha hacia adelante\" ",
+            "Ergonomía en cocina: comodidad, seguridad y eficiencia del equipo "
+          ]
+        },
+        {
+          "titulo": "DISEÑO DEL SALÓN Y EXPERIENCIA DEL CLIENTE ",
+          "contenidos": [
+            "Distribución y diseño del salón: circulación, accesibilidad,  disposición de mesas ",
+            "Estilos de diseño: moderno, clásico, minimalista, rústico, temático ",
+            "Diseño temático: cómo contar una historia a través del espacio ",
+            "Aplicación de los 5 sentidos en el salón (colores, iluminación, música, aromas, texturas) "
+          ]
+        },
+        {
+          "titulo": "ILUMINACIÓN, AMBIENTACIÓN Y PSICOLOGÍA DEL COLOR ",
+          "contenidos": [
+            "Tipos de iluminación: general, puntual, ambiental, de tarea, decorativa ",
+            "Cómo la luz transforma el espacio: atmósferas y guías visuales ",
+            "Psicología del color: lo que transmiten los colores ",
+            "Ambientación y escenografía: emociones, materiales, objetos y detalles "
+          ]
+        },
+        {
+          "titulo": "COHERENCIA TOTAL: IDENTIDAD, MARCA Y CIERRE ",
+          "contenidos": [
+            "Integración: unir cocina, salón, iluminación, color y concepto en un diseño coherente ",
+            "Branding físico: logo, uniformes, menú, decoración ",
+            "Recomendaciones finales, análisis de casos, resolución de dudas "
+          ]
+        }
+      ]
     }
   ]
 }

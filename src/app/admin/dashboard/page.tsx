@@ -9,6 +9,13 @@ import { useRouter } from 'next/navigation';
 import { ImageUpload } from '@/components/ImageUpload';
 import { cursosService } from '@/services/cursosService';
 
+const tabs = [
+  { label: 'Descripción', key: 'descripcion' },
+  { label: 'Temario del curso', key: 'temario' },
+  { label: 'Instructor', key: 'instructor' },
+  { label: 'Opiniones', key: 'opiniones' },
+];
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [cursos, setCursos] = useState<Curso[]>([]);
@@ -16,6 +23,8 @@ export default function AdminDashboard() {
   const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
   const [formData, setFormData] = useState<Partial<Curso> & { durationHours?: string; durationMinutes?: string }>({});
   const [loading, setLoading] = useState(true);
+  const [tipoPrecio, setTipoPrecio] = useState<'unico' | 'diferenciado'>('diferenciado');
+  const BS_TO_USD = 7;
 
   useEffect(() => {
     const unsubscribe = cursosService.subscribe((updatedCursos) => {
@@ -43,6 +52,11 @@ export default function AdminDashboard() {
     }
     setSelectedCurso(curso);
     setFormData({ ...curso, durationHours, durationMinutes });
+    setTipoPrecio(
+      curso.priceEstudiante && curso.priceProfesional && curso.priceEstudiante !== '' && curso.priceProfesional !== ''
+        ? 'diferenciado'
+        : 'unico'
+    );
     setEditMode(true);
   };
 
@@ -59,13 +73,20 @@ export default function AdminDashboard() {
       durationMinutes: '',
       level: '',
       teacher: '',
-      price: '',
+      priceProfesional: '',
+      priceEstudiante: '',
+      offerPriceProfesional: '',
+      offerPriceEstudiante: '',
+      offerEndDate: '',
+      startDate: '',
+      endDate: '',
       benefits: [''],
       categoria: '',
       visible: true,
     };
     setSelectedCurso(null);
     setFormData(newCurso);
+    setTipoPrecio('diferenciado');
     setEditMode(true);
   };
 
@@ -97,32 +118,66 @@ export default function AdminDashboard() {
     }));
   };
 
-  const handleBenefitsChange = (index: number, value: string) => {
-    const newBenefits = [...(formData.benefits || [])];
-    newBenefits[index] = value;
+  const handleTemaTituloChange = (temaIdx: number, value: string) => {
+    setFormData(prev => {
+      const temas = [...(prev.temas || [])];
+      temas[temaIdx] = { ...temas[temaIdx], titulo: value };
+      return { ...prev, temas };
+    });
+  };
+
+  const handleTemaContenidoChange = (temaIdx: number, contenidoIdx: number, value: string) => {
+    setFormData(prev => {
+      const temas = [...(prev.temas || [])];
+      const contenidos = [...(temas[temaIdx]?.contenidos || [])];
+      contenidos[contenidoIdx] = value;
+      temas[temaIdx] = { ...temas[temaIdx], contenidos };
+      return { ...prev, temas };
+    });
+  };
+
+  const addTema = () => {
     setFormData(prev => ({
       ...prev,
-      benefits: newBenefits
+      temas: [...(prev.temas || []), { titulo: '', contenidos: [''] }]
     }));
   };
 
-  const addBenefit = () => {
+  const removeTema = (temaIdx: number) => {
     setFormData(prev => ({
       ...prev,
-      benefits: [...(prev.benefits || []), '']
+      temas: prev.temas?.filter((_, i) => i !== temaIdx)
     }));
   };
 
-  const removeBenefit = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      benefits: prev.benefits?.filter((_, i) => i !== index)
-    }));
+  const addTemaContenido = (temaIdx: number) => {
+    setFormData(prev => {
+      const temas = [...(prev.temas || [])];
+      temas[temaIdx] = { ...temas[temaIdx], contenidos: [...(temas[temaIdx].contenidos || []), ''] };
+      return { ...prev, temas };
+    });
+  };
+
+  const removeTemaContenido = (temaIdx: number, contenidoIdx: number) => {
+    setFormData(prev => {
+      const temas = [...(prev.temas || [])];
+      temas[temaIdx] = { ...temas[temaIdx], contenidos: temas[temaIdx].contenidos.filter((_, i) => i !== contenidoIdx) };
+      return { ...prev, temas };
+    });
   };
 
   const handleSubmit = async () => {
     if (!formData.title || !formData.desc) {
       alert('Por favor completa los campos requeridos');
+      return;
+    }
+
+    if (formData.startDate && formData.startDate < today) {
+      alert('La fecha de inicio no puede ser anterior a hoy.');
+      return;
+    }
+    if (formData.endDate && formData.endDate < (formData.startDate || today)) {
+      alert('La fecha de fin no puede ser anterior a la fecha de inicio.');
       return;
     }
 
@@ -134,8 +189,6 @@ export default function AdminDashboard() {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
 
-      // Formatear precio
-      let price = formData.price ? `${formData.price} Bs` : '';
       // Formatear lecciones
       let lessons = formData.lessons ? `${formData.lessons} lecciones` : '';
       // Formatear duración
@@ -147,12 +200,18 @@ export default function AdminDashboard() {
       const cursoData = {
         ...formData,
         slug,
-        price,
         lessons,
         duration,
         level: formData.level || '',
         visible: formData.visible ?? true,
+        startDate: formData.startDate || '',
+        offerEndDate: formData.offerEndDate || '',
       };
+
+      if (tipoPrecio === 'unico') {
+        formData.priceEstudiante = '';
+        formData.offerPriceEstudiante = '';
+      }
 
       if (selectedCurso) {
         await cursosService.updateCurso(selectedCurso.id, cursoData);
@@ -185,7 +244,8 @@ export default function AdminDashboard() {
         const data = await response.json();
         setFormData(prev => ({
           ...prev,
-          img: data.url
+          img: data.url,
+          images: [...(prev.images || []), data.url]
         }));
       } catch (error) {
         console.error('Error:', error);
@@ -198,6 +258,16 @@ export default function AdminDashboard() {
       }));
     }
   };
+
+  const handleRemoveImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images?.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Obtener fecha actual en formato yyyy-mm-dd
+  const today = new Date().toISOString().split('T')[0];
 
   if (loading) {
     return (
@@ -254,7 +324,45 @@ export default function AdminDashboard() {
                   <h3 className="font-semibold text-lg text-[#1a1144]">{curso.title}</h3>
                   <p className="text-sm text-[#1a1144]/70">{curso.desc}</p>
                   <div className="flex gap-4 mt-2 text-sm text-[#1a1144]/60">
-                    <span>Precio: {curso.price}</span>
+                    {curso.offerPriceProfesional || curso.offerPriceEstudiante ? (
+                      <div>
+                        <span className="block text-xs font-bold text-[#00ffae]">OFERTA ESPECIAL</span>
+                        <span className="text-[#00ffae] font-bold">
+                          Profesional: {curso.offerPriceProfesional} Bs
+                        </span>
+                        <span className="line-through text-gray-400 ml-2">
+                          {curso.priceProfesional} Bs
+                        </span>
+                        <br />
+                        <span className="text-[#00ffae] font-bold">
+                          Estudiante: {curso.offerPriceEstudiante} Bs
+                        </span>
+                        <span className="line-through text-gray-400 ml-2">
+                          {curso.priceEstudiante} Bs
+                        </span>
+                        {curso.offerEndDate && (
+                          <div className="text-xs text-gray-400 mt-1">
+                            Oferta válida hasta {new Date(curso.offerEndDate).toLocaleDateString()}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      curso.priceEstudiante && String(curso.priceEstudiante).trim() !== '' ? (
+                        <div>
+                          <span className="font-semibold text-[#00b97c] text-base">
+                            Profesional: {curso.priceProfesional} Bs
+                          </span>
+                          <br />
+                          <span className="font-semibold text-[#00b97c] text-base">
+                            Estudiante: {curso.priceEstudiante} Bs
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="font-semibold text-[#00b97c] text-base">
+                          {curso.priceProfesional} Bs
+                        </span>
+                      )
+                    )}
                     <span>Categoría: {curso.categoria}</span>
                   </div>
                 </div>
@@ -356,31 +464,136 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              {/* Precio y Lecciones */}
-              <div className="flex flex-col gap-1">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
-                  Precio
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    name="price"
-                    min="0"
-                    value={formData.price || ''}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, '');
-                      setFormData(prev => ({ ...prev, price: value }));
-                    }}
-                    className="w-full px-4 py-2 border rounded-lg"
-                  />
-                  <span className="text-[#1a1144] font-semibold">Bs</span>
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-[#1a1144] mb-1">Tipo de precio</label>
+                <div className="flex gap-4 mb-2">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="tipoPrecio"
+                      value="unico"
+                      checked={tipoPrecio === 'unico'}
+                      onChange={() => setTipoPrecio('unico')}
+                    />
+                    Precio único
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="tipoPrecio"
+                      value="diferenciado"
+                      checked={tipoPrecio === 'diferenciado'}
+                      onChange={() => setTipoPrecio('diferenciado')}
+                    />
+                    Diferenciado (Profesional/Estudiante)
+                  </label>
                 </div>
-                {formData.price && (
-                  <div className="text-xs text-[#1a1144]/70 mt-1">
-                    ≈ ${(Number(formData.price) / 7).toFixed(2)} USD
-                  </div>
-                )}
               </div>
+
+              {tipoPrecio === 'unico' ? (
+                <>
+                  <div className="flex flex-col gap-1">
+                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio único</label>
+                    <input
+                      type="number"
+                      name="priceProfesional"
+                      min="0"
+                      value={formData.priceProfesional || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border rounded-lg"
+                    />
+                    {formData.priceProfesional && (
+                      <div className="text-xs text-[#1a1144]/70 mt-1">
+                        ≈ ${(Number(formData.priceProfesional) / BS_TO_USD).toFixed(2)} USD
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio oferta único</label>
+                    <input
+                      type="number"
+                      name="offerPriceProfesional"
+                      min="0"
+                      value={formData.offerPriceProfesional || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border rounded-lg"
+                    />
+                    {formData.offerPriceProfesional && (
+                      <div className="text-xs text-[#1a1144]/70 mt-1">
+                        ≈ ${(Number(formData.offerPriceProfesional) / BS_TO_USD).toFixed(2)} USD
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex flex-col gap-1">
+                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio Profesional</label>
+                    <input
+                      type="number"
+                      name="priceProfesional"
+                      min="0"
+                      value={formData.priceProfesional || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border rounded-lg"
+                    />
+                    {formData.priceProfesional && (
+                      <div className="text-xs text-[#1a1144]/70 mt-1">
+                        ≈ ${(Number(formData.priceProfesional) / BS_TO_USD).toFixed(2)} USD
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio Estudiante</label>
+                    <input
+                      type="number"
+                      name="priceEstudiante"
+                      min="0"
+                      value={formData.priceEstudiante || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border rounded-lg"
+                    />
+                    {formData.priceEstudiante && (
+                      <div className="text-xs text-[#1a1144]/70 mt-1">
+                        ≈ ${(Number(formData.priceEstudiante) / BS_TO_USD).toFixed(2)} USD
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio Oferta Profesional</label>
+                    <input
+                      type="number"
+                      name="offerPriceProfesional"
+                      min="0"
+                      value={formData.offerPriceProfesional || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border rounded-lg"
+                    />
+                    {formData.offerPriceProfesional && (
+                      <div className="text-xs text-[#1a1144]/70 mt-1">
+                        ≈ ${(Number(formData.offerPriceProfesional) / BS_TO_USD).toFixed(2)} USD
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio Oferta Estudiante</label>
+                    <input
+                      type="number"
+                      name="offerPriceEstudiante"
+                      min="0"
+                      value={formData.offerPriceEstudiante || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border rounded-lg"
+                    />
+                    {formData.offerPriceEstudiante && (
+                      <div className="text-xs text-[#1a1144]/70 mt-1">
+                        ≈ ${(Number(formData.offerPriceEstudiante) / BS_TO_USD).toFixed(2)} USD
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+
               <div className="flex flex-col gap-1">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Lecciones
@@ -398,7 +611,6 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              {/* Duración y Nivel */}
               <div className="flex flex-col gap-1">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Duración
@@ -449,7 +661,6 @@ export default function AdminDashboard() {
                 </select>
               </div>
 
-              {/* Instructor y Categoría */}
               <div className="flex flex-col gap-1">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Instructor
@@ -466,40 +677,108 @@ export default function AdminDashboard() {
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
                   Categoría
                 </label>
-                <select
+                <input
+                  type="text"
                   name="categoria"
                   value={formData.categoria || ''}
                   onChange={handleInputChange}
+                  placeholder="Escribe o selecciona una categoría"
                   className="w-full px-4 py-2 border rounded-lg"
-                >
-                  <option value="">Seleccionar categoría</option>
-                  <option value="BIM">BIM</option>
-                  <option value="Arquitectura">Arquitectura</option>
-                  <option value="Ingeniería">Ingeniería</option>
-                  <option value="Tecnología">Tecnología</option>
-                </select>
+                  list="categorias-list"
+                />
+                <datalist id="categorias-list">
+                  {Array.from(new Set(cursos.map(c => c.categoria))).map((cat, i) => (
+                    <option key={i} value={cat} />
+                  ))}
+                </datalist>
               </div>
 
               <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-[#1a1144] mb-1">
-                  Beneficios
+                  Fecha de Inicio
                 </label>
-                <div className="space-y-2">
-                  {formData.benefits?.map((benefit, index) => (
-                    <div key={index} className="flex gap-2">
+                <input
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate || ''}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border rounded-lg"
+                />
+              </div>
+
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                  Fecha de Fin de Oferta
+                </label>
+                <input
+                  type="date"
+                  name="offerEndDate"
+                  value={formData.offerEndDate || ''}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border rounded-lg"
+                />
+              </div>
+
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                  Fecha de Fin del Curso
+                </label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={formData.endDate || ''}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border rounded-lg"
+                  min={formData.startDate || today}
+                />
+              </div>
+
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-[#1a1144] mb-1">Temario</label>
+                <div className="space-y-4">
+                  {formData.temas?.map((tema, temaIdx) => (
+                    <div key={temaIdx} className="mb-4 p-2 border rounded-lg bg-black/10">
                       <input
                         type="text"
-                        value={benefit}
-                        onChange={(e) => handleBenefitsChange(index, e.target.value)}
-                        className="flex-1 px-4 py-2 border rounded-lg"
+                        placeholder="Título del tema"
+                        value={tema.titulo}
+                        onChange={e => handleTemaTituloChange(temaIdx, e.target.value)}
+                        className="w-full mb-2 px-4 py-2 border rounded-lg"
                       />
+                      {tema.contenidos.map((contenido, contenidoIdx) => (
+                        <div key={contenidoIdx} className="flex gap-2 mb-1">
+                          <input
+                            type="text"
+                            placeholder="Contenido"
+                            value={contenido}
+                            onChange={e => handleTemaContenidoChange(temaIdx, contenidoIdx, e.target.value)}
+                            className="flex-1 px-4 py-2 border rounded-lg"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            className="text-red-500"
+                            onClick={() => removeTemaContenido(temaIdx, contenidoIdx)}
+                          >
+                            <X className="w-5 h-5" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full border-[#00ffae] text-[#00ffae] hover:bg-[#00ffae]/10 mb-2"
+                        onClick={() => addTemaContenido(temaIdx)}
+                      >
+                        Agregar Contenido
+                      </Button>
                       <Button
                         type="button"
                         variant="ghost"
-                        className="text-red-500"
-                        onClick={() => removeBenefit(index)}
+                        className="text-red-500 w-full"
+                        onClick={() => removeTema(temaIdx)}
                       >
-                        <X className="w-5 h-5" />
+                        Eliminar Tema
                       </Button>
                     </div>
                   ))}
@@ -507,9 +786,9 @@ export default function AdminDashboard() {
                     type="button"
                     variant="outline"
                     className="w-full border-[#00ffae] text-[#00ffae] hover:bg-[#00ffae]/10"
-                    onClick={addBenefit}
+                    onClick={addTema}
                   >
-                    Agregar Beneficio
+                    Agregar Tema
                   </Button>
                 </div>
               </div>
@@ -535,4 +814,4 @@ export default function AdminDashboard() {
       )}
     </main>
   );
-} 
+}
