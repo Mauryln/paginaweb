@@ -62,7 +62,10 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
   filtroActual: string, 
   setFiltroActual: (filtro: string) => void 
 }) {
-  const categoriasFiltro = ["Todos", "BIM", "Arquitectura", "Ingeniería", "Tecnología"];
+  const categoriasFiltro = [
+    'Todos',
+    ...Array.from(new Set(cursos.map((c) => c.categoria))).filter(Boolean)
+  ];
   const cursosFiltrados = filtroActual === "Todos" 
     ? cursos.filter(curso => curso.visible !== false)
     : cursos.filter(curso => curso.categoria === filtroActual && curso.visible !== false);
@@ -101,7 +104,14 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
                   <span>🎯 {curso.level}</span>
                 </div>
                 <div className="flex items-center justify-between mt-auto">
-                  <span className="font-semibold text-[#00b97c] text-base">{curso.price}</span>
+                  {curso.priceEstudiante && String(curso.priceEstudiante).trim() !== '' ? (
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-[#00b97c] text-base">Profesional: {curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
+                      <span className="font-semibold text-[#00b97c] text-base">Estudiante: {curso.priceEstudiante} Bs ({(Number(curso.priceEstudiante)/7).toFixed(2)} USD)</span>
+                    </div>
+                  ) : (
+                    <span className="font-semibold text-[#00b97c] text-base">{curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
+                  )}
                   <Button size="sm" className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]">
                     Ver Detalles
                   </Button>
