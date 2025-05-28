@@ -29,16 +29,12 @@ function Header() {
         </div>
         <nav className="hidden md:flex gap-8 text-base font-medium">
           {NAV_LINKS.map(link => (
-<<<<<<< HEAD
             <Link 
               key={link.label} 
               href={link.href} 
               className="text-white hover:text-[#00ffae] transition-colors"
               prefetch={true}
             >
-=======
-            <Link key={link.label} href={link.href} className="text-white hover:text-[#00ffae] transition-colors">
->>>>>>> 888ebe8dc234032dce8ef0bc5720974fbc1ad17e
               {link.label}
             </Link>
           ))}
