@@ -35,8 +35,8 @@ function ServicioCard({ icon, title }: { icon: string; title: string }) {
     printer: <Printer className="w-10 h-10 text-[#1a1144]" />,
   };
   return (
-    <div className="bg-[#f6f8fa] rounded-2xl shadow p-8 flex flex-col items-center text-center hover:shadow-lg transition-all">
-      <div className="bg-white rounded-full p-4 mb-4 flex items-center justify-center shadow">
+    <div className="bg-[#f6f8fa] rounded-2xl shadow p-8 flex flex-col items-center text-center hover:shadow-lg transition-all hover-scale">
+      <div className="bg-white rounded-full p-4 mb-4 flex items-center justify-center shadow hover-glow">
         {icons[icon]}
       </div>
       <h3 className="font-semibold text-lg mb-1 text-[#1a1144]">{title}</h3>
@@ -48,7 +48,7 @@ function ServicioCard({ icon, title }: { icon: string; title: string }) {
 function CursoCard({ curso }: { curso: any }) {
   return (
     <Link href={`/cursos/${curso.slug}`}>
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift">
         <div className="relative h-48 w-full">
           <Image src={curso.img} alt={curso.title} fill className="object-cover" />
         </div>
@@ -179,15 +179,30 @@ export default function Home() {
       <header className="w-full border-b border-white/10 bg-[#1a1144] sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between py-4 px-4">
           <div className="flex items-center gap-2">
-            <Image src="/logo.jpg" alt="BIMCAT Logo" width={40} height={40} className="rounded-full bg-white p-1" />
+            <Image 
+              src="/logo.jpg" 
+              alt="BIMCAT Logo" 
+              width={40} 
+              height={40} 
+              className="rounded-full bg-white p-1 hover-scale transition-all" 
+            />
             <span className="font-bold text-xl tracking-tight">BIMCAT</span>
           </div>
           <nav className="hidden md:flex gap-8 text-base font-medium">
             {NAV_LINKS.map(link => (
-              <a key={link.label} href={link.href} className="hover:text-[#00ffae] transition-colors">{link.label}</a>
+              <a 
+                key={link.label} 
+                href={link.href} 
+                className="hover:text-[#00ffae] transition-all hover:translate-x-1"
+              >
+                {link.label}
+              </a>
             ))}
           </nav>
-          <Button onClick={handleWhatsAppClick} className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]">
+          <Button 
+            onClick={handleWhatsAppClick} 
+            className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift"
+          >
             <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
           </Button>
         </div>
@@ -197,7 +212,7 @@ export default function Home() {
       <section className="relative overflow-hidden pt-12 pb-24 md:pt-24 md:pb-32">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 gap-8">
           {/* Texto */}
-          <div className="flex-1 max-w-xl">
+          <div className="flex-1 max-w-xl animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
               Aprende nuevas habilidades online<br />con <span className="text-[#00ffae]">expertos BIM</span>
             </h1>
@@ -205,17 +220,26 @@ export default function Home() {
               Cursos, consultoría y actualización tecnológica en construcción y BIM. ¡Impulsa tu carrera con nosotros!
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]" onClick={() => window.location.hash = 'cursos'}>
+              <Button 
+                size="lg" 
+                className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift" 
+                onClick={() => window.location.hash = 'cursos'}
+              >
                 Ver Cursos <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline" className="border-[#00ffae] text-[#00ffae] bg-black hover:bg-black/80" onClick={handleWhatsAppClick}>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-[#00ffae] text-[#00ffae] bg-black hover:bg-black/80 hover-lift" 
+                onClick={handleWhatsAppClick}
+              >
                 Consultar por WhatsApp
               </Button>
             </div>
           </div>
           {/* Imagen destacada */}
-          <div className="flex-1 flex justify-center md:justify-end w-full max-w-lg relative">
-            <div className="w-[840px] h-[420px] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10">
+          <div className="flex-1 flex justify-center md:justify-end w-full max-w-lg relative animate-slide-up">
+            <div className="w-[840px] h-[420px] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#00ffae] bg-white/10 hover-scale">
               <Image
                 src="/banner1.jpg"
                 alt="Hero"
@@ -233,8 +257,12 @@ export default function Home() {
       {/* Cursos Populares Section */}
       <section id="cursos" className="bg-[#f6f8fa] py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-2 text-[#1a1144]">Cursos Populares</h2>
-          <p className="text-center text-lg text-[#1a1144]/70 mb-8">¡Explora nuestros cursos más demandados y potencia tu perfil profesional!</p>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-2 text-[#1a1144] animate-fade-in">
+            Cursos Populares
+          </h2>
+          <p className="text-center text-lg text-[#1a1144]/70 mb-8 animate-fade-in">
+            ¡Explora nuestros cursos más demandados y potencia tu perfil profesional!
+          </p>
           
           {/* Filtros de categoría con funcionalidad */}
           <div className="flex flex-wrap justify-center gap-3 mb-10">
@@ -245,7 +273,7 @@ export default function Home() {
                   filtroActual === categoria 
                     ? 'bg-[#00ffae] text-[#1a1144]' 
                     : 'bg-white text-[#1a1144] border border-[#00ffae]'
-                } font-semibold shadow hover:bg-[#00e6a0] transition`}
+                } font-semibold shadow hover:bg-[#00e6a0] transition-all hover-lift`}
                 onClick={() => setFiltroActual(categoria)}
               >
                 {categoria}

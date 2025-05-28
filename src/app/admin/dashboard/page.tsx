@@ -21,7 +21,7 @@ export default function AdminDashboard() {
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
-  const [formData, setFormData] = useState<Partial<Curso> & { durationHours?: string; durationMinutes?: string }>({});
+  const [formData, setFormData] = useState<Partial<Curso> & { durationHours?: string; durationMinutes?: string; benefits?: string[] }>({});
   const [loading, setLoading] = useState(true);
   const [tipoPrecio, setTipoPrecio] = useState<'unico' | 'diferenciado'>('diferenciado');
   const BS_TO_USD = 7;
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
   };
 
   const handleCreate = () => {
-    const newCurso: Partial<Curso> & { durationHours?: string; durationMinutes?: string } = {
+    const newCurso: Partial<Curso> & { durationHours?: string; durationMinutes?: string; benefits?: string[] } = {
       slug: '',
       img: '',
       title: '',
@@ -172,6 +172,8 @@ export default function AdminDashboard() {
       return;
     }
 
+    const today = new Date().toISOString().split('T')[0];
+
     if (formData.startDate && formData.startDate < today) {
       alert('La fecha de inicio no puede ser anterior a hoy.');
       return;
@@ -206,11 +208,15 @@ export default function AdminDashboard() {
         visible: formData.visible ?? true,
         startDate: formData.startDate || '',
         offerEndDate: formData.offerEndDate || '',
+        // Remove or handle benefits properly if not part of Curso type
       };
 
       if (tipoPrecio === 'unico') {
-        formData.priceEstudiante = '';
-        formData.offerPriceEstudiante = '';
+        (cursoData as any).priceEstudiante = '';
+        (cursoData as any).offerPriceEstudiante = '';
+      } else {
+        (cursoData as any).offerPriceProfesional = formData.offerPriceProfesional || '';
+        (cursoData as any).offerPriceEstudiante = formData.offerPriceEstudiante || '';
       }
 
       if (selectedCurso) {
@@ -266,13 +272,12 @@ export default function AdminDashboard() {
     }));
   };
 
-  // Obtener fecha actual en formato yyyy-mm-dd
   const today = new Date().toISOString().split('T')[0];
 
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f6f8fa] flex items-center justify-center">
-        <div className="text-[#1a1144]">Cargando...</div>
+        <div className="text-[#1a1144] animate-fade-in">Cargando...</div>
       </div>
     );
   }
@@ -284,7 +289,7 @@ export default function AdminDashboard() {
           <h1 className="text-2xl font-bold">Panel de Administración</h1>
           <Button
             variant="ghost"
-            className="text-white hover:text-[#00ffae]"
+            className="text-white hover:text-[#00ffae] hover-lift transition-all"
             onClick={handleLogout}
           >
             <LogOut className="w-5 h-5 mr-2" />
@@ -294,10 +299,10 @@ export default function AdminDashboard() {
       </div>
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-8 animate-fade-in">
           <h2 className="text-xl font-semibold text-[#1a1144]">Gestión de Cursos</h2>
           <Button
-            className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]"
+            className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift transition-all"
             onClick={handleCreate}
           >
             <Plus className="w-5 h-5 mr-2" />
@@ -306,13 +311,14 @@ export default function AdminDashboard() {
         </div>
 
         <div className="space-y-4">
-          {cursos.map((curso) => (
+          {cursos.map((curso, index) => (
             <div
               key={curso.id}
-              className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between"
+              className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between hover-lift transition-all animate-slide-up"
+              style={{ animationDelay: `${index * 0.05}s` }}
             >
               <div className="flex items-center gap-4 flex-1">
-                <div className="relative w-20 h-20 rounded-lg overflow-hidden">
+                <div className="relative w-20 h-20 rounded-lg overflow-hidden hover-scale transition-all">
                   <Image
                     src={curso.img}
                     alt={curso.title}
@@ -370,21 +376,21 @@ export default function AdminDashboard() {
               <div className="flex gap-2">
                 <Button
                   variant="ghost"
-                  className="text-[#1a1144] hover:text-[#00ffae]"
+                  className="text-[#1a1144] hover:text-[#00ffae] transition-colors"
                   onClick={() => handleToggleVisibility(curso.id)}
                 >
                   {curso.visible ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </Button>
                 <Button
                   variant="ghost"
-                  className="text-[#1a1144] hover:text-[#00ffae]"
+                  className="text-[#1a1144] hover:text-[#00ffae] transition-colors"
                   onClick={() => handleEdit(curso)}
                 >
                   <Edit className="w-5 h-5" />
                 </Button>
                 <Button
                   variant="ghost"
-                  className="text-red-500 hover:text-red-700"
+                  className="text-red-500 hover:text-red-700 transition-colors"
                   onClick={() => handleDelete(curso.id)}
                 >
                   <Trash className="w-5 h-5" />
@@ -397,15 +403,15 @@ export default function AdminDashboard() {
 
       {/* Modal de edición/creación */}
       {editMode && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 md:p-4 overflow-y-auto z-50">
-          <div className="bg-white rounded-lg p-4 md:p-6 w-full max-w-lg my-8 shadow-lg overflow-y-auto max-h-[95vh]">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 md:p-4 overflow-y-auto z-50 animate-fade-in">
+          <div className="bg-white rounded-lg p-4 md:p-6 w-full max-w-screen-lg my-8 shadow-lg overflow-y-auto max-h-[95vh]">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-[#1a1144]">
                 {selectedCurso ? 'Editar Curso' : 'Nuevo Curso'}
               </h3>
               <Button
                 variant="ghost"
-                className="text-[#1a1144]"
+                className="text-[#1a1144] hover:text-gray-600 transition-colors"
                 onClick={() => setEditMode(false)}
               >
                 <X className="w-5 h-5" />
@@ -414,7 +420,7 @@ export default function AdminDashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-blue-700 mb-1">
                   Título *
                 </label>
                 <input
@@ -422,13 +428,13 @@ export default function AdminDashboard() {
                   name="title"
                   value={formData.title || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                   required
                 />
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-blue-700 mb-1">
                   Descripción Corta *
                 </label>
                 <input
@@ -436,26 +442,26 @@ export default function AdminDashboard() {
                   name="desc"
                   value={formData.desc || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                   required
                 />
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Descripción Larga
                 </label>
                 <textarea
                   name="descLong"
                   value={formData.descLong || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                   rows={4}
                 />
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-purple-700 mb-1">
                   Imagen del Curso
                 </label>
                 <ImageUpload
@@ -465,25 +471,27 @@ export default function AdminDashboard() {
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">Tipo de precio</label>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Tipo de precio</label>
                 <div className="flex gap-4 mb-2">
-                  <label className="flex items-center gap-2">
+                  <label className="flex items-center gap-2 text-[#1a1144]">
                     <input
                       type="radio"
                       name="tipoPrecio"
                       value="unico"
                       checked={tipoPrecio === 'unico'}
                       onChange={() => setTipoPrecio('unico')}
+                      className="focus:ring-[#00ffae]"
                     />
                     Precio único
                   </label>
-                  <label className="flex items-center gap-2">
+                  <label className="flex items-center gap-2 text-[#1a1144]">
                     <input
                       type="radio"
                       name="tipoPrecio"
                       value="diferenciado"
                       checked={tipoPrecio === 'diferenciado'}
                       onChange={() => setTipoPrecio('diferenciado')}
+                      className="focus:ring-[#00ffae]"
                     />
                     Diferenciado (Profesional/Estudiante)
                   </label>
@@ -493,14 +501,14 @@ export default function AdminDashboard() {
               {tipoPrecio === 'unico' ? (
                 <>
                   <div className="flex flex-col gap-1">
-                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio único</label>
+                    <label className="block text-sm font-medium text-green-700 mb-1">Precio único</label>
                     <input
                       type="number"
                       name="priceProfesional"
                       min="0"
                       value={formData.priceProfesional || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                     />
                     {formData.priceProfesional && (
                       <div className="text-xs text-[#1a1144]/70 mt-1">
@@ -509,17 +517,17 @@ export default function AdminDashboard() {
                     )}
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio oferta único</label>
+                    <label className="block text-sm font-medium text-orange-500 mb-1">Precio oferta único</label>
                     <input
                       type="number"
                       name="offerPriceProfesional"
                       min="0"
                       value={formData.offerPriceProfesional || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-orange-500"
                     />
                     {formData.offerPriceProfesional && (
-                      <div className="text-xs text-[#1a1144]/70 mt-1">
+                      <div className="text-xs text-orange-500/90 mt-1">
                         ≈ ${(Number(formData.offerPriceProfesional) / BS_TO_USD).toFixed(2)} USD
                       </div>
                     )}
@@ -528,14 +536,14 @@ export default function AdminDashboard() {
               ) : (
                 <>
                   <div className="flex flex-col gap-1">
-                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio Profesional</label>
+                    <label className="block text-sm font-medium text-green-700 mb-1">Precio Profesional</label>
                     <input
                       type="number"
                       name="priceProfesional"
                       min="0"
                       value={formData.priceProfesional || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                     />
                     {formData.priceProfesional && (
                       <div className="text-xs text-[#1a1144]/70 mt-1">
@@ -544,14 +552,14 @@ export default function AdminDashboard() {
                     )}
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio Estudiante</label>
+                    <label className="block text-sm font-medium text-green-700 mb-1">Precio Estudiante</label>
                     <input
                       type="number"
                       name="priceEstudiante"
                       min="0"
                       value={formData.priceEstudiante || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                     />
                     {formData.priceEstudiante && (
                       <div className="text-xs text-[#1a1144]/70 mt-1">
@@ -560,33 +568,33 @@ export default function AdminDashboard() {
                     )}
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio Oferta Profesional</label>
+                    <label className="block text-sm font-medium text-orange-500 mb-1">Precio Oferta Profesional</label>
                     <input
                       type="number"
                       name="offerPriceProfesional"
                       min="0"
                       value={formData.offerPriceProfesional || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-orange-500"
                     />
                     {formData.offerPriceProfesional && (
-                      <div className="text-xs text-[#1a1144]/70 mt-1">
+                      <div className="text-xs text-orange-500/90 mt-1">
                         ≈ ${(Number(formData.offerPriceProfesional) / BS_TO_USD).toFixed(2)} USD
                       </div>
                     )}
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="block text-sm font-medium text-[#1a1144] mb-1">Precio Oferta Estudiante</label>
+                    <label className="block text-sm font-medium text-orange-500 mb-1">Precio Oferta Estudiante</label>
                     <input
                       type="number"
                       name="offerPriceEstudiante"
                       min="0"
                       value={formData.offerPriceEstudiante || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-orange-500"
                     />
                     {formData.offerPriceEstudiante && (
-                      <div className="text-xs text-[#1a1144]/70 mt-1">
+                      <div className="text-xs text-orange-500/90 mt-1">
                         ≈ ${(Number(formData.offerPriceEstudiante) / BS_TO_USD).toFixed(2)} USD
                       </div>
                     )}
@@ -595,7 +603,7 @@ export default function AdminDashboard() {
               )}
 
               <div className="flex flex-col gap-1">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-blue-700 mb-1">
                   Lecciones
                 </label>
                 <input
@@ -607,12 +615,12 @@ export default function AdminDashboard() {
                     const value = e.target.value.replace(/[^0-9]/g, '');
                     setFormData(prev => ({ ...prev, lessons: value }));
                   }}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-blue-700 mb-1">
                   Duración
                 </label>
                 <div className="flex gap-2">
@@ -626,7 +634,7 @@ export default function AdminDashboard() {
                       const value = e.target.value.replace(/[^0-9]/g, '');
                       setFormData(prev => ({ ...prev, durationHours: value }));
                     }}
-                    className="w-1/2 px-4 py-2 border rounded-lg"
+                    className="w-1/2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                   />
                   <input
                     type="number"
@@ -640,19 +648,19 @@ export default function AdminDashboard() {
                       if (Number(value) > 59) value = '59';
                       setFormData(prev => ({ ...prev, durationMinutes: value }));
                     }}
-                    className="w-1/2 px-4 py-2 border rounded-lg"
+                    className="w-1/2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                   />
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-blue-700 mb-1">
                   Nivel
                 </label>
                 <select
                   name="level"
                   value={formData.level || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                 >
                   <option value="">Seleccionar nivel</option>
                   <option value="Básico">Básico</option>
@@ -662,7 +670,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-blue-700 mb-1">
                   Instructor
                 </label>
                 <input
@@ -670,11 +678,11 @@ export default function AdminDashboard() {
                   name="teacher"
                   value={formData.teacher || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-blue-700 mb-1">
                   Categoría
                 </label>
                 <input
@@ -683,7 +691,7 @@ export default function AdminDashboard() {
                   value={formData.categoria || ''}
                   onChange={handleInputChange}
                   placeholder="Escribe o selecciona una categoría"
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                   list="categorias-list"
                 />
                 <datalist id="categorias-list">
@@ -694,7 +702,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-green-600 mb-1">
                   Fecha de Inicio
                 </label>
                 <input
@@ -702,12 +710,12 @@ export default function AdminDashboard() {
                   name="startDate"
                   value={formData.startDate || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-green-600"
                 />
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-yellow-600 mb-1">
                   Fecha de Fin de Oferta
                 </label>
                 <input
@@ -715,12 +723,12 @@ export default function AdminDashboard() {
                   name="offerEndDate"
                   value={formData.offerEndDate || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-yellow-600"
                 />
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">
+                <label className="block text-sm font-medium text-red-600 mb-1">
                   Fecha de Fin del Curso
                 </label>
                 <input
@@ -728,13 +736,13 @@ export default function AdminDashboard() {
                   name="endDate"
                   value={formData.endDate || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-red-600"
                   min={formData.startDate || today}
                 />
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1a1144] mb-1">Temario</label>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Temario</label>
                 <div className="space-y-4">
                   {formData.temas?.map((tema, temaIdx) => (
                     <div key={temaIdx} className="mb-4 p-2 border rounded-lg bg-black/10">
@@ -743,7 +751,7 @@ export default function AdminDashboard() {
                         placeholder="Título del tema"
                         value={tema.titulo}
                         onChange={e => handleTemaTituloChange(temaIdx, e.target.value)}
-                        className="w-full mb-2 px-4 py-2 border rounded-lg"
+                        className="w-full mb-2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                       />
                       {tema.contenidos.map((contenido, contenidoIdx) => (
                         <div key={contenidoIdx} className="flex gap-2 mb-1">
@@ -752,12 +760,12 @@ export default function AdminDashboard() {
                             placeholder="Contenido"
                             value={contenido}
                             onChange={e => handleTemaContenidoChange(temaIdx, contenidoIdx, e.target.value)}
-                            className="flex-1 px-4 py-2 border rounded-lg"
+                            className="flex-1 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                           />
                           <Button
                             type="button"
                             variant="ghost"
-                            className="text-red-500"
+                            className="text-red-500 hover:text-red-700 transition-colors"
                             onClick={() => removeTemaContenido(temaIdx, contenidoIdx)}
                           >
                             <X className="w-5 h-5" />
@@ -767,7 +775,7 @@ export default function AdminDashboard() {
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full border-[#00ffae] text-[#00ffae] hover:bg-[#00ffae]/10 mb-2"
+                        className="w-full border-[#00ffae] text-[#00ffae] hover:bg-[#00ffae]/10 transition-all mb-2"
                         onClick={() => addTemaContenido(temaIdx)}
                       >
                         Agregar Contenido
@@ -775,7 +783,7 @@ export default function AdminDashboard() {
                       <Button
                         type="button"
                         variant="ghost"
-                        className="text-red-500 w-full"
+                        className="text-red-500 w-full hover:text-red-700 transition-colors"
                         onClick={() => removeTema(temaIdx)}
                       >
                         Eliminar Tema
@@ -785,7 +793,7 @@ export default function AdminDashboard() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full border-[#00ffae] text-[#00ffae] hover:bg-[#00ffae]/10"
+                    className="w-full border-[#00ffae] text-[#00ffae] hover:bg-[#00ffae]/10 transition-all"
                     onClick={addTema}
                   >
                     Agregar Tema
@@ -797,13 +805,13 @@ export default function AdminDashboard() {
             <div className="flex justify-end gap-4 mt-6">
               <Button
                 variant="outline"
-                className="border-[#1a1144] text-[#1a1144]"
+                className="border-[#1a1144] text-[#1a1144] hover:bg-gray-200 transition-colors"
                 onClick={() => setEditMode(false)}
               >
                 Cancelar
               </Button>
               <Button
-                className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]"
+                className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift transition-all"
                 onClick={handleSubmit}
               >
                 {selectedCurso ? 'Guardar Cambios' : 'Crear Curso'}

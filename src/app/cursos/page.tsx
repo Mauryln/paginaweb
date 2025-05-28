@@ -24,7 +24,13 @@ function Header() {
     <header className="w-full border-b border-white/10 bg-[#1a1144] sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-4">
         <div className="flex items-center gap-2">
-          <Image src="/logo.jpg" alt="BIMCAT Logo" width={40} height={40} className="rounded-full bg-white p-1" />
+          <Image 
+            src="/logo.jpg" 
+            alt="BIMCAT Logo" 
+            width={40} 
+            height={40} 
+            className="rounded-full bg-white p-1 hover-scale transition-all" 
+          />
           <span className="font-bold text-xl tracking-tight text-white">BIMCAT</span>
         </div>
         <nav className="hidden md:flex gap-8 text-base font-medium">
@@ -32,14 +38,17 @@ function Header() {
             <Link 
               key={link.label} 
               href={link.href} 
-              className="text-white hover:text-[#00ffae] transition-colors"
+              className="text-white hover:text-[#00ffae] transition-all hover:translate-x-1"
               prefetch={true}
             >
               {link.label}
             </Link>
           ))}
         </nav>
-        <Button onClick={handleWhatsAppClick} className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]">
+        <Button 
+          onClick={handleWhatsAppClick} 
+          className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift"
+        >
           <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
         </Button>
       </div>
@@ -51,7 +60,7 @@ function Header() {
 function LoadingSpinner() {
   return (
     <div className="min-h-screen bg-[#f6f8fa] flex items-center justify-center">
-      <div className="text-[#1a1144]">Cargando...</div>
+      <div className="text-[#1a1144] animate-fade-in">Cargando...</div>
     </div>
   );
 }
@@ -72,7 +81,7 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
 
   return (
     <>
-      <div className="flex flex-wrap justify-center gap-3 mb-10">
+      <div className="flex flex-wrap justify-center gap-3 mb-10 animate-fade-in">
         {categoriasFiltro.map((categoria) => (
           <button 
             key={categoria}
@@ -80,7 +89,7 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
               filtroActual === categoria 
                 ? 'bg-[#00ffae] text-[#1a1144]' 
                 : 'bg-white text-[#1a1144] border border-[#00ffae]'
-            } font-semibold shadow hover:bg-[#00e6a0] transition`}
+            } font-semibold shadow hover:bg-[#00e6a0] transition-all hover-lift`}
             onClick={() => setFiltroActual(categoria)}
           >
             {categoria}
@@ -89,9 +98,12 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {cursosFiltrados.map((curso) => (
+        {cursosFiltrados.map((curso, index) => (
           <Link href={`/cursos/${curso.slug}`} key={curso.id}>
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all">
+            <div 
+              className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift animate-slide-up"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
               <div className="relative h-48 w-full">
                 <Image src={curso.img} alt={curso.title} fill className="object-cover" />
               </div>
@@ -112,7 +124,10 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
                   ) : (
                     <span className="font-semibold text-[#00b97c] text-base">{curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
                   )}
-                  <Button size="sm" className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]">
+                  <Button 
+                    size="sm" 
+                    className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift"
+                  >
                     Ver Detalles
                   </Button>
                 </div>
@@ -148,8 +163,10 @@ export default function CursosPage() {
     <main className="min-h-screen bg-[#f6f8fa]">
       <Header />
       <div className="container mx-auto px-4 py-20">
-        <h1 className="text-4xl font-extrabold text-center mb-2 text-[#1a1144]">Nuestros Cursos</h1>
-        <p className="text-center text-lg text-[#1a1144]/70 mb-12">
+        <h1 className="text-4xl font-extrabold text-center mb-2 text-[#1a1144] animate-fade-in">
+          Nuestros Cursos
+        </h1>
+        <p className="text-center text-lg text-[#1a1144]/70 mb-12 animate-fade-in">
           Explora nuestra selección de cursos y encuentra el que mejor se adapte a tus necesidades
         </p>
 

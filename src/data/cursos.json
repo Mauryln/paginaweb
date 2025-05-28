@@ -58,7 +58,7 @@
       "title": "Prueba 2",
       "desc": "Domina Revit para el diseño arquitectónico profesional.",
       "descLong": "Exasdasdasd",
-      "lessons": "3 lecciones",
+      "lessons": "3 lecciones lecciones lecciones",
       "duration": "9h 0m",
       "level": "Intermedio",
       "teacher": "Arq. Juan Gómez",
@@ -71,12 +71,14 @@
       "id": "3",
       "durationHours": "9",
       "durationMinutes": "0",
-      "priceProfesional": "120",
+      "priceProfesional": "50",
       "startDate": "",
       "offerEndDate": "",
       "images": [
         "/uploads/1747927152353.jpeg"
-      ]
+      ],
+      "priceEstudiante": "",
+      "offerPriceEstudiante": ""
     },
     {
       "slug": "el-delito-el-procedimiento-penal-y-la-correcta-valoracion-de-la-prueba",
