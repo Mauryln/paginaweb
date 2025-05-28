@@ -5,7 +5,7 @@ import type { Curso } from "@/data/cursos";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useParams, notFound } from "next/navigation";
-import { MessageCircle, Menu } from "lucide-react";
+import { MessageCircle, Menu, X } from "lucide-react";
 import { cursosService } from '@/services/cursosService';
 import Link from "next/link";
 
@@ -77,6 +77,8 @@ export default function CursoPage() {
   const [curso, setCurso] = useState<Curso | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     const loadCurso = async () => {
@@ -198,8 +200,11 @@ export default function CursoPage() {
                 Consultar por WhatsApp
               </Button>
             </div>
-            <div className="flex-1 w-full max-w-lg">
-              <div className="relative aspect-video rounded-2xl overflow-hidden border-4 border-[#00ffae]">
+            <div className="flex-1 w-full max-w-lg flex items-center justify-center">
+              <div 
+                className="relative w-full h-[550px] rounded-2xl overflow-hidden border-4 border-[#00ffae] cursor-pointer transition-transform hover:scale-[1.02]"
+                onClick={() => setIsImageModalOpen(true)}
+              >
                 <Image
                   src={curso.img}
                   alt={curso.title}
@@ -212,10 +217,37 @@ export default function CursoPage() {
         </div>
       </div>
 
+      {/* Modal de Imagen */}
+      {isImageModalOpen && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" onClick={() => setIsImageModalOpen(false)}>
+          <button 
+            className="absolute top-4 right-4 text-white hover:text-[#00ffae] transition-colors"
+            onClick={() => setIsImageModalOpen(false)}
+          >
+            <X className="h-8 w-8" />
+          </button>
+          <div 
+            className="relative w-full max-w-4xl h-[80vh] cursor-zoom-in" 
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsZoomed(!isZoomed);
+            }}
+          >
+            <Image
+              src={curso.img}
+              alt={curso.title}
+              fill
+              className={`object-contain transition-transform duration-300 ${isZoomed ? 'scale-150' : 'scale-100'}`}
+              quality={100}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Contenido del Curso */}
       <div className="w-full max-w-4xl mx-auto px-2 sm:px-4 py-8 md:py-16">
-        <div className="grid md:grid-cols-3 gap-8 md:gap-12">
-          <div className="md:col-span-2">
+        <div className="grid md:grid-cols-[2fr_1fr] gap-6 md:gap-8 lg:gap-10 items-start">
+          <div className="md:col-span-1 md:mr-0">
             <h2 className="text-xl md:text-2xl font-bold text-[#1a1144] mb-4 md:mb-6">¿Qué aprenderás?</h2>
             <div className="bg-white rounded-2xl p-4 md:p-8 shadow-lg">
               {curso.temas && curso.temas.length > 0 ? (
@@ -241,45 +273,30 @@ export default function CursoPage() {
               <p className="text-[#1a1144]/80 leading-relaxed text-sm md:text-base">{curso.descLong}</p>
             </div>
           </div>
-
           {/* Sidebar */}
-          <div className="md:col-span-1">
-            <div className="bg-white rounded-2xl p-4 md:p-6 shadow-lg sticky top-24">
-              <h3 className="font-bold text-base md:text-lg text-[#1a1144] mb-4">Información del Curso</h3>
+          <div className="md:col-span-1 lg:ml-0 flex justify-center md:justify-end">
+            <div className="bg-white rounded-2xl p-6 shadow-xl sticky top-24 border border-gray-100 max-w-xs w-full">
+              <h3 className="font-bold text-lg text-[#1a1144] mb-6 border-b pb-2">Información del Curso</h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b">
-                  <span className="text-sm md:text-base text-[#1a1144]/70">Instructor</span>
-                  <span className="font-medium text-sm md:text-base text-[#1a1144]">{curso.teacher}</span>
-                </div>
-                <div className="flex items-center justify-between pb-2 border-b">
-                  <span className="text-sm md:text-base text-[#1a1144]/70">Duración</span>
-                  <span className="font-medium text-sm md:text-base text-[#1a1144]">{curso.duration}</span>
-                </div>
-                <div className="flex items-center justify-between pb-2 border-b">
-                  <span className="text-sm md:text-base text-[#1a1144]/70">Lecciones</span>
-                  <span className="font-medium text-sm md:text-base text-[#1a1144]">{curso.lessons}</span>
-                </div>
-                <div className="flex items-center justify-between pb-2 border-b">
-                  <span className="text-sm md:text-base text-[#1a1144]/70">Nivel</span>
-                  <span className="font-medium text-sm md:text-base text-[#1a1144]">{curso.level}</span>
-                </div>
-                <div className="flex items-center justify-between pb-2 border-b">
-                  <span className="text-sm md:text-base text-[#1a1144]/70">Categoría</span>
-                  <span className="font-medium text-sm md:text-base text-[#1a1144]">{curso.categoria}</span>
-                </div>
-                <div className="flex items-center justify-between pb-2 border-b">
-                  <span className="text-sm md:text-base text-[#1a1144]/70">Fecha de Inicio</span>
-                  <span className="font-medium text-sm md:text-base text-[#1a1144]">{startDate}</span>
-                </div>
-                {hasOffer && (
-                  <div className="flex items-center justify-between pb-2 border-b">
-                    <span className="text-sm md:text-base text-[#1a1144]/70">Oferta válida hasta</span>
-                    <span className="font-medium text-sm md:text-base text-[#1a1144]">{offerEndDate}</span>
-                  </div>
-                )}
+                {[
+                  { label: "Instructor", value: curso.teacher },
+                  { label: "Duración", value: curso.duration },
+                  { label: "Lecciones", value: curso.lessons },
+                  { label: "Nivel", value: curso.level },
+                  { label: "Categoría", value: curso.categoria },
+                  { label: "Fecha de Inicio", value: startDate },
+                  hasOffer && { label: "Oferta válida hasta", value: offerEndDate },
+                ]
+                  .filter((item): item is { label: string; value: string } => Boolean(item) && typeof item === 'object' && 'label' in item && 'value' in item)
+                  .map((item, idx) => (
+                    <div key={idx} className="flex justify-between text-sm md:text-base text-[#1a1144]">
+                      <span className="text-[#1a1144]/70">{item.label}</span>
+                      <span className="font-medium text-right">{item.value}</span>
+                    </div>
+                  ))}
               </div>
-              <Button 
-                className="w-full mt-6 bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0]"
+              <Button
+                className="w-full mt-8 bg-[#00ffae] text-[#1a1144] font-semibold hover:bg-[#00e6a0] transition-colors"
                 onClick={handleWhatsAppClick}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
