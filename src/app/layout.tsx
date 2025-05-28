@@ -22,7 +22,7 @@ export default function RootLayout({
       
       <body className={`${inter.className} min-h-screen bg-background antialiased`}>
         {children}
-        <footer className="bg-[#1a1144] border-t border-[#00ffae]/10 pt-16 pb-8 text-white mt-12">
+        <footer className="bg-gray-900 border-blue-600/10 pt-16 pb-8 text-white mt-12">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-12">
               {/* Logo y redes */}
@@ -33,13 +33,13 @@ export default function RootLayout({
                 </div>
                 <p className="text-white/70 max-w-xs text-center md:text-left">Consultoría, capacitación y tecnología para tu desarrollo profesional y empresarial.</p>
                 <div className="flex gap-4 mt-2">
-                  <a href="https://facebook.com/bimcat.srl" target="_blank" rel="noopener noreferrer" className="hover:text-[#00ffae]">
+                  <a href="https://facebook.com/bimcat.srl" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
                     <Facebook />
                   </a>
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#00ffae]">
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
                     <Instagram />
                   </a>
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#00ffae]">
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
                     <Linkedin />
                   </a>
                 </div>

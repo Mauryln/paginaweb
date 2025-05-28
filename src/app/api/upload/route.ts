@@ -22,8 +22,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validar tamaño (5MB máximo)
-    if (file.size > 5 * 1024 * 1024) {
+    // Validar tamaño (15MB máximo)
+    if (file.size > 15 * 1024 * 1024) {
       return NextResponse.json(
         { error: 'El archivo no debe superar los 5MB' },
         { status: 400 }
@@ -37,6 +37,7 @@ export async function POST(request: Request) {
 
     // Convertir el archivo a Buffer
     const bytes = await file.arrayBuffer();
+    console.log(bytes);
     const buffer = Buffer.from(bytes);
 
     // Guardar el archivo

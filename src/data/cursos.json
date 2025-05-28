@@ -19,7 +19,7 @@
         "Acceso a recursos exclusivos"
       ],
       "categoria": "BIM",
-      "visible": true,
+      "visible": false,
       "durationHours": "12",
       "durationMinutes": "30",
       "priceProfesional": "140",
@@ -29,12 +29,12 @@
     },
     {
       "id": "2",
-      "slug": "bitcoin",
+      "slug": "bitcoin-2",
       "img": "/curso2.jpg",
-      "title": "Bitcoin",
+      "title": "Bitcoin 2",
       "desc": "Domina Revit para el diseño arquitectónico profesional.",
       "descLong": "Aprende a utilizar Revit desde cero para crear proyectos arquitectónicos completos, desde el modelado hasta la documentación y presentación.",
-      "lessons": "6 lecciones",
+      "lessons": "6 lecciones lecciones",
       "duration": "9h 10m",
       "level": "Intermedio",
       "teacher": "Arq. Juan Gómez",
@@ -50,7 +50,9 @@
       "durationHours": "9",
       "durationMinutes": "10",
       "startDate": "",
-      "offerEndDate": ""
+      "offerEndDate": "",
+      "priceEstudiante": "",
+      "offerPriceEstudiante": ""
     },
     {
       "slug": "prueba-2",
@@ -94,15 +96,15 @@
       "teacher": "Abg. Eliana Tejerina Rocha",
       "price": "140 Bs",
       "offerPrice": "100 Bs",
-      "offerEndDate": "2025-05-21",
-      "startDate": "2025-06-03",
+      "offerEndDate": "2025-05-31",
+      "startDate": "2025-05-28",
       "benefits": [
         "Te brinda herramientas aplicables desde el primer día.",
         "Te permite entender el proceso penal, paso a paso.",
         "Aprendes a interpretar y valorar pruebas con enfoque profesional.",
         "Accedes a un certificado con valor curricular y respaldo digital."
       ],
-      "categoria": "Ciencias Juridicas Y Politicas",
+      "categoria": "Sistemas",
       "visible": true,
       "images": [
         "/uploads/1747923232335.jpg"
@@ -303,6 +305,35 @@
             "Recomendaciones finales, análisis de casos, resolución de dudas "
           ]
         }
+      ]
+    },
+    {
+      "slug": "asd",
+      "img": "/uploads/1748445845748.jpg",
+      "title": "asd",
+      "desc": "asd",
+      "descLong": "asd",
+      "lessons": "1 lecciones lecciones",
+      "duration": "",
+      "durationHours": "",
+      "durationMinutes": "",
+      "level": "Básico",
+      "teacher": "",
+      "priceProfesional": "200",
+      "priceEstudiante": "",
+      "offerPriceProfesional": "",
+      "offerPriceEstudiante": "",
+      "offerEndDate": "",
+      "startDate": "",
+      "endDate": "2025-05-31",
+      "benefits": [
+        ""
+      ],
+      "categoria": "Salud",
+      "visible": true,
+      "id": "7",
+      "images": [
+        "/uploads/1748445845748.jpg"
       ]
     }
   ]

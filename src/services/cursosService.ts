@@ -20,7 +20,7 @@ class CursosService {
 
   private async loadCursos() {
     try {
-      const response = await fetch('/api/cursos', {
+      const response = await fetch(`${window.location.origin}/api/cursos`, {
         cache: 'no-store'
       });
       
@@ -62,7 +62,7 @@ class CursosService {
 
   public async createCurso(curso: Omit<Curso, 'id'>): Promise<Curso> {
     try {
-      const response = await fetch('/api/cursos', {
+      const response = await fetch(`${window.location.origin}/api/cursos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ class CursosService {
 
   public async updateCurso(id: string, curso: Partial<Curso>): Promise<Curso> {
     try {
-      const response = await fetch(`/api/cursos/${id}`, {
+      const response = await fetch(`${window.location.origin}/api/cursos/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ class CursosService {
 
   public async deleteCurso(id: string): Promise<void> {
     try {
-      const response = await fetch(`/api/cursos/${id}`, {
+      const response = await fetch(`${window.location.origin}/api/cursos/${id}`, {
         method: 'DELETE',
       });
 

@@ -21,7 +21,7 @@ function Header() {
     window.open("https://wa.me/61863578", "_blank");
   };
   return (
-    <header className="w-full border-b border-white/10 bg-[#1a1144] sticky top-0 z-50">
+    <header className="w-full border-b border-white/10 bg-gray-900 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-4">
         <div className="flex items-center gap-2">
           <Image 
@@ -38,7 +38,7 @@ function Header() {
             <Link 
               key={link.label} 
               href={link.href} 
-              className="text-white hover:text-[#00ffae] transition-all hover:translate-x-1"
+              className="text-white hover:text-blue-400 transition-all hover:translate-x-1"
               prefetch={true}
             >
               {link.label}
@@ -47,7 +47,7 @@ function Header() {
         </nav>
         <Button 
           onClick={handleWhatsAppClick} 
-          className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift"
+          className="bg-blue-600 text-white font-bold hover:bg-blue-500 hover-lift"
         >
           <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
         </Button>
@@ -59,8 +59,8 @@ function Header() {
 // Componente de carga
 function LoadingSpinner() {
   return (
-    <div className="min-h-screen bg-[#f6f8fa] flex items-center justify-center">
-      <div className="text-[#1a1144] animate-fade-in">Cargando...</div>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="text-gray-900 animate-fade-in">Cargando...</div>
     </div>
   );
 }
@@ -87,9 +87,9 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
             key={categoria}
             className={`px-4 py-2 rounded-full ${
               filtroActual === categoria 
-                ? 'bg-[#00ffae] text-[#1a1144]' 
-                : 'bg-white text-[#1a1144] border border-[#00ffae]'
-            } font-semibold shadow hover:bg-[#00e6a0] transition-all hover-lift`}
+                ? 'bg-blue-600 text-white' 
+                : 'bg-white text-gray-900 border border-blue-600'
+            } font-semibold shadow hover:bg-blue-500 transition-all hover-lift`}
             onClick={() => setFiltroActual(categoria)}
           >
             {categoria}
@@ -108,9 +108,9 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
                 <Image src={curso.img} alt={curso.title} fill className="object-cover" />
               </div>
               <div className="p-6 flex flex-col flex-1">
-                <h3 className="font-bold text-lg text-[#1a1144] mb-1">{curso.title}</h3>
-                <p className="text-[#1a1144]/70 mb-3 text-sm flex-1">{curso.desc}</p>
-                <div className="flex flex-wrap gap-2 text-xs text-[#1a1144]/80 mb-3">
+                <h3 className="font-bold text-lg text-gray-900 mb-1">{curso.title}</h3>
+                <p className="text-gray-900/70 mb-3 text-sm flex-1">{curso.desc}</p>
+                <div className="flex flex-wrap gap-2 text-xs text-gray-900/80 mb-3">
                   <span>📚 {curso.lessons}</span>
                   <span>⏱ {curso.duration}</span>
                   <span>🎯 {curso.level}</span>
@@ -118,20 +118,20 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
                 <div className="flex items-center justify-between mt-auto">
                   {curso.priceEstudiante && String(curso.priceEstudiante).trim() !== '' ? (
                     <div className="flex flex-col">
-                      <span className="font-semibold text-[#00b97c] text-base">Profesional: {curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
-                      <span className="font-semibold text-[#00b97c] text-base">Estudiante: {curso.priceEstudiante} Bs ({(Number(curso.priceEstudiante)/7).toFixed(2)} USD)</span>
+                      <span className="font-semibold text-blue-600 text-base">Profesional: {curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
+                      <span className="font-semibold text-blue-600 text-base">Estudiante: {curso.priceEstudiante} Bs ({(Number(curso.priceEstudiante)/7).toFixed(2)} USD)</span>
                     </div>
                   ) : (
-                    <span className="font-semibold text-[#00b97c] text-base">{curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
+                    <span className="font-semibold text-blue-600 text-base">{curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
                   )}
                   <Button 
                     size="sm" 
-                    className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift"
+                    className="bg-blue-600 text-white font-bold hover:bg-blue-500 hover-lift"
                   >
                     Ver Detalles
                   </Button>
                 </div>
-                <div className="mt-3 text-xs text-[#1a1144]/60">👤 {curso.teacher}</div>
+                <div className="mt-3 text-xs text-gray-900/60">👤 {curso.teacher}</div>
               </div>
             </div>
           </Link>
@@ -160,13 +160,13 @@ export default function CursosPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f8fa]">
+    <main className="min-h-screen bg-gray-100">
       <Header />
       <div className="container mx-auto px-4 py-20">
-        <h1 className="text-4xl font-extrabold text-center mb-2 text-[#1a1144] animate-fade-in">
+        <h1 className="text-4xl font-extrabold text-center mb-2 text-gray-900 animate-fade-in">
           Nuestros Cursos
         </h1>
-        <p className="text-center text-lg text-[#1a1144]/70 mb-12 animate-fade-in">
+        <p className="text-center text-lg text-gray-900/70 mb-12 animate-fade-in">
           Explora nuestra selección de cursos y encuentra el que mejor se adapte a tus necesidades
         </p>
 

@@ -61,7 +61,7 @@ export function ImageUpload({ currentImage, onImageChange }: ImageUploadProps) {
     <div className="w-full">
       <div
         className={`border-2 border-dashed rounded-lg p-4 text-center ${
-          isDragging ? 'border-[#00ffae] bg-[#00ffae]/10' : 'border-gray-300'
+          isDragging ? 'border-blue-600 bg-blue-600/10' : 'border-gray-300'
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -90,7 +90,7 @@ export function ImageUpload({ currentImage, onImageChange }: ImageUploadProps) {
             <Upload className="w-12 h-12 mx-auto text-gray-400 mb-2" />
             <p className="text-sm text-gray-500">
               Arrastra y suelta una imagen aquí o{' '}
-              <label className="text-[#00ffae] hover:text-[#00e6a0] cursor-pointer">
+              <label className="text-blue-600 hover:text-blue-500 cursor-pointer">
                 <span>selecciona un archivo</span>
                 <input
                   type="file"
