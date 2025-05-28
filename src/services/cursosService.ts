@@ -6,7 +6,9 @@ class CursosService {
   private listeners: ((cursos: Curso[]) => void)[] = [];
 
   private constructor() {
-    this.loadCursos();
+    this.loadCursos().catch(error => {
+      console.error('Error al cargar cursos inicialmente:', error);
+    });
   }
 
   public static getInstance(): CursosService {
@@ -18,12 +20,20 @@ class CursosService {
 
   private async loadCursos() {
     try {
-      const response = await fetch('/api/cursos');
+      const response = await fetch('/api/cursos', {
+        cache: 'no-store'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al cargar cursos');
+      }
+      
       const data = await response.json();
       this.cursos = data.cursos;
       this.notifyListeners();
     } catch (error) {
       console.error('Error al cargar cursos:', error);
+      throw error;
     }
   }
 
@@ -40,6 +50,9 @@ class CursosService {
   }
 
   public async getCursos(): Promise<Curso[]> {
+    if (this.cursos.length === 0) {
+      await this.loadCursos();
+    }
     return this.cursos;
   }
 

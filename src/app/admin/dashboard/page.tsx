@@ -280,7 +280,7 @@ export default function AdminDashboard() {
   return (
     <main className="min-h-screen bg-[#f6f8fa]">
       <div className="bg-[#1a1144] text-white py-6">
-        <div className="container mx-auto px-4 flex justify-between items-center">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Panel de Administración</h1>
           <Button
             variant="ghost"
@@ -293,7 +293,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-xl font-semibold text-[#1a1144]">Gestión de Cursos</h2>
           <Button
