@@ -31,7 +31,7 @@ function Header() {
             height={40} 
             className="rounded-full bg-white p-1 hover-scale transition-all" 
           />
-          <span className="font-bold text-xl tracking-tight text-white">BIMCAT</span>
+          <span className="font-bold text-xl tracking-tight text-white">BIMCAT S.R.L</span>
         </div>
         <nav className="hidden md:flex gap-8 text-base font-medium">
           {NAV_LINKS.map(link => (
