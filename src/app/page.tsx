@@ -50,7 +50,7 @@ function CursoCard({ curso }: { curso: any }) {
     <Link href={`/cursos/${curso.slug}`}>
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift">
         <div className="relative h-48 w-full">
-          <Image src={curso.img} alt={curso.title} fill className="object-cover" />
+          <Image src={curso.img} alt={curso.title} fill className="object-cover object-top" />
         </div>
         <div className="p-6 flex flex-col flex-1">
           <h3 className="font-bold text-lg text-gray-900 mb-1">{curso.title}</h3>

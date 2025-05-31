@@ -335,6 +335,83 @@
       "images": [
         "/uploads/1748445845748.jpg"
       ]
+    },
+    {
+      "slug": "supervision-y-fiscalizacion-de-obras",
+      "img": "/uploads/1748441658184.jpg",
+      "title": "SUPERVISIÓN Y FISCALIZACIÓN  DE OBRAS ",
+      "desc": "Este curso está diseñado para fortalecer las competencias técnicas y administrativas de los profesionales involucrados en la ejecución de proyectos de construcción, brindando conocimientos clave sobre la supervisión y fiscalización de obras.",
+      "descLong": "A lo largo de las sesiones, los participantes aprenderán sobre las funciones y atribuciones de los distintos actores en obra (residente, director, supervisor y fiscal), el manejo adecuado de la documentación de control, y los procedimientos administrativos y económicos relacionados con el avance y cierre de obras.",
+      "lessons": "5 lecciones lecciones",
+      "duration": "6h 0m",
+      "durationHours": "6",
+      "durationMinutes": "0",
+      "level": "Intermedio",
+      "teacher": "Paola Aparicio Quitanilla Arquitecta ",
+      "priceProfesional": "250",
+      "priceEstudiante": "200",
+      "offerPriceProfesional": "",
+      "offerPriceEstudiante": "",
+      "offerEndDate": "",
+      "startDate": "2025-06-10",
+      "endDate": "2025-06-13",
+      "benefits": [
+        ""
+      ],
+      "categoria": "Arquitectura",
+      "visible": true,
+      "images": [
+        "/uploads/1748441658184.jpg"
+      ],
+      "temas": [
+        {
+          "titulo": "FUNCIONES Y ATRIBUCIONES DE LOS TECNICOS EN OBRA ",
+          "contenidos": [
+            "Rol del residente de obras y funciones",
+            "Rol del director de obras y funciones. ",
+            "Rol del supervisor de obras y funciones. ",
+            "Rol del fiscal de obras y funciones. "
+          ]
+        },
+        {
+          "titulo": "DOCUMENTACIÓN DE CONTROL ",
+          "contenidos": [
+            "Contrato",
+            "Libro de órdenes. ",
+            "Cronograma",
+            "Solicitud de materiales ",
+            "Control de calidad de obra "
+          ]
+        },
+        {
+          "titulo": "CONTROL ADMINISTRATIVO ECONÓMICO DE AVANCE Y CONCLUSIÓN DE OBRA ",
+          "contenidos": [
+            "Cuando se presentar estos documentos ",
+            "Planillas de avance ",
+            "Orden de trabajo ",
+            "Orden de cambio ",
+            "Contrato modificatorio ",
+            "Resolución de contrato "
+          ]
+        },
+        {
+          "titulo": "CONTROL DE CIERRE DE OBRA ",
+          "contenidos": [
+            "Pasos para el cierre de obra ",
+            "Recepción de obras "
+          ]
+        },
+        {
+          "titulo": "APLICACIÓN DE ALGUNOS MODELOS DE CONTROL ",
+          "contenidos": [
+            "Practica de llenado de libro de ordenes",
+            "Practica de elaboración de planillas de avance ",
+            "Practica de elaboración orden de trabajo ",
+            "Practica de elaboración orden de cambio  ",
+            "Practica de elaboración contrato modificatorio "
+          ]
+        }
+      ]
     }
   ]
 }
