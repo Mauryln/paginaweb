@@ -19,7 +19,7 @@
         "Acceso a recursos exclusivos"
       ],
       "categoria": "BIM",
-      "visible": false,
+      "visible": true,
       "durationHours": "12",
       "durationMinutes": "30",
       "priceProfesional": "140",
@@ -305,35 +305,6 @@
             "Recomendaciones finales, análisis de casos, resolución de dudas "
           ]
         }
-      ]
-    },
-    {
-      "slug": "asd",
-      "img": "/uploads/1748445845748.jpg",
-      "title": "asd",
-      "desc": "asd",
-      "descLong": "asd",
-      "lessons": "1 lecciones lecciones",
-      "duration": "",
-      "durationHours": "",
-      "durationMinutes": "",
-      "level": "Básico",
-      "teacher": "",
-      "priceProfesional": "200",
-      "priceEstudiante": "",
-      "offerPriceProfesional": "",
-      "offerPriceEstudiante": "",
-      "offerEndDate": "",
-      "startDate": "",
-      "endDate": "2025-05-31",
-      "benefits": [
-        ""
-      ],
-      "categoria": "Salud",
-      "visible": true,
-      "id": "7",
-      "images": [
-        "/uploads/1748445845748.jpg"
       ]
     },
     {

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import type { Curso } from "@/data/cursos";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Edit, Plus, Eye, EyeOff, Trash, LogOut, X } from "lucide-react";
+import { Edit, Plus, Eye, EyeOff, Trash, LogOut, X, Upload } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { ImageUpload } from '@/components/ImageUpload';
 import { cursosService } from '@/services/cursosService';
@@ -18,6 +18,7 @@ const tabs = [
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const [vistaActual, setVistaActual] = useState('cursos');
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
@@ -25,6 +26,12 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [tipoPrecio, setTipoPrecio] = useState<'unico' | 'diferenciado'>('diferenciado');
   const BS_TO_USD = 7;
+
+  // Estado y lógica para imágenes del carrusel
+  const [carouselImages, setCarouselImages] = useState<string[]>([]);
+  const [selectedCarouselFile, setSelectedCarouselFile] = useState<File | null>(null);
+  const [loadingCarouselImages, setLoadingCarouselImages] = useState(false);
+  const [uploadingCarouselImage, setUploadingCarouselImage] = useState(false);
 
   useEffect(() => {
     const unsubscribe = cursosService.subscribe((updatedCursos) => {
@@ -34,6 +41,101 @@ export default function AdminDashboard() {
 
     return () => unsubscribe();
   }, []);
+
+  // Fetch carousel images when vistaActual changes to 'carousel-images' or after upload/deletion
+  useEffect(() => {
+    if (vistaActual === 'carousel-images') {
+      fetchCarouselImages();
+    }
+  }, [vistaActual]);
+
+  // Function to fetch existing carousel images
+  const fetchCarouselImages = async () => {
+    try {
+      setLoadingCarouselImages(true);
+      const response = await fetch('/api/carousel-images');
+      if (!response.ok) {
+        throw new Error('Error fetching carousel images');
+      }
+      const data: string[] = await response.json();
+      setCarouselImages(data);
+    } catch (error) {
+      console.error('Error fetching carousel images:', error);
+      // Consider adding user-facing error message
+    } finally {
+      setLoadingCarouselImages(false);
+    }
+  };
+
+  // Handle file selection for carousel images
+  const handleCarouselFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedCarouselFile(event.target.files[0]);
+    } else {
+      setSelectedCarouselFile(null);
+    }
+  };
+
+  // Handle uploading carousel image
+  const handleUploadCarouselImage = async () => {
+    if (!selectedCarouselFile) {
+      alert('Por favor, selecciona un archivo para subir.');
+      return;
+    }
+
+    setUploadingCarouselImage(true);
+    const formData = new FormData();
+    formData.append('file', selectedCarouselFile);
+
+    try {
+      const response = await fetch('/api/carousel-images', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al subir la imagen');
+      }
+
+      // After successful upload, refetch the images list
+      setSelectedCarouselFile(null);
+      const fileInput = document.getElementById('carousel-image-upload-input') as HTMLInputElement;
+      if (fileInput) {
+          fileInput.value = ''; // Clear the file input visually
+      }
+      await fetchCarouselImages(); // Refresh the list
+      alert('Imagen del carrusel subida exitosamente.');
+
+    } catch (error) {
+      console.error('Error uploading carousel image:', error);
+      alert('Error al subir la imagen del carrusel.');
+    } finally {
+      setUploadingCarouselImage(false);
+    }
+  };
+
+  // Implement delete functionality for carousel images
+  const handleDeleteCarouselImage = async (imageUrl: string) => {
+      if (window.confirm('¿Estás seguro de que quieres eliminar esta imagen del carrusel?')) {
+          try {
+              const response = await fetch('/api/carousel-images', {
+                  method: 'DELETE',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ url: imageUrl }),
+              });
+              if (!response.ok) {
+                  throw new Error('Error deleting image');
+              }
+              await fetchCarouselImages(); // Refresh list after deletion
+              alert('Imagen del carrusel eliminada exitosamente.');
+          } catch (error) {
+              console.error('Error deleting carousel image:', error);
+              alert('Error al eliminar la imagen del carrusel.');
+          }
+      }
+  };
 
   const handleLogout = () => {
     document.cookie = 'adminAuth=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
