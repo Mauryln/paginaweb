@@ -9,6 +9,13 @@ import { useRouter } from 'next/navigation';
 import { ImageUpload } from '@/components/ImageUpload';
 import { cursosService } from '@/services/cursosService';
 
+interface CarouselImage {
+  id: string;
+  url: string;
+  title: string;
+  description: string;
+}
+
 const tabs = [
   { label: 'Descripción', key: 'descripcion' },
   { label: 'Temario del curso', key: 'temario' },
@@ -28,10 +35,16 @@ export default function AdminDashboard() {
   const BS_TO_USD = 7;
 
   // Estado y lógica para imágenes del carrusel
-  const [carouselImages, setCarouselImages] = useState<string[]>([]);
-  const [selectedCarouselFile, setSelectedCarouselFile] = useState<File | null>(null);
-  const [loadingCarouselImages, setLoadingCarouselImages] = useState(false);
-  const [uploadingCarouselImage, setUploadingCarouselImage] = useState(false);
+  const [carouselImages, setCarouselImages] = useState<CarouselImage[]>([]);
+  const [newImageFile, setNewImageFile] = useState<File | null>(null);
+  const [newImageUrl, setNewImageUrl] = useState<string>('');
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [carouselTitle, setCarouselTitle] = useState('');
+  const [carouselDescription, setCarouselDescription] = useState('');
+  const [loadingCarousel, setLoadingCarousel] = useState(false);
+
+  const [isCarouselModalOpen, setIsCarouselModalOpen] = useState(false);
+  const [isCarouselFormModalOpen, setIsCarouselFormModalOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = cursosService.subscribe((updatedCursos) => {
@@ -42,50 +55,74 @@ export default function AdminDashboard() {
     return () => unsubscribe();
   }, []);
 
-  // Fetch carousel images when vistaActual changes to 'carousel-images' or after upload/deletion
+  // Fetch carousel images when the carousel modal is opened
   useEffect(() => {
-    if (vistaActual === 'carousel-images') {
+    if (isCarouselModalOpen) {
       fetchCarouselImages();
     }
-  }, [vistaActual]);
+  }, [isCarouselModalOpen]);
+
+  // Manejar cambio en el input de archivo del carrusel
+  const handleCarouselFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setNewImageFile(file);
+    setNewImageUrl('');
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
+  // Manejar cambio en el input de URL del carrusel
+  const handleCarouselUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    setNewImageUrl(url);
+    setNewImageFile(null);
+    setImagePreview(url || null);
+  };
 
   // Function to fetch existing carousel images
   const fetchCarouselImages = async () => {
     try {
-      setLoadingCarouselImages(true);
+      setLoadingCarousel(true);
       const response = await fetch('/api/carousel-images');
       if (!response.ok) {
         throw new Error('Error fetching carousel images');
       }
-      const data: string[] = await response.json();
+      const data: CarouselImage[] = await response.json();
       setCarouselImages(data);
     } catch (error) {
       console.error('Error fetching carousel images:', error);
-      // Consider adding user-facing error message
     } finally {
-      setLoadingCarouselImages(false);
-    }
-  };
-
-  // Handle file selection for carousel images
-  const handleCarouselFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedCarouselFile(event.target.files[0]);
-    } else {
-      setSelectedCarouselFile(null);
+      setLoadingCarousel(false);
     }
   };
 
   // Handle uploading carousel image
-  const handleUploadCarouselImage = async () => {
-    if (!selectedCarouselFile) {
-      alert('Por favor, selecciona un archivo para subir.');
-      return;
+  const handleUploadCarouselImage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newImageFile && !newImageUrl) {
+        alert('Por favor, selecciona un archivo o pega una URL de imagen.');
+        return;
     }
 
-    setUploadingCarouselImage(true);
+    setLoadingCarousel(true);
     const formData = new FormData();
-    formData.append('file', selectedCarouselFile);
+
+    if (newImageFile) {
+      formData.append('image', newImageFile);
+    } else if (newImageUrl) {
+      formData.append('imageUrl', newImageUrl);
+    }
+
+    formData.append('title', carouselTitle);
+    formData.append('description', carouselDescription);
 
     try {
       const response = await fetch('/api/carousel-images', {
@@ -93,48 +130,85 @@ export default function AdminDashboard() {
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error('Error al subir la imagen');
+      if (response.ok) {
+        setNewImageFile(null);
+        setNewImageUrl('');
+        setImagePreview(null);
+        setCarouselTitle('');
+        setCarouselDescription('');
+        fetchCarouselImages();
+        setIsCarouselFormModalOpen(false);
+        alert('Imagen subida exitosamente!');
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al subir la imagen');
       }
-
-      // After successful upload, refetch the images list
-      setSelectedCarouselFile(null);
-      const fileInput = document.getElementById('carousel-image-upload-input') as HTMLInputElement;
-      if (fileInput) {
-          fileInput.value = ''; // Clear the file input visually
-      }
-      await fetchCarouselImages(); // Refresh the list
-      alert('Imagen del carrusel subida exitosamente.');
-
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading carousel image:', error);
-      alert('Error al subir la imagen del carrusel.');
+      alert(`Error al subir la imagen: ${error.message}`);
     } finally {
-      setUploadingCarouselImage(false);
+      setLoadingCarousel(false);
     }
   };
 
   // Implement delete functionality for carousel images
-  const handleDeleteCarouselImage = async (imageUrl: string) => {
+  const handleDeleteCarouselImage = async (id: string) => {
       if (window.confirm('¿Estás seguro de que quieres eliminar esta imagen del carrusel?')) {
           try {
-              const response = await fetch('/api/carousel-images', {
+              const response = await fetch(`/api/carousel-images?id=${id}`, {
                   method: 'DELETE',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ url: imageUrl }),
               });
-              if (!response.ok) {
-                  throw new Error('Error deleting image');
+              if (response.ok) {
+                  fetchCarouselImages();
+                  alert('Imagen del carrusel eliminada exitosamente.');
+              } else {
+                throw new Error('Error al eliminar la imagen');
               }
-              await fetchCarouselImages(); // Refresh list after deletion
-              alert('Imagen del carrusel eliminada exitosamente.');
           } catch (error) {
               console.error('Error deleting carousel image:', error);
               alert('Error al eliminar la imagen del carrusel.');
           }
       }
+  };
+
+  // Función para mover una imagen hacia arriba en la lista
+  const moveImageUp = (index: number) => {
+    if (index === 0) return; // Ya está en la cima
+    const updatedImages = [...carouselImages];
+    const [movedImage] = updatedImages.splice(index, 1);
+    updatedImages.splice(index - 1, 0, movedImage);
+    setCarouselImages(updatedImages);
+  };
+
+  // Función para mover una imagen hacia abajo en la lista
+  const moveImageDown = (index: number) => {
+    if (index === carouselImages.length - 1) return; // Ya está abajo del todo
+    const updatedImages = [...carouselImages];
+    const [movedImage] = updatedImages.splice(index, 1);
+    updatedImages.splice(index + 1, 0, movedImage);
+    setCarouselImages(updatedImages);
+  };
+
+  // Función para guardar el nuevo orden
+  const saveCarouselOrder = async () => {
+    try {
+      setLoadingCarousel(true); // Mostrar estado de carga
+      const response = await fetch('/api/carousel-images', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(carouselImages), // Enviar la lista completa reordenada
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al guardar el orden');
+      }
+      alert('Orden guardado exitosamente!');
+    } catch (error: any) {
+      console.error('Error saving carousel order:', error);
+      alert(`Error al guardar el orden: ${error.message}`);
+    } finally {
+      setLoadingCarousel(false); // Ocultar estado de carga
+    }
   };
 
   const handleLogout = () => {
@@ -204,7 +278,35 @@ export default function AdminDashboard() {
   const handleDelete = async (id: string) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este curso?')) {
       try {
+        // Find the course to get its image URL before deleting
+        const courseToDelete = cursos.find(curso => curso.id === id);
+        let imageUrlToDelete = courseToDelete?.img; // Assuming 'img' holds the relative URL
+
+        // If the course has an image, attempt to delete the file first
+        if (imageUrlToDelete) {
+          try {
+            const deleteImageResponse = await fetch('/api/delete-image', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ imageUrl: imageUrlToDelete }),
+            });
+
+            if (!deleteImageResponse.ok) {
+              console.warn('Failed to delete image file on server:', await deleteImageResponse.json());
+              // Decide how to handle failure to delete image file (e.g., log, alert, continue deletion of course record)
+              // For now, we'll log a warning and proceed with deleting the course record.
+            }
+          } catch (imageDeleteError) {
+            console.error('Error calling image deletion API:', imageDeleteError);
+            // Decide how to handle API call error (e.g., log, alert, continue deletion of course record)
+            // For now, we'll log an error and proceed with deleting the course record.
+          }
+        }
+
+        // Now, delete the course record
         await cursosService.deleteCurso(id);
+        alert('Curso eliminado exitosamente.');
+
       } catch (error) {
         console.error('Error al eliminar curso:', error);
         alert('Error al eliminar el curso');
@@ -376,6 +478,18 @@ export default function AdminDashboard() {
 
   const today = new Date().toISOString().split('T')[0];
 
+  const openCarouselModal = () => setIsCarouselModalOpen(true);
+  const closeCarouselModal = () => setIsCarouselModalOpen(false);
+  const openCarouselFormModal = () => setIsCarouselFormModalOpen(true);
+  const closeCarouselFormModal = () => {
+    setIsCarouselFormModalOpen(false);
+    setNewImageFile(null);
+    setNewImageUrl('');
+    setImagePreview(null);
+    setCarouselTitle('');
+    setCarouselDescription('');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f6f8fa] flex items-center justify-center">
@@ -403,13 +517,22 @@ export default function AdminDashboard() {
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8 animate-fade-in">
           <h2 className="text-xl font-semibold text-[#1a1144]">Gestión de Cursos</h2>
-          <Button
-            className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift transition-all"
-            onClick={handleCreate}
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Nuevo Curso
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift transition-all"
+              onClick={openCarouselModal}
+            >
+              <Upload className="w-5 h-5 mr-2" />
+              Gestionar Carrusel
+            </Button>
+            <Button
+              className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift transition-all"
+              onClick={handleCreate}
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Nuevo Curso
+            </Button>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -922,6 +1045,174 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
+
+      {/* Modal de Gestión de Carrusel */}
+      {isCarouselModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-5xl max-h-[95vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-blue-700">Administrar Imágenes del Carrusel</h3>
+              <Button onClick={closeCarouselModal} variant="ghost" size="sm">
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            {/* Botón para abrir el formulario de subida dentro del modal principal */}
+            <div className="mb-4 flex justify-between items-center">
+               <Button onClick={openCarouselFormModal} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                <Plus className="w-5 h-5 mr-2" />
+                 Agregar Nueva Imagen
+              </Button>
+              {carouselImages.length > 0 && (
+                <Button onClick={saveCarouselOrder} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                  Guardar Orden
+                </Button>
+              )}
+            </div>
+
+            {/* Lista de Imágenes dentro del modal principal */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-4">Imágenes Actuales</h2>
+                {loadingCarousel ? (
+                  <div className="text-center text-gray-600">Cargando imágenes...</div>
+                ) : carouselImages.length === 0 ? (
+                  <div className="text-center text-gray-600">No hay imágenes para mostrar.</div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {carouselImages.map((image, index) => (
+                      <div key={image.id} className="border rounded-lg overflow-hidden flex flex-col justify-between">
+                        <div className="relative h-40 w-full flex-shrink-0">
+                          <Image
+                            src={image.url}
+                            alt={image.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="p-4 flex flex-col flex-grow">
+                          <h3 className="font-semibold text-sm truncate">{image.title}</h3>
+                          <p className="text-gray-600 text-xs mt-1 flex-grow overflow-hidden text-ellipsis">{image.description}</p>
+                          <div className="flex justify-between items-center mt-3">
+                             <div className="flex gap-2">
+                                <button
+                                  onClick={() => moveImageUp(index)}
+                                  disabled={index === 0}
+                                  className="text-gray-600 hover:text-blue-600 disabled:opacity-30"
+                                >
+                                  Mover Arriba
+                                </button>
+                                <button
+                                  onClick={() => moveImageDown(index)}
+                                  disabled={index === carouselImages.length - 1}
+                                  className="text-gray-600 hover:text-blue-600 disabled:opacity-30"
+                                >
+                                  Mover Abajo
+                                </button>
+                             </div>
+                              <button
+                                onClick={() => handleDeleteCarouselImage(image.id)}
+                                className="text-red-600 hover:text-red-800"
+                              >
+                                Eliminar
+                              </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+            </div>
+
+            {/* Modal del Formulario de Subida de Carrusel (Anidado dentro del modal principal) */}
+            {isCarouselFormModalOpen && (
+               <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+                 <div className="bg-white rounded-lg p-6 w-full max-w-screen-lg max-h-[95vh] overflow-y-auto relative">
+                   <div className="flex justify-between items-center mb-4">
+                     <h3 className="text-xl font-bold text-blue-700">Agregar Nueva Imagen</h3>
+                     <Button onClick={closeCarouselFormModal} variant="ghost" size="sm">
+                       <X className="w-5 h-5" />
+                     </Button>
+                   </div>
+                   
+                   <form onSubmit={handleUploadCarouselImage} className="space-y-4">
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">
+                         Subir desde Archivo
+                       </label>
+                       <input
+                         type="file"
+                         accept="image/*"
+                         onChange={handleCarouselFileChange}
+                         className="w-full p-2 border rounded"
+                       />
+                     </div>
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">
+                         O pegar URL de Imagen (ej. Google Drive compartida públicamente)
+                       </label>
+                       <input
+                         type="text"
+                         value={newImageUrl}
+                         onChange={handleCarouselUrlChange}
+                         placeholder="https://ejemplo.com/imagen.jpg"
+                         className="w-full p-2 border rounded"
+                       />
+                     </div>
+
+                     {imagePreview && (
+                       <div className="mt-4">
+                         <h3 className="text-lg font-semibold mb-2">Previsualización:</h3>
+                         <div className="relative w-40 h-40 border rounded overflow-hidden">
+                           <Image 
+                             src={imagePreview}
+                             alt="Previsualización"
+                             fill
+                             className="object-cover"
+                           />
+                         </div>
+                       </div>
+                     )}
+
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">
+                         Título
+                       </label>
+                       <input
+                         type="text"
+                         value={carouselTitle}
+                         onChange={(e) => setCarouselTitle(e.target.value)}
+                         className="w-full p-2 border rounded"
+                         required
+                       />
+                     </div>
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">
+                         Descripción
+                       </label>
+                       <textarea
+                         value={carouselDescription}
+                         onChange={(e) => setCarouselDescription(e.target.value)}
+                         className="w-full p-2 border rounded"
+                         rows={3}
+                         required
+                       />
+                     </div>
+                     <button
+                       type="submit"
+                       disabled={loadingCarousel || (!newImageFile && !newImageUrl)}
+                       className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                     >
+                       {loadingCarousel ? 'Subiendo...' : 'Subir Imagen'}
+                     </button>
+                   </form>
+                 </div>
+               </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
     </main>
   );
 }

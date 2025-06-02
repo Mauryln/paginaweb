@@ -28,61 +28,6 @@
       "offerEndDate": ""
     },
     {
-      "id": "2",
-      "slug": "bitcoin-2",
-      "img": "/curso2.jpg",
-      "title": "Bitcoin 2",
-      "desc": "Domina Revit para el diseño arquitectónico profesional.",
-      "descLong": "Aprende a utilizar Revit desde cero para crear proyectos arquitectónicos completos, desde el modelado hasta la documentación y presentación.",
-      "lessons": "6 lecciones lecciones",
-      "duration": "9h 10m",
-      "level": "Intermedio",
-      "teacher": "Arq. Juan Gómez",
-      "price": "Gratis",
-      "benefits": [
-        "Aprende Revit desde cero",
-        "Crea proyectos arquitectónicos reales",
-        "Descarga archivos de práctica",
-        "Certificado de finalización"
-      ],
-      "categoria": "Arquitectura",
-      "visible": true,
-      "durationHours": "9",
-      "durationMinutes": "10",
-      "startDate": "",
-      "offerEndDate": "",
-      "priceEstudiante": "",
-      "offerPriceEstudiante": ""
-    },
-    {
-      "slug": "prueba-2",
-      "img": "/uploads/1747927152353.jpeg",
-      "title": "Prueba 2",
-      "desc": "Domina Revit para el diseño arquitectónico profesional.",
-      "descLong": "Exasdasdasd",
-      "lessons": "3 lecciones lecciones lecciones",
-      "duration": "9h 0m",
-      "level": "Intermedio",
-      "teacher": "Arq. Juan Gómez",
-      "price": "120 Bs",
-      "benefits": [
-        "Facil"
-      ],
-      "categoria": "BIM",
-      "visible": true,
-      "id": "3",
-      "durationHours": "9",
-      "durationMinutes": "0",
-      "priceProfesional": "50",
-      "startDate": "",
-      "offerEndDate": "",
-      "images": [
-        "/uploads/1747927152353.jpeg"
-      ],
-      "priceEstudiante": "",
-      "offerPriceEstudiante": ""
-    },
-    {
       "slug": "el-delito-el-procedimiento-penal-y-la-correcta-valoracion-de-la-prueba",
       "img": "/uploads/1747923232335.jpg",
       "title": "EL DELITO, el procedimiento penal y la correcta valoración de la prueba",
