@@ -4,6 +4,15 @@ import Image from "next/image";
 import { Laptop2, GraduationCap, UserCheck, Star, ShieldCheck, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Facebook, Instagram, Linkedin } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import Carousel from '@/components/Carousel';
+
+interface CarouselImage {
+  id: string;
+  url: string;
+  title: string;
+  description: string;
+}
 
 const NAV_LINKS = [
   { label: 'Inicio', href: '/' },
@@ -52,9 +61,60 @@ function Header() {
 }
 
 export default function Beneficios() {
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<CarouselImage[]>([]);
+  const [loadingGallery, setLoadingGallery] = useState(false);
+
+  const openGallery = async () => {
+    setIsGalleryOpen(true);
+    try {
+      setLoadingGallery(true);
+      const response = await fetch('/api/carousel-images');
+      if (!response.ok) {
+        throw new Error('Error fetching gallery images');
+      }
+      const data = await response.json();
+      setGalleryImages(data);
+    } catch (error) {
+      console.error('Error fetching gallery images:', error);
+    } finally {
+      setLoadingGallery(false);
+    }
+  };
+
+  const closeGallery = () => {
+    setIsGalleryOpen(false);
+    setGalleryImages([]);
+  };
+
   return (
     <main className="min-h-screen bg-gray-900 text-white">
       <Header />
+
+      <section className="py-16 bg-gray-800 shadow-xl">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-8 text-white">
+            Experiencias BIMCAT
+          </h2>
+          
+          <div className="mb-8">
+             <Carousel />
+          </div>
+
+          <div className="text-center">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-blue-400 text-blue-400 hover:bg-blue-400/10 hover-lift"
+              onClick={openGallery}
+            >
+              Ver Todas las Imágenes
+            </Button>
+          </div>
+
+        </div>
+      </section>
+
       <section className="py-20">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-4 text-blue-400 animate-fade-in">
@@ -114,6 +174,40 @@ export default function Beneficios() {
           </div>
         </div>
       </section>
+
+      {isGalleryOpen && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[110] p-4 animate-fade-in">
+          <div className="bg-white rounded-lg p-6 w-full max-w-screen-lg max-h-[95vh] overflow-y-auto relative">
+            <button 
+              onClick={closeGallery}
+              className="absolute top-4 right-4 text-gray-800 hover:text-gray-600 text-2xl font-bold"
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">Galería de Imágenes</h2>
+            
+            {loadingGallery ? (
+              <div className="text-center text-gray-600">Cargando galería...</div>
+            ) : galleryImages.length === 0 ? (
+              <div className="text-center text-gray-600">No hay imágenes disponibles en la galería.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {galleryImages.map((image) => (
+                  <div key={image.id} className="relative w-full h-40 rounded-lg overflow-hidden shadow-md">
+                    <Image
+                      src={image.url}
+                      alt={image.title || 'Imagen de galería'}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
     </main>
   );
 } 

@@ -71,13 +71,26 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
   filtroActual: string, 
   setFiltroActual: (filtro: string) => void 
 }) {
+  // Filtrar primero por visibilidad
+  const cursosVisibles = cursos.filter(curso => curso.visible !== false);
+
+  // Generar categorías a partir de cursos visibles
   const categoriasFiltro = [
     'Todos',
-    ...Array.from(new Set(cursos.map((c) => c.categoria))).filter(Boolean)
+    ...Array.from(new Set(cursosVisibles.map((c) => c.categoria))).filter(Boolean)
   ];
+
+  // Filtrar por categoría seleccionada
   const cursosFiltrados = filtroActual === "Todos" 
-    ? cursos.filter(curso => curso.visible !== false)
-    : cursos.filter(curso => curso.categoria === filtroActual && curso.visible !== false);
+    ? cursosVisibles
+    : cursosVisibles.filter(curso => curso.categoria === filtroActual);
+
+  // Si el filtro actual no tiene cursos visibles, resetear a 'Todos'
+  useEffect(() => {
+    if (filtroActual !== 'Todos' && cursosFiltrados.length === 0 && categoriasFiltro.includes(filtroActual)) {
+      setFiltroActual('Todos');
+    }
+  }, [cursosFiltrados, filtroActual, categoriasFiltro, setFiltroActual]);
 
   return (
     <>

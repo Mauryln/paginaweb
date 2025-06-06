@@ -159,16 +159,26 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [cursoSeleccionado, setCursoSeleccionado] = useState<any>(null);
   
-  // Categorías de filtro disponibles
+  // Filtrar cursos visibles primero
+  const cursosVisibles = cursos.filter(curso => curso.visible !== false);
+
+  // Categorías de filtro disponibles (generadas a partir de cursos visibles)
   const categoriasFiltro = [
     'Todos',
-    ...Array.from(new Set(cursos.map((c) => c.categoria))).filter(Boolean)
+    ...Array.from(new Set(cursosVisibles.map((c) => c.categoria))).filter(Boolean)
   ];
 
-  // Filtrar cursos según la categoría seleccionada y visibilidad
+  // Filtrar cursos según la categoría seleccionada
   const cursosFiltrados = filtroActual === "Todos" 
-    ? cursos.filter(curso => curso.visible !== false)
-    : cursos.filter(curso => curso.categoria === filtroActual && curso.visible !== false);
+    ? cursosVisibles
+    : cursosVisibles.filter(curso => curso.categoria === filtroActual);
+
+  // Si el filtro actual no tiene cursos visibles, resetear a 'Todos'
+  useEffect(() => {
+    if (filtroActual !== 'Todos' && cursosFiltrados.length === 0 && categoriasFiltro.includes(filtroActual)) {
+      setFiltroActual('Todos');
+    }
+  }, [cursosFiltrados, filtroActual, categoriasFiltro, setFiltroActual]);
 
   if (loading) {
     return (
