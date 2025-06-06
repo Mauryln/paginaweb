@@ -7,7 +7,7 @@
       "title": "Curso BIM Avanzado",
       "desc": "Aprende técnicas avanzadas de modelado y gestión BIM.",
       "descLong": "Este curso avanzado de BIM te permitirá dominar técnicas de modelado, gestión de información y flujos de trabajo colaborativos. Ideal para profesionales que buscan llevar sus habilidades al siguiente nivel.",
-      "lessons": "8 lecciones",
+      "lessons": "8 lecciones lecciones lecciones lecciones",
       "duration": "12h 30m",
       "level": "Experto",
       "teacher": "Ing. Laura Pérez",
@@ -19,13 +19,16 @@
         "Acceso a recursos exclusivos"
       ],
       "categoria": "BIM",
-      "visible": false,
+      "visible": true,
       "durationHours": "12",
       "durationMinutes": "30",
       "priceProfesional": "140",
       "startDate": "",
       "endDate": "",
-      "offerEndDate": ""
+      "offerEndDate": "",
+      "thumbnail": "/uploads/1748906795911.jpg",
+      "priceEstudiante": "",
+      "offerPriceEstudiante": ""
     },
     {
       "id": "2",

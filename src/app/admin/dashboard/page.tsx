@@ -64,6 +64,7 @@ export default function AdminDashboard() {
     const newCurso: Partial<Curso> & { durationHours?: string; durationMinutes?: string; benefits?: string[] } = {
       slug: '',
       img: '',
+      thumbnail: '',
       title: '',
       desc: '',
       descLong: '',
@@ -232,7 +233,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleImageChange = async (file: File | null) => {
+  const handleImageChange = async (file: File | null, type: 'main' | 'thumbnail') => {
     if (file) {
       try {
         const formData = new FormData();
@@ -248,20 +249,34 @@ export default function AdminDashboard() {
         }
 
         const data = await response.json();
-        setFormData(prev => ({
-          ...prev,
-          img: data.url,
-          images: [...(prev.images || []), data.url]
-        }));
+        if (type === 'main') {
+          setFormData(prev => ({
+            ...prev,
+            img: data.url,
+            images: [...(prev.images || []), data.url]
+          }));
+        } else {
+          setFormData(prev => ({
+            ...prev,
+            thumbnail: data.url
+          }));
+        }
       } catch (error) {
         console.error('Error:', error);
         alert('Error al subir la imagen');
       }
     } else {
-      setFormData(prev => ({
-        ...prev,
-        img: ''
-      }));
+      if (type === 'main') {
+        setFormData(prev => ({
+          ...prev,
+          img: ''
+        }));
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          thumbnail: ''
+        }));
+      }
     }
   };
 
@@ -462,11 +477,26 @@ export default function AdminDashboard() {
 
               <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-purple-700 mb-1">
-                  Imagen del Curso
+                  Imagen Principal
                 </label>
                 <ImageUpload
                   currentImage={formData.img}
-                  onImageChange={handleImageChange}
+                  onImageChange={(file) => handleImageChange(file, 'main')}
+                />
+              </div>
+
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Imagen Miniatura (opcional)
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Esta imagen se mostrará en las tarjetas de cursos. Si no se proporciona, se usará la imagen principal.
+                  La relación de aspecto recomendada es 16:9.
+                </p>
+                <ImageUpload
+                  currentImage={formData.thumbnail}
+                  onImageChange={(file) => handleImageChange(file, 'thumbnail')}
+                  aspectRatio={16/9}
                 />
               </div>
 

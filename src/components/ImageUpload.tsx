@@ -1,16 +1,24 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Crop, Check } from "lucide-react";
+import ReactCrop, { Crop as CropType, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 interface ImageUploadProps {
   currentImage?: string;
   onImageChange: (file: File | null) => void;
+  aspectRatio?: number;
 }
 
-export function ImageUpload({ currentImage, onImageChange }: ImageUploadProps) {
+export function ImageUpload({ currentImage, onImageChange, aspectRatio = 16/9 }: ImageUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentImage || null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isCropping, setIsCropping] = useState(false);
+  const [crop, setCrop] = useState<CropType>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [originalImage, setOriginalImage] = useState<File | null>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -26,10 +34,10 @@ export function ImageUpload({ currentImage, onImageChange }: ImageUploadProps) {
       return;
     }
 
-    // Crear URL para preview
+    setOriginalImage(file);
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
-    onImageChange(file);
+    setIsCropping(true);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -54,7 +62,67 @@ export function ImageUpload({ currentImage, onImageChange }: ImageUploadProps) {
 
   const removeImage = () => {
     setPreviewUrl(null);
+    setOriginalImage(null);
+    setIsCropping(false);
     onImageChange(null);
+  };
+
+  const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { width, height } = e.currentTarget;
+    const crop = centerCrop(
+      makeAspectCrop(
+        {
+          unit: '%',
+          width: 90,
+        },
+        aspectRatio,
+        width,
+        height
+      ),
+      width,
+      height
+    );
+    setCrop(crop);
+  };
+
+  const handleCropComplete = async () => {
+    if (!completedCrop || !imgRef.current || !originalImage) return;
+
+    const image = imgRef.current;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) return;
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    canvas.width = completedCrop.width;
+    canvas.height = completedCrop.height;
+
+    ctx.drawImage(
+      image,
+      completedCrop.x * scaleX,
+      completedCrop.y * scaleY,
+      completedCrop.width * scaleX,
+      completedCrop.height * scaleY,
+      0,
+      0,
+      completedCrop.width,
+      completedCrop.height
+    );
+
+    // Convertir el canvas a blob
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const croppedFile = new File([blob], originalImage.name, {
+          type: originalImage.type,
+        });
+        onImageChange(croppedFile);
+        setPreviewUrl(URL.createObjectURL(blob));
+        setIsCropping(false);
+      }
+    }, originalImage.type);
   };
 
   return (
@@ -69,21 +137,71 @@ export function ImageUpload({ currentImage, onImageChange }: ImageUploadProps) {
       >
         {previewUrl ? (
           <div className="relative">
-            <div className="relative w-full h-48">
-              <Image
-                src={previewUrl}
-                alt="Preview"
-                fill
-                className="object-cover rounded-lg"
-              />
-            </div>
-            <Button
-              variant="ghost"
-              className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white rounded-full p-1"
-              onClick={removeImage}
-            >
-              <X className="w-5 h-5" />
-            </Button>
+            {isCropping ? (
+              <div className="space-y-4">
+                <ReactCrop
+                  crop={crop}
+                  onChange={(c) => setCrop(c)}
+                  onComplete={(c) => setCompletedCrop(c)}
+                  aspect={aspectRatio}
+                  className="max-h-[400px]"
+                >
+                  <img
+                    ref={imgRef}
+                    src={previewUrl}
+                    alt="Preview"
+                    onLoad={onImageLoad}
+                    className="max-w-full"
+                  />
+                </ReactCrop>
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    className="text-red-500 hover:text-red-700"
+                    onClick={removeImage}
+                  >
+                    <X className="w-5 h-5 mr-2" />
+                    Cancelar
+                  </Button>
+                  <Button
+                    className="bg-blue-600 text-white hover:bg-blue-500"
+                    onClick={handleCropComplete}
+                  >
+                    <Check className="w-5 h-5 mr-2" />
+                    Aplicar Recorte
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="relative w-full h-48">
+                  <Image
+                    src={previewUrl}
+                    alt="Preview"
+                    fill
+                    className="object-cover rounded-lg"
+                  />
+                </div>
+                <div className="flex justify-end gap-2 mt-2">
+                  <Button
+                    variant="ghost"
+                    className="text-blue-600 hover:text-blue-500"
+                    onClick={() => setIsCropping(true)}
+                  >
+                    <Crop className="w-5 h-5 mr-2" />
+                    Recortar
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="text-red-500 hover:text-red-700"
+                    onClick={removeImage}
+                  >
+                    <X className="w-5 h-5 mr-2" />
+                    Eliminar
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <div className="py-8">

@@ -98,46 +98,48 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {cursosFiltrados.map((curso, index) => (
-          <Link href={`/cursos/${curso.slug}`} key={curso.id}>
-            <div 
-              className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift animate-slide-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="relative h-48 w-full">
-                <Image src={curso.img} alt={curso.title} fill className="object-cover object-top" />
-              </div>
-              <div className="p-6 flex flex-col flex-1">
-                <h3 className="font-bold text-lg text-gray-900 mb-1">{curso.title}</h3>
-                <p className="text-gray-900/70 mb-3 text-sm flex-1">{curso.desc}</p>
-                <div className="flex flex-wrap gap-2 text-xs text-gray-900/80 mb-3">
-                  <span>📚 {curso.lessons}</span>
-                  <span>⏱ {curso.duration}</span>
-                  <span>🎯 {curso.level}</span>
-                </div>
-                <div className="flex items-center justify-between mt-auto">
-                  {curso.priceEstudiante && String(curso.priceEstudiante).trim() !== '' ? (
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-blue-600 text-base">Profesional: {curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
-                      <span className="font-semibold text-blue-600 text-base">Estudiante: {curso.priceEstudiante} Bs ({(Number(curso.priceEstudiante)/7).toFixed(2)} USD)</span>
-                    </div>
-                  ) : (
-                    <span className="font-semibold text-blue-600 text-base">{curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
-                  )}
-                  <Button 
-                    size="sm" 
-                    className="bg-blue-600 text-white font-bold hover:bg-blue-500 hover-lift"
-                  >
-                    Ver Detalles
-                  </Button>
-                </div>
-                <div className="mt-3 text-xs text-gray-900/60">👤 {curso.teacher}</div>
-              </div>
-            </div>
-          </Link>
+        {cursosFiltrados.map((curso) => (
+          <CursoCard key={curso.id} curso={curso} />
         ))}
       </div>
     </>
+  );
+}
+
+function CursoCard({ curso }: { curso: Curso }) {
+  return (
+    <Link href={`/cursos/${curso.slug}`}>
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift">
+        {curso.thumbnail && (
+          <div className="relative h-48 w-full">
+            <Image 
+              src={curso.thumbnail} 
+              alt={curso.title} 
+              fill 
+              className="object-cover object-top" 
+            />
+          </div>
+        )}
+        <div className="p-6 flex flex-col flex-1">
+          <h3 className="font-bold text-lg text-gray-900 mb-1">{curso.title}</h3>
+          <p className="text-gray-900/70 mb-3 text-sm flex-1">{curso.desc}</p>
+          <div className="flex flex-wrap gap-2 text-xs text-gray-900/80 mb-3">
+            <span>📚 {curso.lessons}</span>
+            <span>⏱ {curso.duration}</span>
+            <span>🎯 {curso.level}</span>
+          </div>
+          {curso.priceEstudiante && String(curso.priceEstudiante).trim() !== '' ? (
+            <div className="flex flex-col">
+              <span className="font-semibold text-blue-600 text-base">Profesional: {curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
+              <span className="font-semibold text-blue-600 text-base">Estudiante: {curso.priceEstudiante} Bs ({(Number(curso.priceEstudiante)/7).toFixed(2)} USD)</span>
+            </div>
+          ) : (
+            <span className="font-semibold text-blue-600 text-base">{curso.priceProfesional} Bs ({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span>
+          )}
+          <div className="mt-3 text-xs text-gray-900/60">👤 {curso.teacher}</div>
+        </div>
+      </div>
+    </Link>
   );
 }
 

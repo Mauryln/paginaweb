@@ -50,7 +50,12 @@ function CursoCard({ curso }: { curso: any }) {
     <Link href={`/cursos/${curso.slug}`}>
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift">
         <div className="relative h-48 w-full">
-          <Image src={curso.img} alt={curso.title} fill className="object-cover object-top" />
+          <Image 
+            src={curso.thumbnail || curso.img} 
+            alt={curso.title} 
+            fill 
+            className="object-cover object-top" 
+          />
         </div>
         <div className="p-6 flex flex-col flex-1">
           <h3 className="font-bold text-lg text-gray-900 mb-1">{curso.title}</h3>
@@ -116,11 +121,11 @@ function CursoDetalleModal({ open, onClose, curso }: { open: boolean; onClose: (
           </div>
           <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
             {curso.temas?.map((tema: any, idx: number) => (
-              <li key={idx}>
+              <li key={`${tema.titulo}-${idx}`}>
                 <div className="font-bold text-blue-600 mb-1">{tema.titulo}</div>
                 <ul className="list-disc ml-6 text-gray-900">
                   {tema.contenidos.map((contenido: string, i: number) => (
-                    <li key={i}>{contenido}</li>
+                    <li key={`${contenido}-${i}`}>{contenido}</li>
                   ))}
                 </ul>
               </li>
@@ -189,9 +194,9 @@ export default function Home() {
             <span className="font-bold text-xl tracking-tight">BIMCAT</span>
           </div>
           <nav className="hidden md:flex gap-8 text-base font-medium">
-            {NAV_LINKS.map(link => (
+            {NAV_LINKS.map((link, idx) => (
               <a 
-                key={link.label} 
+                key={`${link.label}-${idx}`} 
                 href={link.href} 
                 className="hover:text-blue-400 transition-all hover:translate-x-1"
               >
@@ -266,9 +271,9 @@ export default function Home() {
           
           {/* Filtros de categoría con funcionalidad */}
           <div className="flex flex-wrap justify-center gap-3 mb-10">
-            {categoriasFiltro.map((categoria) => (
+            {categoriasFiltro.map((categoria, idx) => (
               <button 
-                key={categoria}
+                key={`${categoria}-${idx}`}
                 className={`px-4 py-2 rounded-full ${
                   filtroActual === categoria 
                     ? 'bg-blue-600 text-white' 
@@ -283,8 +288,8 @@ export default function Home() {
           
           {/* Grid de cursos filtrados */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {cursosFiltrados.map((curso) => (
-              <CursoCard key={curso.id} curso={curso} />
+            {cursosFiltrados.map((curso, idx) => (
+              <CursoCard key={`${curso.id}-${idx}`} curso={curso} />
             ))}
           </div>
 

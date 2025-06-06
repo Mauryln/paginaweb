@@ -2,6 +2,7 @@ export interface Curso {
   id: string;
   slug: string;
   img: string;
+  thumbnail?: string;
   images?: string[];
   title: string;
   desc: string;
