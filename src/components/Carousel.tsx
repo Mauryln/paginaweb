@@ -97,6 +97,7 @@ export default function Carousel() {
               alt={image.title}
               fill
               className={`object-cover ${isExpanded ? 'object-contain' : ''}`}
+              unoptimized
             />
             <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4">
               <h3 className="text-xl font-bold">{image.title}</h3>
@@ -125,10 +126,10 @@ export default function Carousel() {
         </>
       )}
 
-      <button 
-        className={`absolute ${isExpanded ? 'top-8 right-8' : 'top-4 right-4'} bg-white/50 text-gray-800 p-2 rounded-full shadow-md hover:bg-white transition-colors z-10`}
+      <button
+        className="absolute top-4 right-4 bg-white/50 text-gray-800 p-2 rounded-full shadow-md hover:bg-white transition-colors z-10"
         onClick={toggleExpand}
-        aria-label={isExpanded ? 'Minimizar carrusel' : 'Expandir carrusel'}
+        aria-label={isExpanded ? "Minimizar" : "Expandir"}
       >
         {isExpanded ? <Minimize className="h-6 w-6" /> : <Expand className="h-6 w-6" />}
       </button>

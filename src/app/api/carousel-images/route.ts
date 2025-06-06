@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const CAROUSEL_IMAGES_FILE = path.join(process.cwd(), 'src/data/carouselImages.json');
 const UPLOADS_DIR = path.join(process.cwd(), 'public/uploads');
+const DRIVE_FOLDER_ID = '1blrkL8jiwvqJH2XmxcsOQe8jiRy_tUKl';
 
 // Helper function to read carousel images
 async function readCarouselImages() {
@@ -29,111 +30,123 @@ async function writeCarouselImages(images: any[]) {
 
 // GET request to list carousel images
 export async function GET() {
-  const images = await readCarouselImages();
-  return NextResponse.json(images);
+  try {
+    // Lista de imágenes con sus IDs y títulos
+    const images = [
+      {
+        id: '1',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Portada Salud',
+        description: 'Servicios de salud y bienestar'
+      },
+      {
+        id: '2',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Portada Financiera',
+        description: 'Servicios financieros y asesoría'
+      },
+      {
+        id: '3',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Portada Jurídica',
+        description: 'Servicios legales y consultoría jurídica'
+      },
+      {
+        id: '4',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Portada General',
+        description: 'Servicios generales y consultoría'
+      },
+      {
+        id: '5',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: '02 de Junio',
+        description: 'Evento especial del 02 de junio'
+      },
+      {
+        id: '6',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: '14 de Mayo',
+        description: 'Evento especial del 14 de mayo'
+      },
+      {
+        id: '7',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Interior',
+        description: 'Vista interior de nuestras instalaciones'
+      },
+      {
+        id: '8',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: '26 de Mayo',
+        description: 'Evento especial del 26 de mayo'
+      },
+      {
+        id: '9',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Anatomía del Delito',
+        description: 'Teoría, Procedimientos y Valoración de la Prueba'
+      },
+      {
+        id: '10',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Investigación de Mercado',
+        description: 'Servicios de investigación y análisis de mercado'
+      },
+      {
+        id: '11',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Fungicidas e Insecticidas',
+        description: 'Productos y servicios agrícolas'
+      },
+      {
+        id: '12',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Diseño de Restaurantes',
+        description: 'Servicios de diseño y consultoría para restaurantes'
+      },
+      {
+        id: '13',
+        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        title: 'Habitaciones Niños',
+        description: 'Diseño de espacios para niños'
+      }
+    ];
+
+    return NextResponse.json(images);
+  } catch (error) {
+    console.error('Error fetching carousel images:', error);
+    return NextResponse.json({ error: 'Error al obtener las imágenes' }, { status: 500 });
+  }
 }
 
 // POST request to upload a new image
 export async function POST(request: NextRequest) {
   try {
-    // Ensure uploads directory exists
-    await fs.mkdir(UPLOADS_DIR, { recursive: true });
-    console.log(`Uploads directory ensured: ${UPLOADS_DIR}`);
-
     const formData = await request.formData();
-    const image = formData.get('image') as File | null; // Allow null for URL uploads
-    const imageUrl = formData.get('imageUrl') as string | null; // Get imageUrl
+    const file = formData.get('file') as File;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
 
-    if (!image && !imageUrl) {
+    if (!file || !title || !description) {
       return NextResponse.json(
-        { error: 'Se requiere un archivo de imagen o una URL' },
-        { status: 400 }
-      );
-    }
-    if (!title || !description) {
-      return NextResponse.json(
-        { error: 'Faltan campos requeridos (título, descripción)' },
+        { error: 'Faltan campos requeridos' },
         { status: 400 }
       );
     }
 
-    let filename: string;
-    let savedImageUrl: string; // URL relative to public directory
-
-    if (image) {
-      // Handle file upload
-      const bytes = await image.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      // Create a unique filename
-      const fileExtension = path.extname(image.name);
-      filename = `${uuidv4()}${fileExtension}`;
-      const filePath = path.join(UPLOADS_DIR, filename);
-      console.log(`Saving uploaded file to: ${filePath}`);
-
-      // Save the file
-      await fs.writeFile(filePath, buffer);
-      console.log(`File saved successfully: ${filePath}`);
-      savedImageUrl = `/uploads/${filename}`;
-
-    } else if (imageUrl) {
-      // Handle URL upload (Needs proper implementation to download the image)
-      // For now, we'll just save the URL directly, but this won't display an image
-      // unless the URL is directly accessible from the frontend.
-      // **TODO: Implement image download from URL**
-      console.warn('URL upload is not fully implemented (image file not downloaded). Storing URL directly.', imageUrl);
-      // A more robust solution would involve downloading the image from the URL
-      // and saving it to public/uploads, similar to file upload.
-      // Example (requires a library like node-fetch): 
-      /*
-      try {
-        const response = await fetch(imageUrl);
-        if (!response.ok) throw new Error(`Failed to fetch image from URL: ${response.statusText}`);
-        const arrayBuffer = await response.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        const urlParts = imageUrl.split('.');
-        const fileExtension = urlParts.length > 1 ? `.${urlParts.pop()}` : '';
-        filename = `${uuidv4()}${fileExtension}`;
-        const filePath = path.join(UPLOADS_DIR, filename);
-        await fs.writeFile(filePath, buffer);
-        savedImageUrl = `/uploads/${filename}`;
-        console.log(`Downloaded and saved image from URL to: ${filePath}`);
-      } catch (urlError) {
-        console.error('Error downloading image from URL:', urlError);
-        return NextResponse.json(
-          { error: 'Error al descargar la imagen de la URL proporcionada' },
-          { status: 500 }
-        );
-      }
-      */
-      // For now, just store the external URL directly (this likely won't work in <Image> if it's not in public)
-      filename = imageUrl.split('/').pop() || `url-image-${uuidv4()}`;
-      savedImageUrl = imageUrl; // Storing the external URL directly
-    } else { // Should not happen based on initial check, but good for typesafety
-      return NextResponse.json({ error: 'No image data provided' }, { status: 400 });
-    }
-
-    // Create image record
-    const imageRecord = {
-      id: uuidv4(),
-      url: savedImageUrl, // Use the URL relative to public or the external URL
+    // Aquí implementaremos la lógica para subir la imagen a Google Drive
+    // Por ahora retornamos una respuesta de ejemplo
+    return NextResponse.json({
+      id: '1',
+      url: 'https://drive.google.com/uc?export=view&id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7',
       title,
-      description,
-    };
-
-    // Get current images and add new one
-    const images = await readCarouselImages();
-    images.push(imageRecord);
-    await writeCarouselImages(images);
-    console.log('Image record added to JSON:', imageRecord);
-
-    return NextResponse.json(imageRecord);
+      description
+    });
   } catch (error) {
-    console.error('Error uploading image (catch block):', error);
+    console.error('Error uploading carousel image:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor al subir la imagen' }, // Generic error for client
+      { error: 'Error al subir la imagen' },
       { status: 500 }
     );
   }
