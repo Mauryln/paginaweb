@@ -192,7 +192,7 @@ export default function CursoPage() {
                         <span className="text-sm md:text-base text-white">Estudiante: <span className="text-blue-400 font-bold">{curso.priceEstudiante} Bs</span> <span className="text-xs">({(Number(curso.priceEstudiante)/7).toFixed(2)} USD)</span></span>
                       </>
                     ) : (
-                      <span className="text-sm md:text-base text-white">{curso.priceProfesional} Bs <span className="text-xs">({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span></span>
+                      <span className="text-sm md:text-base text-white">Precio: <span className="text-blue-400 font-bold">{curso.priceProfesional} Bs</span> <span className="text-xs">({(Number(curso.priceProfesional)/7).toFixed(2)} USD)</span></span>
                     )}
                   </>
                 )}
