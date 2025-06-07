@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 
 // Nuevo componente para el pie de página con directiva client
 function Footer() {
+  'use client';
   return (
     <footer className="bg-gray-900 border-blue-600/10 pt-16 pb-8 text-white mt-12">
       <div className="container mx-auto px-4">

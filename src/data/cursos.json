@@ -36,7 +36,7 @@
       "title": "EL DELITO, el procedimiento penal y la correcta valoración de la prueba",
       "desc": "Aprende sobre el procedimiento penal y la valoración correcta de la prueba",
       "descLong": "Ideal para abogados, fiscales, estudiantes de Derecho, y todos quienes buscan fortalecer su criterio jurídico y práctico frente a casos reales.\n",
-      "lessons": "4 lecciones",
+      "lessons": "4 lecciones lecciones",
       "duration": "8h 00m",
       "durationHours": "8",
       "durationMinutes": "00",
@@ -45,7 +45,7 @@
       "price": "140 Bs",
       "offerPrice": "100 Bs",
       "offerEndDate": "2025-05-31",
-      "startDate": "2025-05-28",
+      "startDate": "2025-06-07",
       "benefits": [
         "Te brinda herramientas aplicables desde el primer día.",
         "Te permite entender el proceso penal, paso a paso.",
@@ -62,7 +62,7 @@
       "priceEstudiante": "140",
       "offerPriceProfesional": "140",
       "offerPriceEstudiante": "100",
-      "endDate": "2025-06-06",
+      "endDate": "2025-06-15",
       "temas": [
         {
           "titulo": "TEORIA GENERAL DEL DELITO",
@@ -93,7 +93,8 @@
             "Sana critica y valoración de la prueba. "
           ]
         }
-      ]
+      ],
+      "thumbnail": "/uploads/1749305222519.jpg"
     },
     {
       "slug": "laboratorio-de-mecanicas-de-suelos-aplicando-a-obras-civiles",

@@ -20,7 +20,7 @@ class CursosService {
 
   private async loadCursos() {
     try {
-      const response = await fetch(`${window.location.origin}/api/cursos`, {
+      const response = await fetch(`/api/cursos`, {
         cache: 'no-store'
       });
       

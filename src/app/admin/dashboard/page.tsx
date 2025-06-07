@@ -531,8 +531,8 @@ export default function AdminDashboard() {
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8 animate-fade-in">
-          <h2 className="text-xl font-semibold text-[#1a1144]">Gestión de Cursos</h2>
-          <div className="flex gap-4">
+          <h2 className="text-lg md:text-xl font-semibold text-[#1a1144]">Gestión de Cursos</h2>
+          <div className="flex flex-wrap gap-4 justify-end">
             <Button
               className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift transition-all"
               onClick={openCarouselModal}
@@ -554,11 +554,11 @@ export default function AdminDashboard() {
           {cursos.map((curso, index) => (
             <div
               key={curso.id}
-              className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between hover-lift transition-all animate-slide-up"
+              className="bg-white rounded-lg shadow-md p-4 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between hover-lift transition-all animate-slide-up"
               style={{ animationDelay: `${index * 0.05}s` }}
             >
-              <div className="flex items-center gap-4 flex-1">
-                <div className="relative w-20 h-20 rounded-lg overflow-hidden hover-scale transition-all">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 flex-1 w-full">
+                <div className="relative w-20 h-20 rounded-lg overflow-hidden hover-scale transition-all mx-auto sm:mx-0">
                   <Image
                     src={curso.img}
                     alt={curso.title}
@@ -566,12 +566,12 @@ export default function AdminDashboard() {
                     className="object-cover"
                   />
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg text-[#1a1144]">{curso.title}</h3>
-                  <p className="text-sm text-[#1a1144]/70">{curso.desc}</p>
-                  <div className="flex gap-4 mt-2 text-sm text-[#1a1144]/60">
+                <div className="flex-1 w-full text-center sm:text-left">
+                  <h3 className="font-semibold text-lg text-[#1a1144] mb-1">{curso.title}</h3>
+                  <p className="text-sm text-[#1a1144]/70 mb-3">{curso.desc}</p>
+                  <div className="flex flex-wrap gap-4 mt-2 text-sm text-[#1a1144]/60">
                     {curso.offerPriceProfesional || curso.offerPriceEstudiante ? (
-                      <div>
+                      <div className="w-full">
                         <span className="block text-xs font-bold text-[#00ffae]">OFERTA ESPECIAL</span>
                         <span className="text-[#00ffae] font-bold">
                           Profesional: {curso.offerPriceProfesional} Bs
@@ -594,7 +594,7 @@ export default function AdminDashboard() {
                       </div>
                     ) : (
                       curso.priceEstudiante && String(curso.priceEstudiante).trim() !== '' ? (
-                        <div>
+                        <div className="w-full">
                           <span className="font-semibold text-[#00b97c] text-base">
                             Profesional: {curso.priceProfesional} Bs
                           </span>
@@ -604,16 +604,16 @@ export default function AdminDashboard() {
                           </span>
                         </div>
                       ) : (
-                        <span className="font-semibold text-[#00b97c] text-base">
+                        <span className="font-semibold text-[#00b97c] text-base w-full">
                           {curso.priceProfesional} Bs
                         </span>
                       )
                     )}
-                    <span>Categoría: {curso.categoria}</span>
+                    <span className="w-full">Categoría: {curso.categoria}</span>
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 mt-4 md:mt-0 flex-shrink-0">
                 <Button
                   variant="ghost"
                   className="text-[#1a1144] hover:text-[#00ffae] transition-colors"
@@ -644,7 +644,7 @@ export default function AdminDashboard() {
       {/* Modal de edición/creación */}
       {editMode && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 md:p-4 overflow-y-auto z-50 animate-fade-in">
-          <div className="bg-white rounded-lg p-4 md:p-6 w-full max-w-screen-lg my-8 shadow-lg overflow-y-auto max-h-[95vh]">
+          <div className="bg-white rounded-lg p-4 md:p-6 w-full max-w-full sm:max-w-lg my-8 shadow-lg overflow-y-auto max-h-[95vh] px-4">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-[#1a1144]">
                 {selectedCurso ? 'Editar Curso' : 'Nuevo Curso'}
@@ -727,7 +727,7 @@ export default function AdminDashboard() {
 
               <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-blue-700 mb-1">Tipo de precio</label>
-                <div className="flex gap-4 mb-2">
+                <div className="flex flex-wrap gap-4 mb-2">
                   <label className="flex items-center gap-2 text-[#1a1144]">
                     <input
                       type="radio"
@@ -1057,7 +1057,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-4 mt-6">
+            <div className="flex justify-center gap-4 mt-6">
               <Button
                 variant="outline"
                 className="border-[#1a1144] text-[#1a1144] hover:bg-gray-200 transition-colors"
@@ -1079,7 +1079,7 @@ export default function AdminDashboard() {
       {/* Modal de Gestión de Carrusel */}
       {isCarouselModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-5xl max-h-[95vh] overflow-y-auto relative">
+          <div className="bg-white rounded-lg p-6 w-full max-w-full sm:max-w-xl max-h-[95vh] overflow-y-auto relative px-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-blue-700">Administrar Imágenes del Carrusel</h3>
               <Button onClick={closeCarouselModal} variant="ghost" size="sm">
@@ -1088,30 +1088,30 @@ export default function AdminDashboard() {
             </div>
             
             {/* Botón para abrir el formulario de subida dentro del modal principal */}
-            <div className="mb-4 flex justify-between items-center">
-               <Button onClick={openCarouselFormModal} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                <Plus className="w-5 h-5 mr-2" />
+            <div className="mb-4 flex flex-wrap justify-between items-center gap-2">
+               <Button onClick={openCarouselFormModal} className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700">
+                <Plus className="w-4 h-4 mr-1" />
                  Agregar Nueva Imagen
               </Button>
               {carouselImages.length > 0 && (
-                <Button onClick={saveCarouselOrder} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                <Button onClick={saveCarouselOrder} className="bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700">
                   Guardar Orden
                 </Button>
               )}
             </div>
 
             {/* Lista de Imágenes dentro del modal principal */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-xl font-semibold mb-4">Imágenes Actuales</h2>
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <h2 className="text-lg font-semibold mb-4">Imágenes Actuales</h2>
                 {loadingCarousel ? (
                   <div className="text-center text-gray-600">Cargando imágenes...</div>
                 ) : carouselImages.length === 0 ? (
                   <div className="text-center text-gray-600">No hay imágenes para mostrar.</div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {carouselImages.map((image, index) => (
                       <div key={image.id} className="border rounded-lg overflow-hidden flex flex-col justify-between">
-                        <div className="relative h-40 w-full flex-shrink-0">
+                        <div className="relative h-32 w-full flex-shrink-0">
                           <Image
                             src={image.url}
                             alt={image.title}
@@ -1119,32 +1119,35 @@ export default function AdminDashboard() {
                             className="object-cover"
                           />
                         </div>
-                        <div className="p-4 flex flex-col flex-grow">
-                          <h3 className="font-semibold text-sm truncate">{image.title}</h3>
-                          <p className="text-gray-600 text-xs mt-1 flex-grow overflow-hidden text-ellipsis">{image.description}</p>
-                          <div className="flex justify-between items-center mt-3">
-                             <div className="flex gap-2">
-                                <button
+                        <div className="p-3 flex flex-col flex-grow">
+                          <h3 className="font-semibold text-sm truncate mb-1">{image.title}</h3>
+                          <p className="text-gray-600 text-xs flex-grow overflow-hidden text-ellipsis mb-2">{image.description}</p>
+                          <div className="flex justify-between items-center mt-auto flex-wrap gap-1">
+                             <div className="flex flex-wrap gap-1">
+                                <Button
+                                  size="sm"
                                   onClick={() => moveImageUp(index)}
                                   disabled={index === 0}
-                                  className="text-gray-600 hover:text-blue-600 disabled:opacity-30"
+                                  className="text-gray-600 hover:text-blue-600 disabled:opacity-30 p-1 h-auto"
                                 >
-                                  Mover Arriba
-                                </button>
-                                <button
+                                  Arriba
+                                </Button>
+                                <Button
+                                  size="sm"
                                   onClick={() => moveImageDown(index)}
                                   disabled={index === carouselImages.length - 1}
-                                  className="text-gray-600 hover:text-blue-600 disabled:opacity-30"
+                                  className="text-gray-600 hover:text-blue-600 disabled:opacity-30 p-1 h-auto"
                                 >
-                                  Mover Abajo
-                                </button>
+                                  Abajo
+                                </Button>
                              </div>
-                              <button
+                              <Button
+                                size="sm"
                                 onClick={() => handleDeleteCarouselImage(image.id)}
-                                className="text-red-600 hover:text-red-800"
+                                className="text-red-600 hover:text-red-800 p-1 h-auto"
                               >
                                 Eliminar
-                              </button>
+                              </Button>
                           </div>
                         </div>
                       </div>
@@ -1156,9 +1159,9 @@ export default function AdminDashboard() {
             {/* Modal del Formulario de Subida de Carrusel (Anidado dentro del modal principal) */}
             {isCarouselFormModalOpen && (
                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-                 <div className="bg-white rounded-lg p-6 w-full max-w-screen-lg max-h-[95vh] overflow-y-auto relative">
+                 <div className="bg-white rounded-lg p-6 w-full max-w-full sm:max-w-md max-h-[95vh] overflow-y-auto relative">
                    <div className="flex justify-between items-center mb-4">
-                     <h3 className="text-xl font-bold text-blue-700">Agregar Nueva Imagen</h3>
+                     <h3 className="text-lg font-bold text-blue-700">Agregar Nueva Imagen</h3>
                      <Button onClick={closeCarouselFormModal} variant="ghost" size="sm">
                        <X className="w-5 h-5" />
                      </Button>
@@ -1191,8 +1194,8 @@ export default function AdminDashboard() {
 
                      {imagePreview && (
                        <div className="mt-4">
-                         <h3 className="text-lg font-semibold mb-2">Previsualización:</h3>
-                         <div className="relative w-40 h-40 border rounded overflow-hidden">
+                         <h3 className="text-base font-semibold mb-2">Previsualización:</h3>
+                         <div className="relative w-32 h-32 border rounded overflow-hidden mx-auto">
                            <Image 
                              src={imagePreview}
                              alt="Previsualización"
