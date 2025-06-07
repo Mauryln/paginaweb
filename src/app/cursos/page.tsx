@@ -24,14 +24,16 @@ function Header() {
     <header className="w-full border-b border-white/10 bg-gray-900 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-4">
         <div className="flex items-center gap-2">
-          <Image 
-            src="/logo.jpg" 
-            alt="BIMCAT Logo" 
-            width={40} 
-            height={40} 
-            className="rounded-full bg-white p-1 hover-scale transition-all" 
-          />
-          <span className="font-bold text-xl tracking-tight text-white">BIMCAT S.R.L</span>
+          <Link href="/" className="flex items-center gap-2">
+            <Image 
+              src="/logo.jpg" 
+              alt="BIMCAT Logo" 
+              width={60} 
+              height={60} 
+              className="rounded-full bg-white p-1 hover-scale transition-all" 
+            />
+            <span className="text-2xl font-bold text-white">BIMCAT</span>
+          </Link>
         </div>
         <nav className="hidden md:flex gap-8 text-base font-medium">
           {NAV_LINKS.map(link => (
@@ -95,9 +97,9 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
   return (
     <>
       <div className="flex flex-wrap justify-center gap-3 mb-10 animate-fade-in">
-        {categoriasFiltro.map((categoria) => (
+        {categoriasFiltro.map((categoria, index) => (
           <button 
-            key={categoria}
+            key={`${categoria}-${index}`}
             className={`px-4 py-2 rounded-full ${
               filtroActual === categoria 
                 ? 'bg-blue-600 text-white' 
@@ -111,8 +113,8 @@ function CursosList({ cursos, filtroActual, setFiltroActual }: {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {cursosFiltrados.map((curso) => (
-          <CursoCard key={curso.id} curso={curso} />
+        {cursosFiltrados.map((curso, index) => (
+          <CursoCard key={`${curso.id}-${index}`} curso={curso} />
         ))}
       </div>
     </>
@@ -123,16 +125,14 @@ function CursoCard({ curso }: { curso: Curso }) {
   return (
     <Link href={`/cursos/${curso.slug}`}>
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift">
-        {curso.thumbnail && (
-          <div className="relative h-48 w-full">
-            <Image 
-              src={curso.thumbnail} 
-              alt={curso.title} 
-              fill 
-              className="object-cover object-top" 
-            />
-          </div>
-        )}
+        <div className="relative h-48 w-full">
+          <Image 
+            src={curso.thumbnail || curso.img} 
+            alt={curso.title} 
+            fill 
+            className="object-cover object-top" 
+          />
+        </div>
         <div className="p-6 flex flex-col flex-1">
           <h3 className="font-bold text-lg text-gray-900 mb-1">{curso.title}</h3>
           <p className="text-gray-900/70 mb-3 text-sm flex-1">{curso.desc}</p>

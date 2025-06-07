@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Facebook, Instagram, Linkedin } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import Carousel from '@/components/Carousel';
+import Link from 'next/link';
 
 interface CarouselImage {
   id: string;
@@ -29,24 +30,26 @@ function Header() {
     <header className="w-full border-b border-white/10 bg-gray-900 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-4">
         <div className="flex items-center gap-2">
-          <Image 
-            src="/logo.jpg" 
-            alt="BIMCAT Logo" 
-            width={40} 
-            height={40} 
-            className="rounded-full bg-white p-1 hover-scale transition-all" 
-          />
-          <span className="font-bold text-xl tracking-tight">BIMCAT</span>
+          <Link href="/" className="flex items-center gap-2">
+            <Image 
+              src="/logo.jpg" 
+              alt="BIMCAT Logo" 
+              width={60} 
+              height={60} 
+              className="rounded-full bg-white p-1 hover-scale transition-all" 
+            />
+            <span className="text-2xl font-bold text-white">BIMCAT</span>
+          </Link>
         </div>
         <nav className="hidden md:flex gap-8 text-base font-medium">
           {NAV_LINKS.map(link => (
-            <a 
+            <Link 
               key={link.label} 
               href={link.href} 
               className="hover:text-blue-400 transition-all hover:translate-x-1"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
         <Button 

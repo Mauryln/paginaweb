@@ -553,7 +553,7 @@ export default function AdminDashboard() {
         <div className="space-y-4">
           {cursos.map((curso, index) => (
             <div
-              key={curso.id}
+              key={`curso-${curso.id}-${index}`}
               className="bg-white rounded-lg shadow-md p-4 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between hover-lift transition-all animate-slide-up"
               style={{ animationDelay: `${index * 0.05}s` }}
             >
@@ -951,7 +951,7 @@ export default function AdminDashboard() {
                 />
                 <datalist id="categorias-list">
                   {Array.from(new Set(cursos.map(c => c.categoria))).map((cat, i) => (
-                    <option key={i} value={cat} />
+                    <option key={`categoria-${cat}-${i}`} value={cat} />
                   ))}
                 </datalist>
               </div>
@@ -1000,7 +1000,7 @@ export default function AdminDashboard() {
                 <label className="block text-sm font-medium text-blue-700 mb-1">Temario</label>
                 <div className="space-y-4">
                   {formData.temas?.map((tema, temaIdx) => (
-                    <div key={temaIdx} className="mb-4 p-2 border rounded-lg bg-black/10">
+                    <div key={`tema-${temaIdx}`} className="mb-4 p-2 border rounded-lg bg-black/10">
                       <input
                         type="text"
                         placeholder="Título del tema"
@@ -1009,7 +1009,7 @@ export default function AdminDashboard() {
                         className="w-full mb-2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
                       />
                       {tema.contenidos.map((contenido, contenidoIdx) => (
-                        <div key={contenidoIdx} className="flex gap-2 mb-1">
+                        <div key={`contenido-${contenidoIdx}`} className="flex gap-2 mb-1">
                           <input
                             type="text"
                             placeholder="Contenido"
@@ -1110,7 +1110,7 @@ export default function AdminDashboard() {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {carouselImages.map((image, index) => (
-                      <div key={image.id} className="border rounded-lg overflow-hidden flex flex-col justify-between">
+                      <div key={`carousel-${image.id}-${index}`} className="border rounded-lg overflow-hidden flex flex-col justify-between">
                         <div className="relative h-32 w-full flex-shrink-0">
                           <Image
                             src={image.url}

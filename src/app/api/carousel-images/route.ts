@@ -35,79 +35,79 @@ export async function GET() {
     const images = [
       {
         id: '1',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/banner1.jpg',
         title: 'Portada Salud',
         description: 'Servicios de salud y bienestar'
       },
       {
         id: '2',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/banner.jpg',
         title: 'Portada Financiera',
         description: 'Servicios financieros y asesoría'
       },
       {
         id: '3',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/curso1.jpg',
         title: 'Portada Jurídica',
         description: 'Servicios legales y consultoría jurídica'
       },
       {
         id: '4',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/curso2.jpg',
         title: 'Portada General',
         description: 'Servicios generales y consultoría'
       },
       {
         id: '5',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/curso3.jpg',
         title: '02 de Junio',
         description: 'Evento especial del 02 de junio'
       },
       {
         id: '6',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/curso4.jpg',
         title: '14 de Mayo',
         description: 'Evento especial del 14 de mayo'
       },
       {
         id: '7',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/banner7.jpg',
         title: 'Interior',
         description: 'Vista interior de nuestras instalaciones'
       },
       {
         id: '8',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/banner8.jpg',
         title: '26 de Mayo',
         description: 'Evento especial del 26 de mayo'
       },
       {
         id: '9',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/banner9.jpg',
         title: 'Anatomía del Delito',
         description: 'Teoría, Procedimientos y Valoración de la Prueba'
       },
       {
         id: '10',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/banner10.jpg',
         title: 'Investigación de Mercado',
         description: 'Servicios de investigación y análisis de mercado'
       },
       {
         id: '11',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/banner11.jpg',
         title: 'Fungicidas e Insecticidas',
         description: 'Productos y servicios agrícolas'
       },
       {
         id: '12',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/banner12.jpg',
         title: 'Diseño de Restaurantes',
         description: 'Servicios de diseño y consultoría para restaurantes'
       },
       {
         id: '13',
-        url: 'https://drive.google.com/thumbnail?id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7&sz=w1000',
+        url: '/banner13.jpg',
         title: 'Habitaciones Niños',
         description: 'Diseño de espacios para niños'
       }

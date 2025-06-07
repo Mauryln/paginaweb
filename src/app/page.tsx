@@ -195,34 +195,34 @@ export default function Home() {
       <header className="w-full border-b border-gray-100 bg-gray-900 sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between py-4 px-4">
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center gap-2 cursor-pointer">
+            <Link href="/" className="flex items-center gap-2">
               <Image 
                 src="/logo.jpg" 
                 alt="BIMCAT Logo" 
-                width={40} 
-                height={40} 
+                width={60} 
+                height={60} 
                 className="rounded-full bg-white p-1 hover-scale transition-all" 
               />
-              <span className="font-bold text-xl tracking-tight">BIMCAT</span>
+              <span className="text-2xl font-bold text-white">BIMCAT</span>
             </Link>
           </div>
           <nav className="hidden md:flex gap-8 text-base font-medium">
-            {NAV_LINKS.map((link, idx) => (
-              <a 
-                key={`${link.label}-${idx}`} 
+            {NAV_LINKS.map(link => (
+              <Link 
+                key={link.label} 
                 href={link.href} 
                 className="hover:text-blue-400 transition-all hover:translate-x-1"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <Button 
-            onClick={handleWhatsAppClick} 
-            className="bg-blue-600 text-white font-bold hover:bg-blue-500 hover-lift hidden md:block"
-          >
-            <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
-          </Button>
+          onClick={handleWhatsAppClick} 
+          className="bg-blue-600 text-white font-bold hover:bg-blue-500 hover-lift"
+        >
+          <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
+        </Button>
 
           <button 
             className="md:hidden text-white focus:outline-none" 
@@ -286,7 +286,7 @@ export default function Home() {
           </div>
           {/* Imagen destacada */}
           <div className="flex-1 flex justify-center md:justify-end w-full relative animate-slide-up">
-            <div className="w-full md:max-w-lg aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-blue-600 bg-white/10 hover-scale">
+            <div className="w-full md:max-w-lg aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-blue-600 bg-white/10">
               <Image
                 src="/banner1.jpg"
                 alt="Hero"

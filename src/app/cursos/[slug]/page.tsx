@@ -25,8 +25,14 @@ function Header() {
     <header className="w-full border-b border-white/10 bg-gray-900 sticky top-0 z-50">
       <div className="w-full max-w-4xl mx-auto flex items-center justify-between py-4 px-2 sm:px-4">
         <div className="flex items-center gap-2">
-          <Image src="/logo.jpg" alt="BIMCAT Logo" width={40} height={40} className="rounded-full bg-white p-1" />
-          <span className="font-bold text-xl tracking-tight text-white">BIMCAT</span>
+          <Image 
+            src="/logo.jpg" 
+            alt="BIMCAT Logo" 
+            width={60} 
+            height={60} 
+            className="rounded-full bg-white p-1 hover-scale transition-all" 
+          />
+          <span className="font-bold text-2xl tracking-tight text-white">BIMCAT</span>
         </div>
         <nav className="hidden md:flex gap-8 text-base font-medium">
           {NAV_LINKS.map(link => (
