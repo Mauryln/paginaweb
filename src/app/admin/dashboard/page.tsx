@@ -707,6 +707,7 @@ export default function AdminDashboard() {
                 <ImageUpload
                   currentImage={formData.img}
                   onImageChange={(file) => handleImageChange(file, 'main')}
+                  disableCropping={true}
                 />
               </div>
 
