@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ignorar todas las imágenes jpg de public excepto logo.jpg
+/public/*.jpg
+!/public/logo.jpg
