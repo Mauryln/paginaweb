@@ -48,7 +48,7 @@ export default function AdminLogin() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00ffae] focus:border-transparent"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00ffae] focus:border-transparent placeholder-black"
               placeholder="Ingresa la contraseña"
             />
           </div>

@@ -18,7 +18,7 @@ interface CarouselImage {
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
   { label: "Cursos", href: "/cursos" },
-  { label: "Beneficios", href: "/beneficios" },
+  { label: "Sobre Nosotros", href: "/sobre-nosotros" },
   { label: "Contacto", href: "/contacto" },
 ]
 
@@ -60,7 +60,7 @@ function Header() {
   )
 }
 
-export default function Beneficios() {
+export default function SobreNosotros() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false)
   const [galleryImages, setGalleryImages] = useState<CarouselImage[]>([])
   const [loadingGallery, setLoadingGallery] = useState(false)
@@ -93,7 +93,11 @@ export default function Beneficios() {
 
       <section className="py-16 bg-primary-light shadow-xl">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-8 text-white">Experiencias BIMCAT</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-8 text-white">Nuestra Historia</h2>
+          <p className="text-center text-lg text-white/80 mb-8 max-w-3xl mx-auto">
+            BIMCAT nace con la visión de transformar la educación en el sector de la construcción y tecnología, 
+            ofreciendo formación de calidad y oportunidades reales de desarrollo profesional.
+          </p>
 
           <div className="mb-8">
             <Carousel />
@@ -115,26 +119,25 @@ export default function Beneficios() {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-4 text-accent animate-fade-in">
-            Beneficios de Aprender con BIMCAT
+            Nuestro Compromiso
           </h1>
           <p className="text-center text-lg text-foreground/80 mb-12 max-w-2xl mx-auto animate-fade-in">
-            Descubre todas las ventajas de formarte con nosotros: calidad, certificación, comunidad y oportunidades
-            reales para tu desarrollo profesional.
+            Nos dedicamos a formar profesionales capaces de enfrentar los desafíos del futuro en la industria de la construcción y tecnología.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto mb-16">
             <div className="rounded-2xl border border-accent/30 bg-primary-light p-10 flex flex-col items-center text-center hover:shadow-lg transition-all hover-lift animate-slide-up">
               <Laptop2 className="w-14 h-14 text-accent mb-4 hover-glow" />
-              <h3 className="font-bold text-xl text-white mb-2">Aprendizaje Actualizado</h3>
-              <p className="text-white/70">Contenidos alineados a las últimas tendencias y necesidades del sector.</p>
+              <h3 className="font-bold text-xl text-white mb-2">Innovación Constante</h3>
+              <p className="text-white/70">Mantenemos nuestros contenidos actualizados con las últimas tendencias y tecnologías.</p>
             </div>
             <div
               className="rounded-2xl border border-accent/30 bg-primary-light p-10 flex flex-col items-center text-center hover:shadow-lg transition-all hover-lift animate-slide-up"
               style={{ animationDelay: "0.1s" }}
             >
               <GraduationCap className="w-14 h-14 text-accent mb-4 hover-glow" />
-              <h3 className="font-bold text-xl text-white mb-2">Certificación Reconocida</h3>
+              <h3 className="font-bold text-xl text-white mb-2">Excelencia Educativa</h3>
               <p className="text-white/70">
-                Obtén certificados que avalan tus conocimientos y mejoran tu perfil profesional.
+                Nuestros docentes son profesionales con amplia experiencia en el sector.
               </p>
             </div>
             <div
@@ -142,9 +145,9 @@ export default function Beneficios() {
               style={{ animationDelay: "0.2s" }}
             >
               <UserCheck className="w-14 h-14 text-accent mb-4 hover-glow" />
-              <h3 className="font-bold text-xl text-white mb-2">Oportunidades Laborales</h3>
+              <h3 className="font-bold text-xl text-white mb-2">Desarrollo Profesional</h3>
               <p className="text-white/70">
-                Conecta con empleadores y accede a proyectos reales a través de nuestra red.
+                Facilitamos conexiones con empresas y oportunidades laborales reales.
               </p>
             </div>
             <div
@@ -152,16 +155,16 @@ export default function Beneficios() {
               style={{ animationDelay: "0.3s" }}
             >
               <Star className="w-14 h-14 text-accent mb-4 hover-glow" />
-              <h3 className="font-bold text-xl text-white mb-2">Docentes Expertos</h3>
-              <p className="text-white/70">Aprende de profesionales con experiencia comprobada en BIM y tecnología.</p>
+              <h3 className="font-bold text-xl text-white mb-2">Calidad Garantizada</h3>
+              <p className="text-white/70">Nuestros cursos están diseñados para maximizar el aprendizaje y la aplicación práctica.</p>
             </div>
             <div
               className="rounded-2xl border border-accent/30 bg-primary-light p-10 flex flex-col items-center text-center hover:shadow-lg transition-all hover-lift animate-slide-up"
               style={{ animationDelay: "0.4s" }}
             >
               <ShieldCheck className="w-14 h-14 text-accent mb-4 hover-glow" />
-              <h3 className="font-bold text-xl text-white mb-2">Soporte Personalizado</h3>
-              <p className="text-white/70">Acompañamiento y asesoría durante todo tu proceso de aprendizaje.</p>
+              <h3 className="font-bold text-xl text-white mb-2">Soporte Continuo</h3>
+              <p className="text-white/70">Acompañamos a nuestros estudiantes durante y después de su formación.</p>
             </div>
             <div
               className="rounded-2xl border border-accent/30 bg-primary-light p-10 flex flex-col items-center text-center hover:shadow-lg transition-all hover-lift animate-slide-up"
@@ -170,7 +173,7 @@ export default function Beneficios() {
               <Users className="w-14 h-14 text-accent mb-4 hover-glow" />
               <h3 className="font-bold text-xl text-white mb-2">Comunidad Activa</h3>
               <p className="text-white/70">
-                Forma parte de una red de estudiantes y profesionales que comparten conocimiento y oportunidades.
+                Fomentamos una comunidad de aprendizaje colaborativo y networking profesional.
               </p>
             </div>
           </div>
@@ -224,4 +227,4 @@ export default function Beneficios() {
       )}
     </main>
   )
-}
+} 

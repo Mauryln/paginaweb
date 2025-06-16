@@ -82,25 +82,25 @@ export default function Contacto() {
                 <input
                   type="text"
                   placeholder="Nombre"
-                  className="rounded-lg px-4 py-2 bg-white text-foreground focus:outline-none w-full transition-all hover:shadow-lg"
+                  className="rounded-lg px-4 py-2 bg-white text-black placeholder-black focus:outline-none w-full transition-all hover:shadow-lg"
                   required
                 />
                 <input
                   type="email"
                   placeholder="Email"
-                  className="rounded-lg px-4 py-2 bg-white text-foreground focus:outline-none w-full transition-all hover:shadow-lg"
+                  className="rounded-lg px-4 py-2 bg-white text-black placeholder-black focus:outline-none w-full transition-all hover:shadow-lg"
                   required
                 />
               </div>
               <input
                 type="text"
                 placeholder="Asunto"
-                className="rounded-lg px-4 py-2 bg-white text-foreground focus:outline-none w-full transition-all hover:shadow-lg"
+                className="rounded-lg px-4 py-2 bg-white text-black placeholder-black focus:outline-none w-full transition-all hover:shadow-lg"
                 required
               />
               <textarea
                 placeholder="Mensaje"
-                className="rounded-lg px-4 py-2 bg-white text-foreground focus:outline-none w-full min-h-[100px] transition-all hover:shadow-lg"
+                className="rounded-lg px-4 py-2 bg-white text-black placeholder-black focus:outline-none w-full min-h-[100px] transition-all hover:shadow-lg"
                 required
               />
               <button type="submit" className="btn-primary w-full md:w-auto self-end hover-lift transition-all rounded-full px-6 py-2 shadow-lg font-semibold">

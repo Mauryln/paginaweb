@@ -646,8 +646,9 @@ export default function AdminDashboard() {
                   name="title"
                   value={formData.title || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] placeholder-black text-black"
                   required
+                  placeholder="Título del curso"
                 />
               </div>
 
@@ -660,8 +661,9 @@ export default function AdminDashboard() {
                   name="desc"
                   value={formData.desc || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] placeholder-black text-black"
                   required
+                  placeholder="Descripción corta"
                 />
               </div>
 
@@ -673,8 +675,9 @@ export default function AdminDashboard() {
                   name="descLong"
                   value={formData.descLong || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] placeholder-black text-black"
                   rows={4}
+                  placeholder="Descripción larga"
                 />
               </div>
 
@@ -742,7 +745,7 @@ export default function AdminDashboard() {
                       min="0"
                       value={formData.priceProfesional || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] text-black"
                     />
                     {formData.priceProfesional && (
                       <div className="text-xs text-[#1a1144]/70 mt-1">
@@ -758,7 +761,7 @@ export default function AdminDashboard() {
                       min="0"
                       value={formData.offerPriceProfesional || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-orange-500"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-orange-500 text-black"
                     />
                     {formData.offerPriceProfesional && (
                       <div className="text-xs text-orange-500/90 mt-1">
@@ -777,7 +780,7 @@ export default function AdminDashboard() {
                       min="0"
                       value={formData.priceProfesional || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] text-black"
                     />
                     {formData.priceProfesional && (
                       <div className="text-xs text-[#1a1144]/70 mt-1">
@@ -793,7 +796,7 @@ export default function AdminDashboard() {
                       min="0"
                       value={formData.priceEstudiante || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] text-black"
                     />
                     {formData.priceEstudiante && (
                       <div className="text-xs text-[#1a1144]/70 mt-1">
@@ -809,7 +812,7 @@ export default function AdminDashboard() {
                       min="0"
                       value={formData.offerPriceProfesional || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-orange-500"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-orange-500 text-black"
                     />
                     {formData.offerPriceProfesional && (
                       <div className="text-xs text-orange-500/90 mt-1">
@@ -825,7 +828,7 @@ export default function AdminDashboard() {
                       min="0"
                       value={formData.offerPriceEstudiante || ''}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-orange-500"
+                      className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-orange-500 text-black"
                     />
                     {formData.offerPriceEstudiante && (
                       <div className="text-xs text-orange-500/90 mt-1">
@@ -849,7 +852,7 @@ export default function AdminDashboard() {
                     const value = e.target.value.replace(/[^0-9]/g, '');
                     setFormData(prev => ({ ...prev, lessons: value }));
                   }}
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] text-black"
                 />
               </div>
 
@@ -868,7 +871,7 @@ export default function AdminDashboard() {
                       const value = e.target.value.replace(/[^0-9]/g, '');
                       setFormData(prev => ({ ...prev, durationHours: value }));
                     }}
-                    className="w-1/2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                    className="w-1/2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] text-black"
                   />
                   <input
                     type="number"
@@ -882,7 +885,7 @@ export default function AdminDashboard() {
                       if (Number(value) > 59) value = '59';
                       setFormData(prev => ({ ...prev, durationMinutes: value }));
                     }}
-                    className="w-1/2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                    className="w-1/2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] text-black"
                   />
                 </div>
               </div>
@@ -894,7 +897,7 @@ export default function AdminDashboard() {
                   name="level"
                   value={formData.level || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] text-black"
                 >
                   <option value="">Seleccionar nivel</option>
                   <option value="Básico">Básico</option>
@@ -912,7 +915,7 @@ export default function AdminDashboard() {
                   name="teacher"
                   value={formData.teacher || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] text-black"
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -925,7 +928,7 @@ export default function AdminDashboard() {
                   value={formData.categoria || ''}
                   onChange={handleInputChange}
                   placeholder="Escribe o selecciona una categoría"
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] placeholder-black text-black"
                   list="categorias-list"
                 />
                 <datalist id="categorias-list">
@@ -944,7 +947,7 @@ export default function AdminDashboard() {
                   name="startDate"
                   value={formData.startDate || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-green-600"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-green-600 text-black"
                 />
               </div>
 
@@ -957,7 +960,7 @@ export default function AdminDashboard() {
                   name="offerEndDate"
                   value={formData.offerEndDate || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-yellow-600"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-yellow-600 text-black"
                 />
               </div>
 
@@ -970,7 +973,7 @@ export default function AdminDashboard() {
                   name="endDate"
                   value={formData.endDate || ''}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-red-600"
+                  className="w-full px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-red-600 text-black"
                   min={formData.startDate || today}
                 />
               </div>
@@ -985,7 +988,7 @@ export default function AdminDashboard() {
                         placeholder="Título del tema"
                         value={tema.titulo}
                         onChange={e => handleTemaTituloChange(temaIdx, e.target.value)}
-                        className="w-full mb-2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                        className="w-full mb-2 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] placeholder-black text-black"
                       />
                       {tema.contenidos.map((contenido, contenidoIdx) => (
                         <div key={`contenido-${contenidoIdx}`} className="flex gap-2 mb-1">
@@ -994,7 +997,7 @@ export default function AdminDashboard() {
                             placeholder="Contenido"
                             value={contenido}
                             onChange={e => handleTemaContenidoChange(temaIdx, contenidoIdx, e.target.value)}
-                            className="flex-1 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae]"
+                            className="flex-1 px-4 py-2 border rounded-lg transition-all hover:shadow-lg focus:outline-none focus:border-[#00ffae] placeholder-black text-black"
                           />
                           <Button
                             type="button"
@@ -1207,8 +1210,9 @@ export default function AdminDashboard() {
                          type="text"
                          value={carouselTitle}
                          onChange={(e) => setCarouselTitle(e.target.value)}
-                         className="w-full p-2 border rounded"
+                         className="w-full p-2 border rounded placeholder-black"
                          required
+                         placeholder="Título de la imagen"
                        />
                      </div>
                      <div>
@@ -1218,9 +1222,10 @@ export default function AdminDashboard() {
                        <textarea
                          value={carouselDescription}
                          onChange={(e) => setCarouselDescription(e.target.value)}
-                         className="w-full p-2 border rounded"
+                         className="w-full p-2 border rounded placeholder-black"
                          rows={3}
                          required
+                         placeholder="Descripción de la imagen"
                        />
                      </div>
                      <button

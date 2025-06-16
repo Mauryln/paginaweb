@@ -35,7 +35,7 @@ import { cursosService } from "@/services/cursosService"
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
   { label: "Cursos", href: "/cursos" },
-  { label: "Beneficios", href: "/beneficios" },
+  { label: "Sobre Nosotros", href: "/sobre-nosotros" },
   { label: "Contacto", href: "/contacto" },
 ]
 
@@ -83,9 +83,9 @@ function CursoCard({ curso }: { curso: any }) {
           <Image src={curso.thumbnail || curso.img} alt={curso.title} fill className="object-cover" />
         </div>
         <div className="p-6 flex flex-col flex-1">
-          <h3 className="font-bold text-lg text-gray-900 mb-1 truncate">{curso.title}</h3>
-          <p className="text-gray-900/70 mb-3 text-sm flex-1 overflow-hidden text-ellipsis">{curso.desc}</p>
-          <div className="flex flex-wrap gap-2 text-xs text-gray-900/80 mb-3">
+          <h3 className="font-bold text-lg text-black mb-1 truncate">{curso.title}</h3>
+          <p className="text-black/70 mb-3 text-sm flex-1 overflow-hidden text-ellipsis">{curso.desc}</p>
+          <div className="flex flex-wrap gap-2 text-xs text-black/80 mb-3">
             <span>📚 {curso.lessons}</span>
             <span>⏱ {curso.duration}</span>
             <span>🎯 {curso.level}</span>
@@ -104,7 +104,7 @@ function CursoCard({ curso }: { curso: any }) {
               {curso.priceProfesional} Bs ({(Number(curso.priceProfesional) / 7).toFixed(2)} USD)
             </span>
           )}
-          <div className="mt-3 text-xs text-gray-900/60">👤 {curso.teacher}</div>
+          <div className="mt-3 text-xs text-black/60">👤 {curso.teacher}</div>
         </div>
       </div>
     </Link>

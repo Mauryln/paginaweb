@@ -12,7 +12,7 @@ import { Suspense } from "react"
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
   { label: "Cursos", href: "/cursos" },
-  { label: "Beneficios", href: "/beneficios" },
+  { label: "Sobre Nosotros", href: "/sobre-nosotros" },
   { label: "Contacto", href: "/contacto" },
 ]
 
@@ -142,7 +142,9 @@ function CursosList({
           <button
             key={`${categoria}-${index}`}
             className={`px-4 py-2 rounded-full ${
-              filtroActual === categoria ? "bg-blue-600 text-white" : "bg-white text-gray-900 border border-blue-600"
+              filtroActual === categoria
+                ? "bg-blue-600 text-white"
+                : "bg-white text-black border border-blue-600"
             } font-semibold shadow hover:bg-blue-500 transition-all hover-lift`}
             onClick={() => setFiltroActual(categoria)}
           >
@@ -168,9 +170,9 @@ function CursoCard({ curso }: { curso: Curso }) {
           <Image src={curso.thumbnail || curso.img} alt={curso.title} fill className="object-cover object-top" />
         </div>
         <div className="p-6 flex flex-col flex-1">
-          <h3 className="font-bold text-lg text-gray-900 mb-1">{curso.title}</h3>
-          <p className="text-gray-900/70 mb-3 text-sm flex-1">{curso.desc}</p>
-          <div className="flex flex-wrap gap-2 text-xs text-gray-900/80 mb-3">
+          <h3 className="font-bold text-lg text-black mb-1">{curso.title}</h3>
+          <p className="text-gray-800 mb-3 text-sm flex-1">{curso.desc}</p>
+          <div className="flex flex-wrap gap-2 text-xs text-gray-700 mb-3">
             <span>📚 {curso.lessons}</span>
             <span>⏱ {curso.duration}</span>
             <span>🎯 {curso.level}</span>
@@ -189,7 +191,7 @@ function CursoCard({ curso }: { curso: Curso }) {
               {curso.priceProfesional} Bs ({(Number(curso.priceProfesional) / 7).toFixed(2)} USD)
             </span>
           )}
-          <div className="mt-3 text-xs text-gray-900/60">👤 {curso.teacher}</div>
+          <div className="mt-3 text-xs text-gray-700">👤 {curso.teacher}</div>
         </div>
       </div>
     </Link>
