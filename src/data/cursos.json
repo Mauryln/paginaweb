@@ -7,7 +7,7 @@
       "title": "Curso BIM Avanzado",
       "desc": "Aprende técnicas avanzadas de modelado y gestión BIM.",
       "descLong": "Este curso avanzado de BIM te permitirá dominar técnicas de modelado, gestión de información y flujos de trabajo colaborativos. Ideal para profesionales que buscan llevar sus habilidades al siguiente nivel.",
-      "lessons": "8 lecciones lecciones lecciones lecciones",
+      "lessons": "8 lecciones lecciones lecciones lecciones lecciones",
       "duration": "12h 30m",
       "level": "Experto",
       "teacher": "Ing. Laura Pérez",
@@ -26,17 +26,17 @@
       "startDate": "",
       "endDate": "",
       "offerEndDate": "",
-      "thumbnail": "/uploads/1748906795911.jpg",
+      "thumbnail": "/uploads/1749327324276.png",
       "priceEstudiante": "",
       "offerPriceEstudiante": ""
     },
     {
       "slug": "el-delito-el-procedimiento-penal-y-la-correcta-valoracion-de-la-prueba",
-      "img": "/uploads/1747923232335.jpg",
+      "img": "/uploads/1749328435949.jpg",
       "title": "EL DELITO, el procedimiento penal y la correcta valoración de la prueba",
       "desc": "Aprende sobre el procedimiento penal y la valoración correcta de la prueba",
       "descLong": "Ideal para abogados, fiscales, estudiantes de Derecho, y todos quienes buscan fortalecer su criterio jurídico y práctico frente a casos reales.\n",
-      "lessons": "4 lecciones lecciones",
+      "lessons": "4 lecciones lecciones lecciones lecciones lecciones lecciones lecciones lecciones",
       "duration": "8h 00m",
       "durationHours": "8",
       "durationMinutes": "00",
@@ -55,7 +55,8 @@
       "categoria": "Sistemas",
       "visible": true,
       "images": [
-        "/uploads/1747923232335.jpg"
+        "/uploads/1747923232335.jpg",
+        "/uploads/1749328435949.jpg"
       ],
       "id": "4",
       "priceProfesional": "200",
@@ -94,7 +95,7 @@
           ]
         }
       ],
-      "thumbnail": "/uploads/1749305222519.jpg"
+      "thumbnail": "/uploads/1749327296501.jpg"
     },
     {
       "slug": "laboratorio-de-mecanicas-de-suelos-aplicando-a-obras-civiles",
@@ -102,7 +103,7 @@
       "title": "Laboratorio de mecánicas de suelos aplicando a obras civiles ",
       "desc": "Un curso via oline y zoom ",
       "descLong": "Se recordara los conceptos básicos de mecánica de suelos como tambien los ensayos que se hacen en campo. S e preguntara constantemente a los participantes y que se trata de hacer didácticas.",
-      "lessons": "5 lecciones",
+      "lessons": "5 lecciones lecciones",
       "duration": "3h 00m",
       "durationHours": "3",
       "durationMinutes": "00",
@@ -113,8 +114,8 @@
       "offerPriceProfesional": "",
       "offerPriceEstudiante": "",
       "offerEndDate": "",
-      "startDate": "2025-06-02",
-      "endDate": "2025-06-06",
+      "startDate": "2025-06-08",
+      "endDate": "2025-06-11",
       "benefits": [
         "Introduccion A la Mecanica de Suelos Clasica ",
         "Ensayos de clasificacion de suelos",
@@ -175,7 +176,8 @@
             "Estado del conocimiento de los estudiantes. (3 Horas) "
           ]
         }
-      ]
+      ],
+      "thumbnail": "/uploads/1749328668872.png"
     },
     {
       "slug": "curso-online-die-o-integral-de-restaurantes",
@@ -183,7 +185,7 @@
       "title": "CURSO ONLINE DIEÑO INTEGRAL DE RESTAURANTES ",
       "desc": "COCINA EFICIENTE, SALON EMOCIONAL, MARCA COHERENTE",
       "descLong": "Ideal para ampliar los diseños actuales y integrales de restaurantes, con un docente capacitado ",
-      "lessons": "5 lecciones",
+      "lessons": "5 lecciones lecciones",
       "duration": "8h 0m",
       "durationHours": "8",
       "durationMinutes": "0",
@@ -194,8 +196,8 @@
       "offerPriceProfesional": "",
       "offerPriceEstudiante": "",
       "offerEndDate": "",
-      "startDate": "2025-06-02",
-      "endDate": "2025-06-06",
+      "startDate": "2025-06-10",
+      "endDate": "2025-06-12",
       "benefits": [
         "CALIDAD, CLIENTE Y CONCEPTO ",
         "DISEÑO DE COCINA EFICIENTE Y ERGONOMICO",
@@ -254,7 +256,8 @@
             "Recomendaciones finales, análisis de casos, resolución de dudas "
           ]
         }
-      ]
+      ],
+      "thumbnail": "/uploads/1749328510533.png"
     },
     {
       "slug": "supervision-y-fiscalizacion-de-obras",

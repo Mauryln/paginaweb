@@ -9,12 +9,13 @@ interface ImageUploadProps {
   currentImage?: string;
   onImageChange: (file: File | null) => void;
   aspectRatio?: number;
+  disableCropping?: boolean;
 }
 
-export function ImageUpload({ currentImage, onImageChange, aspectRatio = 16/9 }: ImageUploadProps) {
+export function ImageUpload({ currentImage, onImageChange, aspectRatio = 16/9, disableCropping }: ImageUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentImage || null);
   const [isDragging, setIsDragging] = useState(false);
-  const [isCropping, setIsCropping] = useState(false);
+  const [isCropping, setIsCropping] = useState(!disableCropping && !!currentImage);
   const [crop, setCrop] = useState<CropType>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const imgRef = useRef<HTMLImageElement>(null);
@@ -37,7 +38,13 @@ export function ImageUpload({ currentImage, onImageChange, aspectRatio = 16/9 }:
     setOriginalImage(file);
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
-    setIsCropping(true);
+
+    if (disableCropping) {
+      onImageChange(file);
+      setIsCropping(false);
+    } else {
+      setIsCropping(true);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -85,44 +92,56 @@ export function ImageUpload({ currentImage, onImageChange, aspectRatio = 16/9 }:
     setCrop(crop);
   };
 
-  const handleCropComplete = async () => {
+  const handleCropComplete = () => {
     if (!completedCrop || !imgRef.current || !originalImage) return;
 
-    const image = imgRef.current;
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const currentImageElement = imgRef.current; // Capturar el elemento de imagen actual
 
-    if (!ctx) return;
+    // Create a new Image object from the original file to ensure full resolution
+    const originalLoadedImage = new window.Image(); // Usar window.Image
+    originalLoadedImage.src = URL.createObjectURL(originalImage);
 
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
+    originalLoadedImage.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
 
-    canvas.width = completedCrop.width;
-    canvas.height = completedCrop.height;
+      if (!ctx) return;
 
-    ctx.drawImage(
-      image,
-      completedCrop.x * scaleX,
-      completedCrop.y * scaleY,
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
-      0,
-      0,
-      completedCrop.width,
-      completedCrop.height
-    );
+      // Disable image smoothing for maximum sharpness (pixel-perfect copy)
+      ctx.imageSmoothingEnabled = false;
 
-    // Convertir el canvas a blob
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const croppedFile = new File([blob], originalImage.name, {
-          type: originalImage.type,
-        });
-        onImageChange(croppedFile);
-        setPreviewUrl(URL.createObjectURL(blob));
-        setIsCropping(false);
-      }
-    }, originalImage.type);
+      // Usar currentImageElement para las escalas
+      const scaleX = originalLoadedImage.naturalWidth / currentImageElement.width;
+      const scaleY = originalLoadedImage.naturalHeight / currentImageElement.height;
+
+      canvas.width = Math.round(completedCrop.width * scaleX); // Usar dimensiones reales de píxeles redondeadas para el canvas
+      canvas.height = Math.round(completedCrop.height * scaleY); // Usar dimensiones reales de píxeles redondeadas para el canvas
+
+      ctx.drawImage(
+        originalLoadedImage, // Usar la imagen original recién cargada como fuente
+        Math.round(completedCrop.x * scaleX), // Redondear a entero
+        Math.round(completedCrop.y * scaleY), // Redondear a entero
+        Math.round(completedCrop.width * scaleX), // Redondear a entero
+        Math.round(completedCrop.height * scaleY), // Redondear a entero
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      // Convertir el canvas a blob con máxima calidad
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const croppedFile = new File([blob], originalImage.name, {
+            type: originalImage.type,
+          });
+          onImageChange(croppedFile);
+          setPreviewUrl(URL.createObjectURL(blob));
+          setIsCropping(false);
+          URL.revokeObjectURL(originalLoadedImage.src); // Limpiar la URL del objeto
+        }
+      }, originalImage.type, 1); // Establecer la calidad a 1 (máxima)
+    };
   };
 
   return (
@@ -136,8 +155,29 @@ export function ImageUpload({ currentImage, onImageChange, aspectRatio = 16/9 }:
         onDrop={handleDrop}
       >
         {previewUrl ? (
-          <div className="relative">
-            {isCropping ? (
+          disableCropping ? (
+            <>
+              <div className="relative w-full h-48">
+                <Image
+                  src={previewUrl}
+                  alt="Preview"
+                  fill
+                  className="object-cover rounded-lg"
+                />
+              </div>
+              <div className="flex justify-end gap-2 mt-2">
+                <Button
+                  variant="ghost"
+                  className="text-red-500 hover:text-red-700"
+                  onClick={removeImage}
+                >
+                  <X className="w-5 h-5 mr-2" />
+                  Eliminar
+                </Button>
+              </div>
+            </>
+          ) : (
+            isCropping ? (
               <div className="space-y-4">
                 <ReactCrop
                   crop={crop}
@@ -201,8 +241,8 @@ export function ImageUpload({ currentImage, onImageChange, aspectRatio = 16/9 }:
                   </Button>
                 </div>
               </>
-            )}
-          </div>
+            )
+          )
         ) : (
           <div className="py-8">
             <Upload className="w-12 h-12 mx-auto text-gray-400 mb-2" />
