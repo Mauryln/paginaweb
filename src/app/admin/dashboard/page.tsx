@@ -37,7 +37,6 @@ export default function AdminDashboard() {
   // Estado y lógica para imágenes del carrusel
   const [carouselImages, setCarouselImages] = useState<CarouselImage[]>([]);
   const [newImageFile, setNewImageFile] = useState<File | null>(null);
-  const [newImageUrl, setNewImageUrl] = useState<string>('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [carouselTitle, setCarouselTitle] = useState('');
   const [carouselDescription, setCarouselDescription] = useState('');
@@ -66,7 +65,6 @@ export default function AdminDashboard() {
   const handleCarouselFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setNewImageFile(file);
-    setNewImageUrl('');
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -76,14 +74,6 @@ export default function AdminDashboard() {
     } else {
       setImagePreview(null);
     }
-  };
-
-  // Manejar cambio en el input de URL del carrusel
-  const handleCarouselUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const url = e.target.value;
-    setNewImageUrl(url);
-    setNewImageFile(null);
-    setImagePreview(url || null);
   };
 
   // Function to fetch existing carousel images
@@ -106,33 +96,22 @@ export default function AdminDashboard() {
   // Handle uploading carousel image
   const handleUploadCarouselImage = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!newImageFile && !newImageUrl) {
-        alert('Por favor, selecciona un archivo o pega una URL de imagen.');
-        return;
+    if (!newImageFile) {
+      alert('Por favor, selecciona un archivo de imagen.');
+      return;
     }
-
     setLoadingCarousel(true);
     const formData = new FormData();
-
-    if (newImageFile) {
-      formData.append('image', newImageFile);
-    } else if (newImageUrl) {
-      formData.append('imageUrl', newImageUrl);
-    }
-
+    formData.append('file', newImageFile);
     formData.append('title', carouselTitle);
     formData.append('description', carouselDescription);
-
     try {
       const response = await fetch('/api/carousel-images', {
         method: 'POST',
         body: formData,
       });
-
       if (response.ok) {
         setNewImageFile(null);
-        setNewImageUrl('');
         setImagePreview(null);
         setCarouselTitle('');
         setCarouselDescription('');
@@ -499,7 +478,6 @@ export default function AdminDashboard() {
   const closeCarouselFormModal = () => {
     setIsCarouselFormModalOpen(false);
     setNewImageFile(null);
-    setNewImageUrl('');
     setImagePreview(null);
     setCarouselTitle('');
     setCarouselDescription('');
@@ -1120,35 +1098,62 @@ export default function AdminDashboard() {
                           />
                         </div>
                         <div className="p-3 flex flex-col flex-grow">
-                          <h3 className="font-semibold text-sm truncate mb-1">{image.title}</h3>
+                          <input
+                            type="text"
+                            value={image.title}
+                            onChange={e => {
+                              const newTitle = e.target.value;
+                              setCarouselImages(prev => prev.map((img, idx) => idx === index ? { ...img, title: newTitle } : img));
+                            }}
+                            className="font-semibold text-sm truncate mb-1 border rounded px-2 py-1"
+                          />
                           <p className="text-gray-600 text-xs flex-grow overflow-hidden text-ellipsis mb-2">{image.description}</p>
                           <div className="flex justify-between items-center mt-auto flex-wrap gap-1">
-                             <div className="flex flex-wrap gap-1">
-                                <Button
-                                  size="sm"
-                                  onClick={() => moveImageUp(index)}
-                                  disabled={index === 0}
-                                  className="text-gray-600 hover:text-blue-600 disabled:opacity-30 p-1 h-auto"
-                                >
-                                  Arriba
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  onClick={() => moveImageDown(index)}
-                                  disabled={index === carouselImages.length - 1}
-                                  className="text-gray-600 hover:text-blue-600 disabled:opacity-30 p-1 h-auto"
-                                >
-                                  Abajo
-                                </Button>
-                             </div>
+                            <div className="flex flex-wrap gap-1">
                               <Button
                                 size="sm"
-                                onClick={() => handleDeleteCarouselImage(image.id)}
-                                className="text-red-600 hover:text-red-800 p-1 h-auto"
+                                onClick={() => moveImageUp(index)}
+                                disabled={index === 0}
+                                className="text-gray-600 hover:text-blue-600 disabled:opacity-30 p-1 h-auto"
                               >
-                                Eliminar
+                                Arriba
                               </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => moveImageDown(index)}
+                                disabled={index === carouselImages.length - 1}
+                                className="text-gray-600 hover:text-blue-600 disabled:opacity-30 p-1 h-auto"
+                              >
+                                Abajo
+                              </Button>
+                            </div>
+                            <Button
+                              size="sm"
+                              onClick={() => handleDeleteCarouselImage(image.id)}
+                              className="text-red-600 hover:text-red-800 p-1 h-auto"
+                            >
+                              Eliminar
+                            </Button>
                           </div>
+                          <Button
+                            size="sm"
+                            className="mt-2 bg-blue-600 text-white hover:bg-blue-700"
+                            onClick={async () => {
+                              const res = await fetch(`/api/carousel-images`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: image.id, title: image.title }),
+                              });
+                              if (res.ok) {
+                                alert('Título actualizado correctamente');
+                                fetchCarouselImages();
+                              } else {
+                                alert('Error al actualizar el título');
+                              }
+                            }}
+                          >
+                            Guardar
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -1177,21 +1182,9 @@ export default function AdminDashboard() {
                          accept="image/*"
                          onChange={handleCarouselFileChange}
                          className="w-full p-2 border rounded"
+                         required
                        />
                      </div>
-                     <div>
-                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                         O pegar URL de Imagen (ej. Google Drive compartida públicamente)
-                       </label>
-                       <input
-                         type="text"
-                         value={newImageUrl}
-                         onChange={handleCarouselUrlChange}
-                         placeholder="https://ejemplo.com/imagen.jpg"
-                         className="w-full p-2 border rounded"
-                       />
-                     </div>
-
                      {imagePreview && (
                        <div className="mt-4">
                          <h3 className="text-base font-semibold mb-2">Previsualización:</h3>
@@ -1205,7 +1198,6 @@ export default function AdminDashboard() {
                          </div>
                        </div>
                      )}
-
                      <div>
                        <label className="block text-sm font-medium text-gray-700 mb-2">
                          Título
@@ -1232,7 +1224,7 @@ export default function AdminDashboard() {
                      </div>
                      <button
                        type="submit"
-                       disabled={loadingCarousel || (!newImageFile && !newImageUrl)}
+                       disabled={loadingCarousel || !newImageFile}
                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
                      >
                        {loadingCarousel ? 'Subiendo...' : 'Subir Imagen'}

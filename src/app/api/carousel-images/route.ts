@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import { promises as fs } from 'fs';
+import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 const CAROUSEL_IMAGES_FILE = path.join(process.cwd(), 'src/data/carouselImages.json');
@@ -31,92 +31,12 @@ async function writeCarouselImages(images: any[]) {
 // GET request to list carousel images
 export async function GET() {
   try {
-    // Lista de imágenes con sus IDs y títulos
-    const images = [
-      {
-        id: '1',
-        url: '/banner1.jpg',
-        title: 'Portada Salud',
-        description: 'Servicios de salud y bienestar'
-      },
-      {
-        id: '2',
-        url: '/banner.jpg',
-        title: 'Portada Financiera',
-        description: 'Servicios financieros y asesoría'
-      },
-      {
-        id: '3',
-        url: '/curso1.jpg',
-        title: 'Portada Jurídica',
-        description: 'Servicios legales y consultoría jurídica'
-      },
-      {
-        id: '4',
-        url: '/curso2.jpg',
-        title: 'Portada General',
-        description: 'Servicios generales y consultoría'
-      },
-      {
-        id: '5',
-        url: '/curso3.jpg',
-        title: '02 de Junio',
-        description: 'Evento especial del 02 de junio'
-      },
-      {
-        id: '6',
-        url: '/curso4.jpg',
-        title: '14 de Mayo',
-        description: 'Evento especial del 14 de mayo'
-      },
-      {
-        id: '7',
-        url: '/banner7.jpg',
-        title: 'Interior',
-        description: 'Vista interior de nuestras instalaciones'
-      },
-      {
-        id: '8',
-        url: '/banner8.jpg',
-        title: '26 de Mayo',
-        description: 'Evento especial del 26 de mayo'
-      },
-      {
-        id: '9',
-        url: '/banner9.jpg',
-        title: 'Anatomía del Delito',
-        description: 'Teoría, Procedimientos y Valoración de la Prueba'
-      },
-      {
-        id: '10',
-        url: '/banner10.jpg',
-        title: 'Investigación de Mercado',
-        description: 'Servicios de investigación y análisis de mercado'
-      },
-      {
-        id: '11',
-        url: '/banner11.jpg',
-        title: 'Fungicidas e Insecticidas',
-        description: 'Productos y servicios agrícolas'
-      },
-      {
-        id: '12',
-        url: '/banner12.jpg',
-        title: 'Diseño de Restaurantes',
-        description: 'Servicios de diseño y consultoría para restaurantes'
-      },
-      {
-        id: '13',
-        url: '/banner13.jpg',
-        title: 'Habitaciones Niños',
-        description: 'Diseño de espacios para niños'
-      }
-    ];
-
+    // Leer las imágenes desde el archivo JSON para mantener los ids consistentes
+    const images = await readCarouselImages();
     return NextResponse.json(images);
   } catch (error) {
-    console.error('Error fetching carousel images:', error);
-    return NextResponse.json({ error: 'Error al obtener las imágenes' }, { status: 500 });
+    console.error('Error reading carousel images:', error)
+    return NextResponse.json({ error: 'Error reading carousel images' }, { status: 500 })
   }
 }
 
@@ -135,14 +55,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Aquí implementaremos la lógica para subir la imagen a Google Drive
-    // Por ahora retornamos una respuesta de ejemplo
-    return NextResponse.json({
-      id: '1',
-      url: 'https://drive.google.com/uc?export=view&id=1w5jBtcBbDHt0B8z0rh2SDNQJq8V0_0v7',
+    // Guardar el archivo en public/Carousel
+    const carouselDir = path.join(process.cwd(), 'public', 'Carousel');
+    await fs.mkdir(carouselDir, { recursive: true });
+    const ext = path.extname((file as any).name) || '.jpg';
+    const uniqueName = `${uuidv4()}${ext}`;
+    const filePath = path.join(carouselDir, uniqueName);
+    const arrayBuffer = await (file as any).arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    await fs.writeFile(filePath, buffer);
+
+    // Crear la nueva entrada
+    const images = await readCarouselImages();
+    const newId = `carousel-${Date.now()}`;
+    const newImage = {
+      id: newId,
+      url: `/Carousel/${uniqueName}`,
       title,
       description
-    });
+    };
+    images.push(newImage);
+    await writeCarouselImages(images);
+
+    return NextResponse.json(newImage);
   } catch (error) {
     console.error('Error uploading carousel image:', error);
     return NextResponse.json(
@@ -203,41 +138,50 @@ export async function DELETE(request: NextRequest) {
 // PUT request to update the order of images
 export async function PUT(request: NextRequest) {
   try {
-    const updatedImagesOrder: { id: string }[] = await request.json();
+    const body = await request.json();
 
-    if (!Array.isArray(updatedImagesOrder)) {
-      return NextResponse.json(
-        { error: 'Invalid request body. Expected an array of image objects with id.' },
-        { status: 400 }
-      );
-    }
-
-    // Get current images
-    const images = await readCarouselImages();
-
-    // Create a map of current images for easy lookup
-    const imageMap = new Map(images.map((img: any) => [img.id, img]));
-
-    // Build the new ordered list based on the received order
-    const newOrderedImages: any[] = [];
-    for (const imgOrder of updatedImagesOrder) {
-      const image = imageMap.get(imgOrder.id);
-      if (image) {
-        newOrderedImages.push(image);
-      } else {
-        console.warn(`Image with ID ${imgOrder.id} not found during reordering.`);
-        // Optionally handle missing images, e.g., return an error or skip
+    // Si es un array, es para reordenar
+    if (Array.isArray(body)) {
+      const updatedImagesOrder: { id: string }[] = body;
+      // Get current images
+      const images = await readCarouselImages();
+      // Create a map of current images for easy lookup
+      const imageMap = new Map(images.map((img: any) => [img.id, img]));
+      // Build the new ordered list based on the received order
+      const newOrderedImages: any[] = [];
+      for (const imgOrder of updatedImagesOrder) {
+        const image = imageMap.get(imgOrder.id);
+        if (image) {
+          newOrderedImages.push(image);
+        } else {
+          console.warn(`Image with ID ${imgOrder.id} not found during reordering.`);
+        }
       }
+      // Save the new ordered list
+      await writeCarouselImages(newOrderedImages);
+      return NextResponse.json({ success: true });
     }
 
-    // Save the new ordered list
-    await writeCarouselImages(newOrderedImages);
+    // Si es un objeto con id y title, es para actualizar el título
+    if (body && typeof body === 'object' && body.id && body.title !== undefined) {
+      const images = await readCarouselImages();
+      const idx = images.findIndex((img: any) => img.id === body.id);
+      if (idx === -1) {
+        return NextResponse.json({ error: 'Image not found' }, { status: 404 });
+      }
+      images[idx].title = body.title;
+      await writeCarouselImages(images);
+      return NextResponse.json({ success: true });
+    }
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error saving carousel order:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor al guardar el orden' },
+      { error: 'Invalid request body. Expected an array or an object with id and title.' },
+      { status: 400 }
+    );
+  } catch (error) {
+    console.error('Error saving carousel order or updating title:', error);
+    return NextResponse.json(
+      { error: 'Error interno del servidor al guardar el orden o actualizar el título' },
       { status: 500 }
     );
   }
