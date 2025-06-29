@@ -10,7 +10,6 @@ const requiredFiles = [
   'package.json',
   'next.config.js',
   'Dockerfile',
-  'render.yaml',
   'src/app/page.tsx',
   'src/app/layout.tsx'
 ];
@@ -49,35 +48,40 @@ try {
   console.log('❌ Error al leer package.json:', error.message);
 }
 
-// Verificar render.yaml
+// Verificar Dockerfile
 try {
-  const renderYaml = fs.readFileSync('render.yaml', 'utf8');
-  if (renderYaml.includes('env: docker')) {
-    console.log('✅ Render configurado para usar Docker');
+  const dockerfile = fs.readFileSync('Dockerfile', 'utf8');
+  if (dockerfile.includes('FROM node:18-alpine')) {
+    console.log('✅ Dockerfile configurado correctamente');
   } else {
-    console.log('❌ Render no está configurado para usar Docker');
+    console.log('❌ Dockerfile no tiene la configuración correcta');
   }
   
-  if (renderYaml.includes('dockerfilePath: ./Dockerfile')) {
-    console.log('✅ Dockerfile path configurado correctamente');
+  if (dockerfile.includes('output: standalone')) {
+    console.log('✅ Dockerfile incluye configuración standalone');
   } else {
-    console.log('❌ Dockerfile path no configurado');
+    console.log('❌ Dockerfile no incluye configuración standalone');
   }
 } catch (error) {
-  console.log('❌ Error al leer render.yaml:', error.message);
+  console.log('❌ Error al leer Dockerfile:', error.message);
 }
 
 console.log('\n🎯 Resumen:');
 if (allFilesExist) {
   console.log('✅ Todos los archivos necesarios están presentes');
-  console.log('🚀 Tu aplicación debería desplegarse correctamente en Render');
+  console.log('🚀 Tu aplicación está lista para desplegarse en Render');
 } else {
   console.log('❌ Faltan algunos archivos necesarios');
   console.log('⚠️  Por favor, verifica que todos los archivos estén presentes');
 }
 
-console.log('\n📝 Pasos para el despliegue:');
+console.log('\n📝 Pasos para el despliegue en Render (Versión Gratuita):');
 console.log('1. Haz commit de todos los cambios');
 console.log('2. Sube los cambios a tu repositorio');
-console.log('3. Render detectará automáticamente los cambios y hará un nuevo despliegue');
-console.log('4. Verifica los logs en el dashboard de Render'); 
+console.log('3. Ve a render.com y crea un nuevo Web Service');
+console.log('4. Configura manualmente:');
+console.log('   - Environment: Docker');
+console.log('   - Variables de entorno: NODE_ENV=production, PORT=3000');
+console.log('   - Health Check Path: /');
+console.log('5. Render detectará automáticamente el Dockerfile y hará el build');
+console.log('6. Verifica los logs en el dashboard de Render'); 

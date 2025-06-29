@@ -2,15 +2,11 @@
 
 Aplicación web para consultoría y cursos de BIMCAT, construida con Next.js 15.
 
-## 🚀 Despliegue en Render
+## 🚀 Despliegue en Render (Versión Gratuita)
 
-### Configuración Automática
+### Configuración Manual
 
-Esta aplicación está configurada para desplegarse automáticamente en Render usando Docker. Los archivos de configuración incluyen:
-
-- `render.yaml` - Configuración de Render
-- `Dockerfile` - Configuración de Docker optimizada para Next.js
-- `next.config.js` - Configuración de Next.js con output standalone
+Esta aplicación está configurada para desplegarse en Render usando Docker. Como estás usando la versión gratuita, necesitas configurar el servicio manualmente.
 
 ### Pasos para el Despliegue
 
@@ -23,14 +19,32 @@ Esta aplicación está configurada para desplegarse automáticamente en Render u
 
 2. **Crear servicio en Render**
    - Ve a [render.com](https://render.com)
-   - Crea un nuevo "Web Service"
+   - Haz clic en "New +" → "Web Service"
    - Conecta tu repositorio de GitHub
-   - Render detectará automáticamente la configuración
+   - Selecciona el repositorio de tu proyecto
 
-3. **Variables de Entorno (Opcional)**
-   Si necesitas variables de entorno específicas, configúralas en el dashboard de Render:
-   - `NODE_ENV=production`
-   - `PORT=3000`
+3. **Configuración del Servicio**
+   - **Name**: `e-consultant` (o el nombre que prefieras)
+   - **Environment**: `Docker`
+   - **Region**: Elige la más cercana a tus usuarios
+   - **Branch**: `main` (o tu rama principal)
+   - **Root Directory**: Deja vacío (si tu código está en la raíz)
+   - **Build Command**: Deja vacío (Docker se encarga automáticamente)
+   - **Start Command**: Deja vacío (Docker se encarga automáticamente)
+
+4. **Variables de Entorno**
+   Agrega estas variables en la sección "Environment Variables":
+   - `NODE_ENV` = `production`
+   - `PORT` = `3000`
+
+5. **Configuración Avanzada**
+   - **Health Check Path**: `/`
+   - **Auto-Deploy**: ✅ Activado
+   - **Plan**: Free
+
+6. **Crear Servicio**
+   - Haz clic en "Create Web Service"
+   - Render comenzará el build automáticamente
 
 ### Verificación de Configuración
 
@@ -48,6 +62,12 @@ Si encuentras un error 404 después del despliegue:
 2. **Asegúrate de que el build sea exitoso**
 3. **Espera unos minutos** después del despliegue para que los cambios se propaguen
 4. **Verifica que el health check esté pasando**
+
+### ⚠️ Notas Importantes para Versión Gratuita
+
+- **Tiempo de inactividad**: Tu aplicación se "dormirá" después de 15 minutos de inactividad
+- **Límites de uso**: Revisa los límites de la versión gratuita en render.com
+- **Reinicio automático**: La aplicación se reiniciará automáticamente cuando reciba tráfico
 
 ## 🛠 Desarrollo Local
 
