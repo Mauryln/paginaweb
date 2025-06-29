@@ -111,76 +111,6 @@ function CursoCard({ curso }: { curso: Curso }) {
   )
 }
 
-// Componente Modal de Detalle de Curso
-function CursoDetalleModal({ open, onClose, curso }: { open: boolean; onClose: () => void; curso: Curso }) {
-  if (!open || !curso) return null
-  const handleWhatsAppClick = () => {
-    window.open("https://wa.me/61863578", "_blank")
-  }
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 md:p-8 relative text-gray-900 animate-fade-in max-h-[90vh] overflow-y-auto">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 md:top-4 md:right-4 text-blue-600 text-xl md:text-2xl font-bold"
-        >
-          ×
-        </button>
-        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-          <div className="flex-shrink-0 w-full md:w-56 h-48 md:h-56 relative rounded-xl overflow-hidden border-2 border-blue-600">
-            <Image src={curso.img || "/placeholder.svg"} alt={curso.title} fill className="object-cover" />
-          </div>
-          <div className="flex-1 flex flex-col">
-            <h2 className="text-xl md:text-2xl font-extrabold mb-2">{curso.title}</h2>
-            <div className="flex flex-wrap gap-2 text-xs text-gray-900/80 mb-2">
-              <span>📚 {curso.lessons}</span>
-              <span>⏱ {curso.duration}</span>
-              <span>🎯 {curso.level}</span>
-            </div>
-            <div className="mb-3 text-gray-900/70 text-sm">{curso.descLong || curso.desc}</div>
-            <div className="flex items-center gap-4 mt-auto flex-wrap">
-              <span className="font-semibold text-blue-600 text-lg md:text-xl">{curso.priceProfesional}</span>
-              <Button
-                size="sm"
-                className="bg-blue-600 text-white font-bold hover:bg-blue-500"
-                onClick={handleWhatsAppClick}
-              >
-                WhatsApp
-              </Button>
-            </div>
-            <div className="mt-2 text-xs text-gray-900/60">👤 {curso.teacher}</div>
-          </div>
-        </div>
-        {/* Simulación de tabs y contenido adicional */}
-        <div className="mt-6">
-          <div className="flex flex-wrap gap-4 md:gap-6 border-b mb-4">
-            <button className="pb-2 border-b-2 border-blue-600 font-semibold text-sm md:text-base">Descripción</button>
-            <button className="pb-2 text-gray-900/50 text-sm md:text-base">Contenido</button>
-            <button className="pb-2 text-gray-900/50 text-sm md:text-base">Instructor</button>
-            <button className="pb-2 text-gray-900/50 text-sm md:text-base">Opiniones</button>
-          </div>
-          <div className="text-sm text-gray-900/80">
-            {curso.descLong ||
-              "Este curso te permitirá dominar las habilidades clave para avanzar en tu carrera profesional."}
-          </div>
-          <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-            {curso.temas?.map((tema: any, idx: number) => (
-              <li key={`${tema.titulo}-${idx}`}>
-                <div className="font-bold text-blue-600 mb-1">{tema.titulo}</div>
-                <ul className="list-disc ml-6 text-gray-900">
-                  {tema.contenidos.map((contenido: string, i: number) => (
-                    <li key={`${contenido}-${i}`}>{contenido}</li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleWhatsAppClick = () => {
@@ -273,7 +203,6 @@ export default function Home() {
   const [cursos, setCursos] = useState<Curso[]>([])
   const [filtroActual, setFiltroActual] = useState("Todos")
   const [loading, setLoading] = useState(true)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const unsubscribe = cursosService.subscribe((updatedCursos) => {
@@ -287,10 +216,6 @@ export default function Home() {
   const handleWhatsAppClick = () => {
     window.open("https://wa.me/61863578", "_blank")
   }
-
-  // Estado para el modal y el curso seleccionado
-  const [modalOpen, setModalOpen] = useState(false)
-  const [cursoSeleccionado, setCursoSeleccionado] = useState<any>(null)
 
   // Filtrar cursos visibles primero
   const cursosVisibles = cursos.filter((curso) => curso.visible !== false)

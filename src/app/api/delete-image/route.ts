@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     // Check if the file exists before attempting to delete
     try {
         await fs.access(filePath);
-    } catch (error) {
+    } catch {
         console.warn(`File not found, skipping deletion: ${filePath}`);
         return NextResponse.json({ message: 'File not found, deletion skipped' });
     }

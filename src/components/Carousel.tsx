@@ -25,7 +25,7 @@ export default function Carousel() {
         if (!response.ok) throw new Error("Error al cargar imágenes")
         const data = await response.json()
         setImages(data)
-      } catch (e) {
+      } catch {
         setImages([])
       } finally {
         setLoading(false)

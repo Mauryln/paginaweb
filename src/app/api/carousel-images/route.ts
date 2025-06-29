@@ -56,10 +56,10 @@ export async function POST(request: NextRequest) {
     // Guardar el archivo en public/Carousel
     const carouselDir = path.join(process.cwd(), 'public', 'Carousel');
     await fs.mkdir(carouselDir, { recursive: true });
-    const ext = path.extname((file as any).name) || '.jpg';
+    const ext = path.extname((file as File & { name: string }).name) || '.jpg';
     const uniqueName = `${uuidv4()}${ext}`;
     const filePath = path.join(carouselDir, uniqueName);
-    const arrayBuffer = await (file as any).arrayBuffer();
+    const arrayBuffer = await (file as File & { arrayBuffer: () => Promise<ArrayBuffer> }).arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     await fs.writeFile(filePath, buffer);
 

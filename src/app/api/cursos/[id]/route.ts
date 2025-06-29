@@ -80,7 +80,7 @@ export async function DELETE(
     await writeCursosFile(data);
     
     return NextResponse.json({ message: 'Curso eliminado exitosamente' });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al eliminar el curso' }, { status: 500 });
   }
 } 

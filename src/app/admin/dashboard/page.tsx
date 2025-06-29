@@ -269,7 +269,7 @@ export default function AdminDashboard() {
       try {
         // Find the course to get its image URL before deleting
         const courseToDelete = cursos.find(curso => curso.id === id);
-        let imageUrlToDelete = courseToDelete?.img; // Assuming 'img' holds the relative URL
+        const imageUrlToDelete = courseToDelete?.img; // Assuming 'img' holds the relative URL
 
         // If the course has an image, attempt to delete the file first
         if (imageUrlToDelete) {
@@ -385,7 +385,7 @@ export default function AdminDashboard() {
         .replace(/^-|-$/g, '');
 
       // Formatear lecciones
-      let lessons = formData.lessons ? `${formData.lessons} lecciones` : '';
+      const lessons = formData.lessons ? `${formData.lessons} lecciones` : '';
       // Formatear duración
       let duration = '';
       if (formData.durationHours || formData.durationMinutes) {

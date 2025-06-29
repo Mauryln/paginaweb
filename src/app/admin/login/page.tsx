@@ -29,7 +29,7 @@ export default function AdminLogin() {
       } else {
         setError(data.message || 'Contraseña incorrecta');
       }
-    } catch (error) {
+    } catch {
       setError('Error al intentar iniciar sesión');
     }
   };
