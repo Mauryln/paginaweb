@@ -40,12 +40,15 @@ export default function AdminDashboard() {
   const [isCarouselFormModalOpen, setIsCarouselFormModalOpen] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = cursosService.subscribe((updatedCursos) => {
-      setCursos(updatedCursos);
-      setLoading(false);
-    });
+    // Solo suscribirse si estamos en el cliente
+    if (typeof window !== 'undefined') {
+      const unsubscribe = cursosService.subscribe((updatedCursos) => {
+        setCursos(updatedCursos);
+        setLoading(false);
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
   }, []);
 
   // Fetch carousel images when the carousel modal is opened

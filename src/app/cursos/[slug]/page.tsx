@@ -105,15 +105,19 @@ export default function CursoPage() {
       try {
         setLoading(true)
         setError(null)
-        const cursos = await cursosService.getCursos()
-        const cursoEncontrado = cursos.find((c) => c.slug === params.slug)
+        
+        // Solo cargar si estamos en el cliente
+        if (typeof window !== 'undefined') {
+          const cursos = await cursosService.getCursos()
+          const cursoEncontrado = cursos.find((c) => c.slug === params.slug)
 
-        if (!cursoEncontrado) {
-          setError("Curso no encontrado")
-          return
+          if (!cursoEncontrado) {
+            setError("Curso no encontrado")
+            return
+          }
+
+          setCurso(cursoEncontrado)
         }
-
-        setCurso(cursoEncontrado)
       } catch (error) {
         console.error("Error al cargar el curso:", error)
         setError("Error al cargar el curso")

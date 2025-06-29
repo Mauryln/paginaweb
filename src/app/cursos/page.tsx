@@ -210,12 +210,15 @@ export default function CursosPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = cursosService.subscribe((updatedCursos) => {
-      setCursos(updatedCursos)
-      setLoading(false)
-    })
+    // Solo suscribirse si estamos en el cliente
+    if (typeof window !== 'undefined') {
+      const unsubscribe = cursosService.subscribe((updatedCursos) => {
+        setCursos(updatedCursos)
+        setLoading(false)
+      })
 
-    return () => unsubscribe()
+      return () => unsubscribe()
+    }
   }, [])
 
   if (loading) {

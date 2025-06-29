@@ -4,11 +4,10 @@ class CursosService {
   private static instance: CursosService;
   private cursos: Curso[] = [];
   private listeners: ((cursos: Curso[]) => void)[] = [];
+  private isInitialized = false;
 
   private constructor() {
-    this.loadCursos().catch(error => {
-      console.error('Error al cargar cursos inicialmente:', error);
-    });
+    // No cargar automáticamente durante el build
   }
 
   public static getInstance(): CursosService {
@@ -39,7 +38,17 @@ class CursosService {
 
   public subscribe(listener: (cursos: Curso[]) => void) {
     this.listeners.push(listener);
-    listener(this.cursos); // Notificar inmediatamente con el estado actual
+    
+    // Solo cargar cursos si no se han cargado antes
+    if (!this.isInitialized) {
+      this.isInitialized = true;
+      this.loadCursos().catch(error => {
+        console.error('Error al cargar cursos inicialmente:', error);
+      });
+    } else {
+      listener(this.cursos); // Notificar inmediatamente con el estado actual
+    }
+    
     return () => {
       this.listeners = this.listeners.filter(l => l !== listener);
     };
@@ -50,7 +59,8 @@ class CursosService {
   }
 
   public async getCursos(): Promise<Curso[]> {
-    if (this.cursos.length === 0) {
+    if (this.cursos.length === 0 && !this.isInitialized) {
+      this.isInitialized = true;
       await this.loadCursos();
     }
     return this.cursos;
