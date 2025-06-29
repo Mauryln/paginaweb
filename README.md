@@ -1,4 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BIMCAT SRL - E-Consultant
+
+Aplicación web para consultoría BIM y construcción desarrollada con Next.js.
+
+## 🚀 Despliegue en Render
+
+### Configuración Actualizada
+
+El proyecto está configurado para desplegarse automáticamente en Render usando Docker. Los cambios principales incluyen:
+
+1. **Configuración Docker**: Usa un Dockerfile optimizado para producción
+2. **Next.js Standalone**: Configurado para generar una build standalone
+3. **Variables de entorno**: Configuradas correctamente para Render
+4. **Health check**: Configurado para verificar que la aplicación esté funcionando
+
+### Pasos para el Despliegue
+
+1. **Subir código a GitHub**:
+   ```bash
+   git add .
+   git commit -m "Configuración actualizada para Render"
+   git push origin main
+   ```
+
+2. **En Render.com**:
+   - Crear un nuevo **Web Service**
+   - Conectar el repositorio de GitHub
+   - Render detectará automáticamente la configuración Docker
+   - Las variables de entorno están configuradas en `render.yaml`
+
+3. **Variables de entorno** (opcionales):
+   - `NODE_ENV`: production (ya configurado)
+   - `PORT`: 10000 (ya configurado)
+
+### Verificación
+
+Ejecuta el script de verificación antes del despliegue:
+
+```bash
+npm run check-deployment
+```
+
+### Solución de Problemas
+
+Si encuentras errores 404:
+
+1. **Verifica los logs** en el dashboard de Render
+2. **Asegúrate** de que el repositorio esté conectado correctamente
+3. **Revisa** que el build se complete sin errores
+4. **Confirma** que el health check pase correctamente
+
+### Estructura del Proyecto
+
+```
+src/
+├── app/                 # Páginas de la aplicación
+├── components/          # Componentes reutilizables
+├── data/               # Datos estáticos
+├── services/           # Servicios de API
+└── config/             # Configuraciones
+```
+
+### Tecnologías
+
+- **Next.js 15** - Framework de React
+- **TypeScript** - Tipado estático
+- **Tailwind CSS** - Estilos
+- **Docker** - Contenedorización
+- **Render** - Plataforma de despliegue
+
+### Desarrollo Local
+
+```bash
+npm install
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:3000`
 
 ## Getting Started
 

@@ -29,14 +29,42 @@ requiredFiles.forEach(file => {
 try {
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   
-  if (packageJson.scripts.start && packageJson.scripts.start.includes('$PORT')) {
+  if (packageJson.scripts.start && packageJson.scripts.start.includes('${PORT:-3000}')) {
     console.log('✅ package.json - Script start configurado correctamente');
   } else {
-    console.log('❌ package.json - Script start no está configurado para usar $PORT');
+    console.log('❌ package.json - Script start no está configurado para usar ${PORT:-3000}');
     allFilesPresent = false;
   }
 } catch (error) {
   console.log('❌ package.json - Error al leer el archivo');
+  allFilesPresent = false;
+}
+
+// Verificar next.config.js
+try {
+  const nextConfig = fs.readFileSync('next.config.js', 'utf8');
+  if (nextConfig.includes('output: \'standalone\'')) {
+    console.log('✅ next.config.js - Configuración standalone presente');
+  } else {
+    console.log('❌ next.config.js - Configuración standalone faltante');
+    allFilesPresent = false;
+  }
+} catch (error) {
+  console.log('❌ next.config.js - Error al leer el archivo');
+  allFilesPresent = false;
+}
+
+// Verificar render.yaml
+try {
+  const renderYaml = fs.readFileSync('render.yaml', 'utf8');
+  if (renderYaml.includes('env: docker') && renderYaml.includes('dockerfilePath: ./Dockerfile')) {
+    console.log('✅ render.yaml - Configuración Docker presente');
+  } else {
+    console.log('❌ render.yaml - Configuración Docker faltante');
+    allFilesPresent = false;
+  }
+} catch (error) {
+  console.log('❌ render.yaml - Error al leer el archivo');
   allFilesPresent = false;
 }
 
