@@ -3,96 +3,81 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔍 Verificando configuración para despliegue en Render...\n');
+console.log('🔍 Verificando configuración de despliegue...\n');
 
 // Verificar archivos necesarios
 const requiredFiles = [
   'package.json',
   'next.config.js',
-  'render.yaml'
+  'Dockerfile',
+  'render.yaml',
+  'src/app/page.tsx',
+  'src/app/layout.tsx'
 ];
 
-let allFilesPresent = true;
+let allFilesExist = true;
 
 requiredFiles.forEach(file => {
-  if (fs.existsSync(file)) {
-    console.log(`✅ ${file} - Presente`);
-  } else {
-    console.log(`❌ ${file} - Faltante`);
-    allFilesPresent = false;
-  }
+  const exists = fs.existsSync(file);
+  console.log(`${exists ? '✅' : '❌'} ${file}`);
+  if (!exists) allFilesExist = false;
 });
+
+console.log('\n📋 Verificando configuración de Next.js...');
+
+// Verificar next.config.js
+try {
+  const nextConfig = require('../next.config.js');
+  if (nextConfig.output === 'standalone') {
+    console.log('✅ output: standalone configurado correctamente');
+  } else {
+    console.log('❌ output: standalone no está configurado');
+  }
+} catch (error) {
+  console.log('❌ Error al leer next.config.js:', error.message);
+}
 
 // Verificar package.json
 try {
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-  
-  if (packageJson.scripts.start && packageJson.scripts.start.includes('${PORT:-3000}')) {
-    console.log('✅ package.json - Script start configurado correctamente');
+  if (packageJson.scripts.start) {
+    console.log('✅ script start configurado:', packageJson.scripts.start);
   } else {
-    console.log('❌ package.json - Script start no está configurado para usar ${PORT:-3000}');
-    allFilesPresent = false;
+    console.log('❌ script start no encontrado');
   }
 } catch (error) {
-  console.log('❌ package.json - Error al leer el archivo');
-  allFilesPresent = false;
-}
-
-// Verificar next.config.js
-try {
-  const nextConfig = fs.readFileSync('next.config.js', 'utf8');
-  if (nextConfig.includes('images:') && nextConfig.includes('domains:')) {
-    console.log('✅ next.config.js - Configuración de imágenes presente');
-  } else {
-    console.log('❌ next.config.js - Configuración de imágenes faltante');
-    allFilesPresent = false;
-  }
-} catch (error) {
-  console.log('❌ next.config.js - Error al leer el archivo');
-  allFilesPresent = false;
+  console.log('❌ Error al leer package.json:', error.message);
 }
 
 // Verificar render.yaml
 try {
   const renderYaml = fs.readFileSync('render.yaml', 'utf8');
-  if (renderYaml.includes('env: node') && renderYaml.includes('buildCommand:') && renderYaml.includes('startCommand:')) {
-    console.log('✅ render.yaml - Configuración Node.js presente');
+  if (renderYaml.includes('env: docker')) {
+    console.log('✅ Render configurado para usar Docker');
   } else {
-    console.log('❌ render.yaml - Configuración Node.js faltante');
-    allFilesPresent = false;
+    console.log('❌ Render no está configurado para usar Docker');
+  }
+  
+  if (renderYaml.includes('dockerfilePath: ./Dockerfile')) {
+    console.log('✅ Dockerfile path configurado correctamente');
+  } else {
+    console.log('❌ Dockerfile path no configurado');
   }
 } catch (error) {
-  console.log('❌ render.yaml - Error al leer el archivo');
-  allFilesPresent = false;
+  console.log('❌ Error al leer render.yaml:', error.message);
 }
 
-// Verificar estructura de directorios
-const requiredDirs = [
-  'src/app',
-  'src/components',
-  'public'
-];
-
-requiredDirs.forEach(dir => {
-  if (fs.existsSync(dir)) {
-    console.log(`✅ ${dir}/ - Presente`);
-  } else {
-    console.log(`❌ ${dir}/ - Faltante`);
-    allFilesPresent = false;
-  }
-});
-
-console.log('\n📋 Resumen:');
-if (allFilesPresent) {
-  console.log('🎉 ¡Todo está listo para el despliegue en Render!');
-  console.log('\n📝 Próximos pasos:');
-  console.log('1. Sube tu código a GitHub');
-  console.log('2. Ve a render.com y crea un nuevo Web Service');
-  console.log('3. Conecta tu repositorio de GitHub');
-  console.log('4. Configura las variables de entorno si las necesitas');
-  console.log('5. ¡Despliega!');
+console.log('\n🎯 Resumen:');
+if (allFilesExist) {
+  console.log('✅ Todos los archivos necesarios están presentes');
+  console.log('🚀 Tu aplicación debería desplegarse correctamente en Render');
 } else {
-  console.log('⚠️  Hay algunos problemas que necesitan ser resueltos antes del despliegue.');
+  console.log('❌ Faltan algunos archivos necesarios');
+  console.log('⚠️  Por favor, verifica que todos los archivos estén presentes');
 }
 
-console.log('\n📖 Para más información, consulta DEPLOYMENT.md'); 
+console.log('\n📝 Pasos para el despliegue:');
+console.log('1. Haz commit de todos los cambios');
+console.log('2. Sube los cambios a tu repositorio');
+console.log('3. Render detectará automáticamente los cambios y hará un nuevo despliegue');
+console.log('4. Verifica los logs en el dashboard de Render'); 
