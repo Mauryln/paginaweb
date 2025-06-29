@@ -186,12 +186,14 @@ export function ImageUpload({ currentImage, onImageChange, aspectRatio = 16/9, d
                   aspect={aspectRatio}
                   className="max-h-[400px]"
                 >
-                  <img
+                  <Image
                     ref={imgRef}
                     src={previewUrl}
                     alt="Preview"
                     onLoad={onImageLoad}
                     className="max-w-full"
+                    width={500}
+                    height={500}
                   />
                 </ReactCrop>
                 <div className="flex justify-end gap-2">

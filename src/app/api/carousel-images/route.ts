@@ -4,8 +4,6 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 const CAROUSEL_IMAGES_FILE = path.join(process.cwd(), 'src/data/carouselImages.json');
-const UPLOADS_DIR = path.join(process.cwd(), 'public/uploads');
-const DRIVE_FOLDER_ID = '1blrkL8jiwvqJH2XmxcsOQe8jiRy_tUKl';
 
 // Helper function to read carousel images
 async function readCarouselImages() {
@@ -19,7 +17,7 @@ async function readCarouselImages() {
 }
 
 // Helper function to write carousel images
-async function writeCarouselImages(images: any[]) {
+async function writeCarouselImages(images: unknown[]) {
   try {
     await fs.writeFile(CAROUSEL_IMAGES_FILE, JSON.stringify(images, null, 2), 'utf-8');
   } catch (error) {
@@ -104,7 +102,7 @@ export async function DELETE(request: NextRequest) {
     const images = await readCarouselImages();
     
     // Find the image to delete
-    const imageToDelete = images.find((img: any) => img.id === id);
+    const imageToDelete = images.find((img: unknown) => (img as { id: string }).id === id);
     
     if (!imageToDelete) {
       return NextResponse.json(
@@ -122,7 +120,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Remove the image from the list
-    const updatedImages = images.filter((img: any) => img.id !== id);
+    const updatedImages = images.filter((img: unknown) => (img as { id: string }).id !== id);
     await writeCarouselImages(updatedImages);
 
     return NextResponse.json({ success: true });
@@ -146,9 +144,9 @@ export async function PUT(request: NextRequest) {
       // Get current images
       const images = await readCarouselImages();
       // Create a map of current images for easy lookup
-      const imageMap = new Map(images.map((img: any) => [img.id, img]));
+      const imageMap = new Map(images.map((img: unknown) => [(img as { id: string }).id, img]));
       // Build the new ordered list based on the received order
-      const newOrderedImages: any[] = [];
+      const newOrderedImages: unknown[] = [];
       for (const imgOrder of updatedImagesOrder) {
         const image = imageMap.get(imgOrder.id);
         if (image) {
@@ -165,7 +163,7 @@ export async function PUT(request: NextRequest) {
     // Si es un objeto con id y title, es para actualizar el título
     if (body && typeof body === 'object' && body.id && body.title !== undefined) {
       const images = await readCarouselImages();
-      const idx = images.findIndex((img: any) => img.id === body.id);
+      const idx = images.findIndex((img: unknown) => (img as { id: string }).id === body.id);
       if (idx === -1) {
         return NextResponse.json({ error: 'Image not found' }, { status: 404 });
       }

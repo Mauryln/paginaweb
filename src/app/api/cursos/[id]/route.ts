@@ -37,7 +37,7 @@ export async function GET(
     }
     
     return NextResponse.json(curso);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al obtener el curso' }, { status: 500 });
   }
 }
@@ -59,7 +59,7 @@ export async function PUT(
     await writeCursosFile(data);
     
     return NextResponse.json(data.cursos[index]);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al actualizar el curso' }, { status: 500 });
   }
 }

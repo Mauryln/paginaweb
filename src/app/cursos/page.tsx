@@ -154,9 +154,15 @@ function CursosList({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {cursosFiltrados.map((curso, index) => (
-          <CursoCard key={`${curso.id}-${index}`} curso={curso} />
-        ))}
+        {cursosFiltrados.length === 0 ? (
+          <div className="col-span-full text-center text-gray-500 text-lg py-12 animate-fade-in">
+            No hay cursos disponibles en este momento.
+          </div>
+        ) : (
+          cursosFiltrados.map((curso, index) => (
+            <CursoCard key={`${curso.id}-${index}`} curso={curso} />
+          ))
+        )}
       </div>
     </>
   )

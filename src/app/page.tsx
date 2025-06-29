@@ -75,7 +75,7 @@ function ServicioCard({
 }
 
 // Componente de Card de Curso
-function CursoCard({ curso }: { curso: any }) {
+function CursoCard({ curso }: { curso: Curso }) {
   return (
     <Link href={`/cursos/${curso.slug}`}>
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift">
@@ -112,8 +112,11 @@ function CursoCard({ curso }: { curso: any }) {
 }
 
 // Componente Modal de Detalle de Curso
-function CursoDetalleModal({ open, onClose, curso }: { open: boolean; onClose: () => void; curso: any }) {
+function CursoDetalleModal({ open, onClose, curso }: { open: boolean; onClose: () => void; curso: Curso }) {
   if (!open || !curso) return null
+  const handleWhatsAppClick = () => {
+    window.open("https://wa.me/61863578", "_blank")
+  }
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 md:p-8 relative text-gray-900 animate-fade-in max-h-[90vh] overflow-y-auto">
@@ -136,11 +139,11 @@ function CursoDetalleModal({ open, onClose, curso }: { open: boolean; onClose: (
             </div>
             <div className="mb-3 text-gray-900/70 text-sm">{curso.descLong || curso.desc}</div>
             <div className="flex items-center gap-4 mt-auto flex-wrap">
-              <span className="font-semibold text-blue-600 text-lg md:text-xl">{curso.price}</span>
+              <span className="font-semibold text-blue-600 text-lg md:text-xl">{curso.priceProfesional}</span>
               <Button
                 size="sm"
                 className="bg-blue-600 text-white font-bold hover:bg-blue-500"
-                onClick={curso.onWhatsApp}
+                onClick={handleWhatsAppClick}
               >
                 WhatsApp
               </Button>

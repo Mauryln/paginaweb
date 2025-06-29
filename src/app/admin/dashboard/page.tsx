@@ -25,7 +25,6 @@ const tabs = [
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [vistaActual, setVistaActual] = useState('cursos');
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
@@ -122,9 +121,14 @@ export default function AdminDashboard() {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Error al subir la imagen');
       }
-    } catch (error: any) {
-      console.error('Error uploading carousel image:', error);
-      alert(`Error al subir la imagen: ${error.message}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error uploading carousel image:', error);
+        alert(`Error al subir la imagen: ${error.message}`);
+      } else {
+        console.error('Error uploading carousel image:', error);
+        alert('Error al subir la imagen');
+      }
     } finally {
       setLoadingCarousel(false);
     }
@@ -182,9 +186,14 @@ export default function AdminDashboard() {
         throw new Error(errorData.error || 'Error al guardar el orden');
       }
       alert('Orden guardado exitosamente!');
-    } catch (error: any) {
-      console.error('Error saving carousel order:', error);
-      alert(`Error al guardar el orden: ${error.message}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error saving carousel order:', error);
+        alert(`Error al guardar el orden: ${error.message}`);
+      } else {
+        console.error('Error saving carousel order:', error);
+        alert('Error al guardar el orden');
+      }
     } finally {
       setLoadingCarousel(false); // Ocultar estado de carga
     }
@@ -461,13 +470,6 @@ export default function AdminDashboard() {
         }));
       }
     }
-  };
-
-  const handleRemoveImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images?.filter((_, i) => i !== index)
-    }));
   };
 
   const today = new Date().toISOString().split('T')[0];

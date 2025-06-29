@@ -28,7 +28,7 @@ export async function GET() {
   try {
     const data = await readCursosFile();
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al obtener los cursos' }, { status: 500 });
   }
 }
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     await writeCursosFile(data);
     
     return NextResponse.json(newCurso);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al crear el curso' }, { status: 500 });
   }
 } 
