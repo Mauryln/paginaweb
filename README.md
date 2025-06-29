@@ -4,52 +4,50 @@ Aplicación web para consultoría BIM y construcción desarrollada con Next.js.
 
 ## 🚀 Despliegue en Render
 
-### Configuración Actualizada
+### ⚠️ Solución para Error 404
 
-El proyecto está configurado para desplegarse automáticamente en Render usando Docker. Los cambios principales incluyen:
+Si tu aplicación muestra error 404 en Render, sigue estos pasos:
 
-1. **Configuración Docker**: Usa un Dockerfile optimizado para producción
-2. **Next.js Standalone**: Configurado para generar una build standalone
-3. **Variables de entorno**: Configuradas correctamente para Render
-4. **Health check**: Configurado para verificar que la aplicación esté funcionando
-
-### Pasos para el Despliegue
-
-1. **Subir código a GitHub**:
-   ```bash
-   git add .
-   git commit -m "Configuración actualizada para Render"
-   git push origin main
-   ```
-
-2. **En Render.com**:
-   - Crear un nuevo **Web Service**
-   - Conectar el repositorio de GitHub
-   - Render detectará automáticamente la configuración Docker
-   - Las variables de entorno están configuradas en `render.yaml`
-
-3. **Variables de entorno** (opcionales):
-   - `NODE_ENV`: production (ya configurado)
-   - `PORT`: 10000 (ya configurado)
-
-### Verificación
-
-Ejecuta el script de verificación antes del despliegue:
-
+#### 1. **Verificar Configuración Actual**
 ```bash
 npm run check-deployment
 ```
 
-### Solución de Problemas
+#### 2. **Subir Cambios a GitHub**
+```bash
+git add .
+git commit -m "Configuración corregida para Render - Node.js setup"
+git push origin main
+```
 
-Si encuentras errores 404:
+#### 3. **En Render.com - Crear Nuevo Servicio**
+1. Ve a [render.com](https://render.com)
+2. Crea un **nuevo Web Service** (NO uses el existente)
+3. Conecta tu repositorio de GitHub
+4. Render detectará automáticamente la configuración de `render.yaml`
 
-1. **Verifica los logs** en el dashboard de Render
-2. **Asegúrate** de que el repositorio esté conectado correctamente
-3. **Revisa** que el build se complete sin errores
-4. **Confirma** que el health check pase correctamente
+#### 4. **Configuración del Servicio**
+- **Environment**: Node.js (automático)
+- **Build Command**: `npm install && npm run build` (automático)
+- **Start Command**: `npm start` (automático)
+- **Health Check Path**: `/` (automático)
 
-### Estructura del Proyecto
+#### 5. **Variables de Entorno**
+Las siguientes variables están configuradas automáticamente:
+- `NODE_ENV`: production
+- `PORT`: 10000
+
+### 🔧 Configuración Actual
+
+El proyecto está configurado para usar **Node.js** directamente en Render:
+
+- ✅ **Next.js 15** con configuración optimizada
+- ✅ **Scripts de build y start** configurados correctamente
+- ✅ **Variables de entorno** configuradas
+- ✅ **Health check** configurado
+- ✅ **Build filters** para optimizar el despliegue
+
+### 📁 Estructura del Proyecto
 
 ```
 src/
@@ -60,15 +58,14 @@ src/
 └── config/             # Configuraciones
 ```
 
-### Tecnologías
+### 🛠️ Tecnologías
 
 - **Next.js 15** - Framework de React
 - **TypeScript** - Tipado estático
 - **Tailwind CSS** - Estilos
-- **Docker** - Contenedorización
 - **Render** - Plataforma de despliegue
 
-### Desarrollo Local
+### 🚀 Desarrollo Local
 
 ```bash
 npm install
@@ -76,6 +73,27 @@ npm run dev
 ```
 
 La aplicación estará disponible en `http://localhost:3000`
+
+### 🔍 Solución de Problemas
+
+#### Error 404 en Render:
+1. **Verifica los logs** en el dashboard de Render
+2. **Asegúrate** de crear un nuevo servicio (no reutilizar el existente)
+3. **Confirma** que el repositorio esté conectado correctamente
+4. **Revisa** que el build se complete sin errores
+5. **Espera** 2-3 minutos después del despliegue para que el health check pase
+
+#### Build Fails:
+1. Ejecuta `npm run build` localmente para verificar
+2. Revisa que todas las dependencias estén instaladas
+3. Verifica que no haya errores de TypeScript
+
+### 📞 Soporte
+
+Si el problema persiste:
+1. Revisa los logs de build en Render
+2. Verifica que el repositorio esté actualizado
+3. Crea un nuevo servicio desde cero
 
 ## Getting Started
 

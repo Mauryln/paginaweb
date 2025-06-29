@@ -9,9 +9,7 @@ console.log('🔍 Verificando configuración para despliegue en Render...\n');
 const requiredFiles = [
   'package.json',
   'next.config.js',
-  'render.yaml',
-  'Dockerfile',
-  '.dockerignore'
+  'render.yaml'
 ];
 
 let allFilesPresent = true;
@@ -43,10 +41,10 @@ try {
 // Verificar next.config.js
 try {
   const nextConfig = fs.readFileSync('next.config.js', 'utf8');
-  if (nextConfig.includes('output: \'standalone\'')) {
-    console.log('✅ next.config.js - Configuración standalone presente');
+  if (nextConfig.includes('images:') && nextConfig.includes('domains:')) {
+    console.log('✅ next.config.js - Configuración de imágenes presente');
   } else {
-    console.log('❌ next.config.js - Configuración standalone faltante');
+    console.log('❌ next.config.js - Configuración de imágenes faltante');
     allFilesPresent = false;
   }
 } catch (error) {
@@ -57,10 +55,10 @@ try {
 // Verificar render.yaml
 try {
   const renderYaml = fs.readFileSync('render.yaml', 'utf8');
-  if (renderYaml.includes('env: docker') && renderYaml.includes('dockerfilePath: ./Dockerfile')) {
-    console.log('✅ render.yaml - Configuración Docker presente');
+  if (renderYaml.includes('env: node') && renderYaml.includes('buildCommand:') && renderYaml.includes('startCommand:')) {
+    console.log('✅ render.yaml - Configuración Node.js presente');
   } else {
-    console.log('❌ render.yaml - Configuración Docker faltante');
+    console.log('❌ render.yaml - Configuración Node.js faltante');
     allFilesPresent = false;
   }
 } catch (error) {

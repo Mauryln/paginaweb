@@ -1,12 +1,11 @@
 services:
   - type: web
     name: e-consultant
-    env: docker
-    dockerfilePath: ./Dockerfile
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
     healthCheckPath: /
     autoDeploy: true 
