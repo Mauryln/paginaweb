@@ -16,13 +16,6 @@ interface CarouselImage {
   description: string;
 }
 
-const tabs = [
-  { label: 'Descripción', key: 'descripcion' },
-  { label: 'Temario del curso', key: 'temario' },
-  { label: 'Instructor', key: 'instructor' },
-  { label: 'Opiniones', key: 'opiniones' },
-];
-
 export default function AdminDashboard() {
   const router = useRouter();
   const [cursos, setCursos] = useState<Curso[]>([]);
