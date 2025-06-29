@@ -398,11 +398,11 @@ export default function AdminDashboard() {
       };
 
       if (tipoPrecio === 'unico') {
-        (cursoData as any).priceEstudiante = '';
-        (cursoData as any).offerPriceEstudiante = '';
+        (cursoData as Partial<Curso>).priceEstudiante = '';
+        (cursoData as Partial<Curso>).offerPriceEstudiante = '';
       } else {
-        (cursoData as any).offerPriceProfesional = formData.offerPriceProfesional || '';
-        (cursoData as any).offerPriceEstudiante = formData.offerPriceEstudiante || '';
+        (cursoData as Partial<Curso>).offerPriceProfesional = formData.offerPriceProfesional || '';
+        (cursoData as Partial<Curso>).offerPriceEstudiante = formData.offerPriceEstudiante || '';
       }
 
       if (selectedCurso) {
