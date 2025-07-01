@@ -559,7 +559,7 @@ export default function AdminDashboard() {
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 flex-1 w-full">
                 <div className="relative w-20 h-20 rounded-lg overflow-hidden hover-scale transition-all mx-auto sm:mx-0">
                   <Image
-                    src={curso.img}
+                    src={getCarouselImageUrl(curso.img)}
                     alt={curso.title}
                     fill
                     className="object-cover"
@@ -1220,8 +1220,8 @@ export default function AdminDashboard() {
                        <div className="mt-4">
                          <h3 className="text-base font-semibold mb-2">Previsualización:</h3>
                          <div className="relative w-32 h-32 border rounded overflow-hidden mx-auto">
-                           <Image 
-                             src={imagePreview}
+                           <Image
+                             src={imagePreview.startsWith('data:') ? imagePreview : getCarouselImageUrl(imagePreview)}
                              alt="Previsualización"
                              fill
                              className="object-cover"
