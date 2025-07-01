@@ -563,6 +563,7 @@ export default function AdminDashboard() {
                     alt={curso.title}
                     fill
                     className="object-cover"
+                    unoptimized
                   />
                 </div>
                 <div className="flex-1 w-full text-center sm:text-left">
@@ -1124,6 +1125,7 @@ export default function AdminDashboard() {
                             alt={image.title}
                             fill
                             className="object-cover"
+                            unoptimized
                           />
                         </div>
                         <div className="p-3 flex flex-col flex-grow">
@@ -1223,6 +1225,7 @@ export default function AdminDashboard() {
                              alt="Previsualización"
                              fill
                              className="object-cover"
+                             unoptimized
                            />
                          </div>
                        </div>
