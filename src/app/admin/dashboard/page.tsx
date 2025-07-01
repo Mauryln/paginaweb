@@ -39,6 +39,12 @@ export default function AdminDashboard() {
   const [isCarouselModalOpen, setIsCarouselModalOpen] = useState(false);
   const [isCarouselFormModalOpen, setIsCarouselFormModalOpen] = useState(false);
 
+  // Estado para mensajes
+  const [mensajes, setMensajes] = useState<any[]>([]);
+  const [loadingMensajes, setLoadingMensajes] = useState(true);
+  const [errorMensajes, setErrorMensajes] = useState<string|null>(null);
+  const [mostrarMensajes, setMostrarMensajes] = useState(false);
+
   useEffect(() => {
     // Solo suscribirse si estamos en el cliente
     if (typeof window !== 'undefined') {
@@ -483,6 +489,41 @@ export default function AdminDashboard() {
     setCarouselDescription('');
   };
 
+  useEffect(() => {
+    // Obtener mensajes al cargar el dashboard
+    const fetchMensajes = async () => {
+      setLoadingMensajes(true);
+      setErrorMensajes(null);
+      try {
+        const res = await fetch('/api/mensajes');
+        if (res.ok) {
+          const data = await res.json();
+          setMensajes(data);
+        } else {
+          setErrorMensajes('No se pudieron cargar los mensajes.');
+        }
+      } catch {
+        setErrorMensajes('No se pudieron cargar los mensajes.');
+      } finally {
+        setLoadingMensajes(false);
+      }
+    };
+    fetchMensajes();
+  }, []);
+
+  const marcarComoLeido = async (realIndex: number) => {
+    try {
+      const res = await fetch('/api/mensajes', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ index: realIndex })
+      });
+      if (res.ok) {
+        setMensajes(prev => prev.map((msg, i) => i === realIndex ? { ...msg, leido: true } : msg));
+      }
+    } catch {}
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f6f8fa] flex items-center justify-center">
@@ -525,6 +566,17 @@ export default function AdminDashboard() {
               <Plus className="w-5 h-5 mr-2" />
               Nuevo Curso
             </Button>
+            <a
+              href="/admin/dashboard/mensajes"
+              className="inline-block"
+            >
+              <Button
+                className="bg-[#00ffae] text-[#1a1144] font-bold hover:bg-[#00e6a0] hover-lift transition-all"
+                type="button"
+              >
+                <span className="mr-2">📩</span> Ver Mensajes de Contacto
+              </Button>
+            </a>
           </div>
         </div>
 
@@ -565,8 +617,12 @@ export default function AdminDashboard() {
                           {curso.priceEstudiante} Bs
                         </span>
                         {curso.offerEndDate && (
-                          <div className="text-xs text-gray-400 mt-1">
-                            Oferta válida hasta {new Date(curso.offerEndDate).toLocaleDateString()}
+                          <div className="text-xs mt-1">
+                            {new Date(curso.offerEndDate) > new Date() ? (
+                              <span className="text-gray-400">Oferta válida hasta {new Date(curso.offerEndDate).toLocaleDateString()}</span>
+                            ) : (
+                              <span className="text-red-500 font-bold">Oferta finalizada</span>
+                            )}
                           </div>
                         )}
                       </div>

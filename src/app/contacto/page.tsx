@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { MessageCircle, Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
@@ -50,6 +51,48 @@ function Header() {
 }
 
 export default function Contacto() {
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [asunto, setAsunto] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const [enviando, setEnviando] = useState(false);
+  const [exito, setExito] = useState<string|null>(null);
+  const [error, setError] = useState<string|null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEnviando(true);
+    setExito(null);
+    setError(null);
+    if (!nombre || !email || !telefono || !asunto || !mensaje) {
+      setError("Por favor, completa todos los campos.");
+      setEnviando(false);
+      return;
+    }
+    try {
+      const res = await fetch("/api/mensajes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, email, telefono, asunto, mensaje })
+      });
+      if (res.ok) {
+        setExito("¡Mensaje enviado correctamente!");
+        setNombre("");
+        setEmail("");
+        setTelefono("");
+        setAsunto("");
+        setMensaje("");
+      } else {
+        setError("Hubo un error al enviar el mensaje.");
+      }
+    } catch {
+      setError("Hubo un error al enviar el mensaje.");
+    } finally {
+      setEnviando(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <Header />
@@ -77,19 +120,31 @@ export default function Contacto() {
                 <span className="text-white/70 text-sm">Bolivia</span>
               </div>
             </div>
-            <form className="flex flex-col gap-4">
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div className="flex flex-col md:flex-row gap-4">
                 <input
                   type="text"
                   placeholder="Nombre"
                   className="rounded-lg px-4 py-2 bg-white text-black placeholder-black focus:outline-none w-full transition-all hover:shadow-lg"
                   required
+                  value={nombre}
+                  onChange={e => setNombre(e.target.value)}
                 />
                 <input
                   type="email"
                   placeholder="Email"
                   className="rounded-lg px-4 py-2 bg-white text-black placeholder-black focus:outline-none w-full transition-all hover:shadow-lg"
                   required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                />
+                <input
+                  type="tel"
+                  placeholder="Teléfono"
+                  className="rounded-lg px-4 py-2 bg-white text-black placeholder-black focus:outline-none w-full transition-all hover:shadow-lg"
+                  required
+                  value={telefono}
+                  onChange={e => setTelefono(e.target.value)}
                 />
               </div>
               <input
@@ -97,15 +152,21 @@ export default function Contacto() {
                 placeholder="Asunto"
                 className="rounded-lg px-4 py-2 bg-white text-black placeholder-black focus:outline-none w-full transition-all hover:shadow-lg"
                 required
+                value={asunto}
+                onChange={e => setAsunto(e.target.value)}
               />
               <textarea
                 placeholder="Mensaje"
                 className="rounded-lg px-4 py-2 bg-white text-black placeholder-black focus:outline-none w-full min-h-[100px] transition-all hover:shadow-lg"
                 required
+                value={mensaje}
+                onChange={e => setMensaje(e.target.value)}
               />
-              <button type="submit" className="btn-primary w-full md:w-auto self-end hover-lift transition-all rounded-full px-6 py-2 shadow-lg font-semibold">
-                Enviar Mensaje
+              <button type="submit" className="btn-primary w-full md:w-auto self-end hover-lift transition-all rounded-full px-6 py-2 shadow-lg font-semibold" disabled={enviando}>
+                {enviando ? "Enviando..." : "Enviar Mensaje"}
               </button>
+              {exito && <p className="text-green-600 font-semibold mt-2">{exito}</p>}
+              {error && <p className="text-red-600 font-semibold mt-2">{error}</p>}
             </form>
           </div>
           <div className="flex justify-center gap-6 mt-6">

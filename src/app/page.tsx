@@ -76,6 +76,9 @@ function ServicioCard({
 
 // Componente de Card de Curso
 function CursoCard({ curso }: { curso: Curso }) {
+  // Determinar si hay oferta activa
+  const hasOffer = curso.offerPriceProfesional && curso.offerEndDate && new Date(curso.offerEndDate) > new Date();
+  const offerEndDate = curso.offerEndDate ? new Date(curso.offerEndDate + "T00:00:00").toLocaleDateString() : "";
   return (
     <Link href={`/cursos/${curso.slug}`}>
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift">
@@ -90,7 +93,20 @@ function CursoCard({ curso }: { curso: Curso }) {
             <span>⏱ {curso.duration}</span>
             <span>🎯 {curso.level}</span>
           </div>
-          {curso.priceEstudiante && String(curso.priceEstudiante).trim() !== "" ? (
+          {hasOffer ? (
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-blue-400">OFERTA ESPECIAL</span>
+              <span className="font-semibold text-blue-600 text-base">
+                Profesional: <span className="text-blue-400 font-bold">{curso.offerPriceProfesional} Bs</span>{' '}
+                <span className="line-through text-black/40 ml-2">{curso.priceProfesional} Bs</span>
+              </span>
+              <span className="font-semibold text-blue-600 text-base">
+                Estudiante: <span className="text-blue-400 font-bold">{curso.offerPriceEstudiante} Bs</span>{' '}
+                <span className="line-through text-black/40 ml-2">{curso.priceEstudiante} Bs</span>
+              </span>
+              <span className="text-xs text-black/60">Oferta válida hasta {offerEndDate}</span>
+            </div>
+          ) : curso.priceEstudiante && String(curso.priceEstudiante).trim() !== "" ? (
             <div className="flex flex-col">
               <span className="font-semibold text-blue-600 text-base">
                 Profesional: {curso.priceProfesional} Bs ({(Number(curso.priceProfesional) / 7).toFixed(2)} USD)
