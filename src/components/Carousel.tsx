@@ -72,7 +72,7 @@ export default function Carousel() {
       <div className="relative w-full max-w-3xl mx-auto h-96 bg-gray-900 rounded-lg shadow-xl flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           <Image
-            src={images[currentIndex].url}
+            src={getCarouselImageUrl(images[currentIndex].url)}
             alt={images[currentIndex].title}
             fill
             sizes="(max-width: 768px) 100vw, 700px"
@@ -124,7 +124,7 @@ export default function Carousel() {
           </button>
           <div className="relative w-full max-w-6xl h-[80vh] flex items-center justify-center">
             <Image
-              src={images[currentIndex].url}
+              src={getCarouselImageUrl(images[currentIndex].url)}
               alt={images[currentIndex].title}
               fill
               sizes="(max-width: 1200px) 100vw, 1200px"
@@ -159,4 +159,14 @@ export default function Carousel() {
       )}
     </>
   )
+}
+
+function getCarouselImageUrl(url: string) {
+  if (!url) return '/placeholder.svg';
+  if (url.startsWith('/tmp/uploads/')) {
+    const fileName = url.split('/').pop();
+    return `/api/tmp-image?file=${fileName}`;
+  }
+  if (url.startsWith('http')) return url;
+  return url;
 }

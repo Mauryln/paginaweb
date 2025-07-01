@@ -1120,7 +1120,7 @@ export default function AdminDashboard() {
                       <div key={`carousel-${image.id}-${index}`} className="border rounded-lg overflow-hidden flex flex-col justify-between">
                         <div className="relative h-32 w-full flex-shrink-0">
                           <Image
-                            src={image.url}
+                            src={getCarouselImageUrl(image.url)}
                             alt={image.title}
                             fill
                             className="object-cover"
@@ -1271,4 +1271,14 @@ export default function AdminDashboard() {
 
     </main>
   );
+}
+
+function getCarouselImageUrl(url: string) {
+  if (!url) return '/placeholder.svg';
+  if (url.startsWith('/tmp/uploads/')) {
+    const fileName = url.split('/').pop();
+    return `/api/tmp-image?file=${fileName}`;
+  }
+  if (url.startsWith('http')) return url;
+  return url;
 }
