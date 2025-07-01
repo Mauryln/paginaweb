@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
 export async function POST(request: Request) {
@@ -37,15 +37,17 @@ export async function POST(request: Request) {
 
     // Convertir el archivo a Buffer
     const bytes = await file.arrayBuffer();
-    console.log(bytes);
     const buffer = Buffer.from(bytes);
 
-    // Guardar el archivo
-    const path = join(process.cwd(), 'public/uploads', fileName);
+    // Guardar el archivo en /tmp/uploads
+    const uploadDir = '/tmp/uploads';
+    // Crear la carpeta si no existe
+    await mkdir(uploadDir, { recursive: true });
+    const path = join(uploadDir, fileName);
     await writeFile(path, buffer);
 
-    // Devolver la URL del archivo
-    return NextResponse.json({ url: `/uploads/${fileName}` });
+    // Devolver la URL temporal del archivo
+    return NextResponse.json({ url: `/tmp/uploads/${fileName}` });
   } catch (error) {
     console.error('Error al subir el archivo:', error);
     return NextResponse.json(

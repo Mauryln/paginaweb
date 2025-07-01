@@ -250,7 +250,7 @@ export default function CursoPage() {
                 className="relative w-full h-64 sm:h-80 lg:h-[550px] rounded-xl sm:rounded-2xl overflow-hidden border-2 sm:border-4 border-blue-600 cursor-pointer transition-transform hover:scale-[1.02]"
                 onClick={() => setIsImageModalOpen(true)}
               >
-                <Image src={curso.img || "/placeholder.svg"} alt={curso.title} fill className="object-cover" />
+                <Image src={getCursoImageUrl(curso)} alt={curso.title} fill className="object-cover" />
               </div>
             </div>
           </div>
@@ -277,7 +277,7 @@ export default function CursoPage() {
             }}
           >
             <Image
-              src={curso.img || "/placeholder.svg"}
+              src={getCursoImageUrl(curso)}
               alt={curso.title}
               fill
               className={`object-contain transition-transform duration-300 ${isZoomed ? "scale-150" : "scale-100"}`}
@@ -352,4 +352,17 @@ export default function CursoPage() {
       </div>
     </main>
   )
+}
+
+function getCursoImageUrl(curso: any) {
+  const img = curso.img;
+  if (!img) return '/placeholder.svg';
+  // Si la imagen es de /tmp/uploads, usar el endpoint
+  if (img.startsWith('/tmp/uploads/')) {
+    const fileName = img.split('/').pop();
+    return `/api/tmp-image?file=${fileName}`;
+  }
+  // Si ya es una URL absoluta o de Cloudinary, etc.
+  if (img.startsWith('http')) return img;
+  return img;
 }

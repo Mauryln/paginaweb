@@ -83,7 +83,7 @@ function CursoCard({ curso }: { curso: Curso }) {
     <Link href={`/cursos/${curso.slug}`}>
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all hover-lift">
         <div className="relative h-48 w-full">
-          <Image src={curso.thumbnail || curso.img} alt={curso.title} fill className="object-cover" />
+          <Image src={getCursoImageUrl(curso)} alt={curso.title} fill className="object-cover" />
         </div>
         <div className="p-6 flex flex-col flex-1">
           <h3 className="font-bold text-lg text-black mb-1 truncate">{curso.title}</h3>
@@ -125,6 +125,19 @@ function CursoCard({ curso }: { curso: Curso }) {
       </div>
     </Link>
   )
+}
+
+function getCursoImageUrl(curso: any) {
+  const img = curso.thumbnail || curso.img;
+  if (!img) return '/placeholder.svg';
+  // Si la imagen es de /tmp/uploads, usar el endpoint
+  if (img.startsWith('/tmp/uploads/')) {
+    const fileName = img.split('/').pop();
+    return `/api/tmp-image?file=${fileName}`;
+  }
+  // Si ya es una URL absoluta o de Cloudinary, etc.
+  if (img.startsWith('http')) return img;
+  return img;
 }
 
 function Header() {
