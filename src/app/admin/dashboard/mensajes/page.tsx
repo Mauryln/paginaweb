@@ -83,7 +83,7 @@ export default function MensajesAdmin() {
                   </tr>
                 </thead>
                 <tbody>
-                  {mensajes.slice().reverse().map((msg, idx, arr) => {
+                  {mensajes.slice().reverse().map((msg, idx) => {
                     const realIndex = mensajes.length - 1 - idx;
                     return (
                       <tr key={realIndex} className={`border-b last:border-b-0 ${msg.leido ? 'bg-[#f0fdfa]' : 'hover:bg-[#f6f8fa]'} transition-all`}>
