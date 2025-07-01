@@ -220,15 +220,13 @@ function CursoCard({ curso }: { curso: Curso }) {
   )
 }
 
-function getCursoImageUrl(curso: any) {
+function getCursoImageUrl(curso: { thumbnail?: string; img?: string }) {
   const img = curso.thumbnail || curso.img;
   if (!img) return '/placeholder.svg';
-  // Si la imagen es de /tmp/uploads, usar el endpoint
   if (img.startsWith('/tmp/uploads/')) {
     const fileName = img.split('/').pop();
     return `/api/tmp-image?file=${fileName}`;
   }
-  // Si ya es una URL absoluta o de Cloudinary, etc.
   if (img.startsWith('http')) return img;
   return img;
 }

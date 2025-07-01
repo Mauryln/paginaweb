@@ -34,7 +34,7 @@ export async function GET(request: Request) {
         'Cache-Control': 'public, max-age=3600',
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Archivo no encontrado o error al leerlo' }, { status: 404 });
   }
 } 
