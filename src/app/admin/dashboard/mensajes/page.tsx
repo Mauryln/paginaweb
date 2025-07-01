@@ -2,8 +2,18 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
+interface Mensaje {
+  nombre: string;
+  email: string;
+  telefono?: string;
+  asunto: string;
+  mensaje: string;
+  fecha?: string;
+  leido: boolean;
+}
+
 export default function MensajesAdmin() {
-  const [mensajes, setMensajes] = useState<any[]>([]);
+  const [mensajes, setMensajes] = useState<Mensaje[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string|null>(null);
 

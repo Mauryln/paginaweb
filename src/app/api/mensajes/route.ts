@@ -9,7 +9,7 @@ export async function GET() {
     const data = await fs.readFile(mensajesPath, 'utf-8');
     const mensajes = JSON.parse(data);
     return NextResponse.json(mensajes);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'No se pudieron leer los mensajes.' }, { status: 500 });
   }
 }
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     mensajes.push({ ...body, fecha: new Date().toISOString(), leido: false });
     await fs.writeFile(mensajesPath, JSON.stringify(mensajes, null, 2), 'utf-8');
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'No se pudo guardar el mensaje.' }, { status: 500 });
   }
 }
@@ -39,7 +39,7 @@ export async function PATCH(req: NextRequest) {
     } else {
       return NextResponse.json({ error: 'Índice inválido.' }, { status: 400 });
     }
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'No se pudo actualizar el mensaje.' }, { status: 500 });
   }
 } 

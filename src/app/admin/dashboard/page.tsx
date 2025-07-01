@@ -40,10 +40,10 @@ export default function AdminDashboard() {
   const [isCarouselFormModalOpen, setIsCarouselFormModalOpen] = useState(false);
 
   // Estado para mensajes
-  const [mensajes, setMensajes] = useState<any[]>([]);
-  const [loadingMensajes, setLoadingMensajes] = useState(true);
-  const [errorMensajes, setErrorMensajes] = useState<string|null>(null);
-  const [mostrarMensajes, setMostrarMensajes] = useState(false);
+  // const [mensajes, setMensajes] = useState<any[]>([]);
+  // const [loadingMensajes, setLoadingMensajes] = useState(true);
+  // const [errorMensajes, setErrorMensajes] = useState<string|null>(null);
+  // const [mostrarMensajes, setMostrarMensajes] = useState(false);
 
   useEffect(() => {
     // Solo suscribirse si estamos en el cliente
@@ -489,40 +489,9 @@ export default function AdminDashboard() {
     setCarouselDescription('');
   };
 
-  useEffect(() => {
-    // Obtener mensajes al cargar el dashboard
-    const fetchMensajes = async () => {
-      setLoadingMensajes(true);
-      setErrorMensajes(null);
-      try {
-        const res = await fetch('/api/mensajes');
-        if (res.ok) {
-          const data = await res.json();
-          setMensajes(data);
-        } else {
-          setErrorMensajes('No se pudieron cargar los mensajes.');
-        }
-      } catch {
-        setErrorMensajes('No se pudieron cargar los mensajes.');
-      } finally {
-        setLoadingMensajes(false);
-      }
-    };
-    fetchMensajes();
-  }, []);
-
-  const marcarComoLeido = async (realIndex: number) => {
-    try {
-      const res = await fetch('/api/mensajes', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ index: realIndex })
-      });
-      if (res.ok) {
-        setMensajes(prev => prev.map((msg, i) => i === realIndex ? { ...msg, leido: true } : msg));
-      }
-    } catch {}
-  };
+  // const marcarComoLeido = async (realIndex: number) => {
+  //   // función comentada porque no se usa actualmente
+  // };
 
   if (loading) {
     return (
